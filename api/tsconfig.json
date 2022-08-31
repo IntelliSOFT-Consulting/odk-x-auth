@@ -1,12 +1,12 @@
 {
-    "compilerOptions": {
-      "target": "es6",
-      "module": "commonjs",
-      "rootDir": "./src",
-      "skipLibCheck": true, /* Skip type checking all .d.ts files. */
-      "outDir": "./build",
-      "esModuleInterop": true,
-      "strict": true,
-      "resolveJsonModule": true,
-    }
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "rootDir": "./src",
+    "skipLibCheck": true, /* Skip type checking all .d.ts files. */
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "strict": true,
+    "resolveJsonModule": true,
+  }
 }

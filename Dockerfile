@@ -1,9 +1,17 @@
 FROM node:alpine
 WORKDIR /usr/odk-x-auth
-COPY package.json .
+
 RUN npm install typescript yarn -g --force
+
+COPY ui ui
+WORKDIR ui
 RUN yarn install
-COPY api .
+RUN yarn build:prod
+
+WORKDIR ../
+COPY api api
+WORKDIR api
+RUN yarn install
 RUN yarn build
 EXPOSE 8080
-CMD ["node", "./build/index.js"]
+CMD ["yarn", "start"]
