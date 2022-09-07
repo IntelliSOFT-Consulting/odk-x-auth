@@ -1,41 +1,55 @@
 @use '@carbon/react';
 @use './components/app-header';
+@use '@carbon/grid';
 //From CRA, we'll see
-.App {
-    text-align: center;
-}
-
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
-}
-
-.App-header {
-    background-color: #282c34;
-    min-height: 100vh;
+.PageContent {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-}
-
-.App-link {
-    color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
+    margin: auto;
+    flex: 1;
+    width: 50%;
+    margin-top: 150px;
+    margin-left: 30%;
+    padding-bottom: 10px !important;
+    TextInput {
+        width: 100%;
+        min-width: 580px;
     }
-    to {
-        transform: rotate(360deg);
+    .LoginButtons {
+        width: 100%;
+        min-width: 250px;
+        padding-top: 10px;
+        display: inline;
+    }
+}
+
+.LoginFooter {
+    max-height: 150px;
+    bottom: 0;
+    left: 0;
+    /* Re-designed by IntelliSOFT Consulting Ltd via Digital Square Funding */
+    .FooterText {
+        position: absolute;
+        width: 652px;
+        height: 24px;
+        left: 1253px;
+        top: 981px;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 24px;
+        color: #000000;
+    }
+    /* image 1 */
+    .Logo1 {
+        position: absolute;
+        width: 109px;
+        height: 103px;
+    }
+    /* image 2 */
+    .Logo2 {
+        position: absolute;
+        width: 161px;
+        height: 105px;
     }
 }

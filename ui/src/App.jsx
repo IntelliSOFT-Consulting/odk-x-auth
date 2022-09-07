@@ -1,12 +1,20 @@
-import React from 'react';
-import './App.scss';
-
-import AppHeader  from './components/AppHeader'
+import React from "react";
+import "./App.scss";
+import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
+import Users from "./pages/Users";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 function App() {
   return (
-    <div className="App">
-      <AppHeader/>
-    </div>
+    <>
+    <Router>
+      <Routes>
+        <Route path="/" exact element={<Index />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/users" exact element={<Users />} />
+      </Routes>
+    </Router>
+    </>
   );
 }
 
