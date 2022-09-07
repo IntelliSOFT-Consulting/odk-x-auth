@@ -6,7 +6,7 @@ RUN npm install typescript yarn -g --force
 COPY ui ui
 WORKDIR ui
 RUN yarn install
-RUN yarn build:prod
+RUN yarn build
 
 WORKDIR ../
 COPY api api
