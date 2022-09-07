@@ -3,7 +3,7 @@ import { resolve } from 'path';
 
 
 
-let LDAP_HOST = ''
+let LDAP_HOST = process.env['LDAP_HOST'] || 'http://localhost:8080'
 
 let client = ldap.createClient({
     url: [LDAP_HOST]
