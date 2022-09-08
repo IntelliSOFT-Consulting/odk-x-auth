@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 14
-      - name: yarn ci and build
+      - name: test yarn build
         working-directory: ./ui
         run: |
           npm install --global yarn
