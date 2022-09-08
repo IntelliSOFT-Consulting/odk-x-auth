@@ -1,30 +1,28 @@
 name: Docker - Test Production Build
 
-# Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
-  pull_request:
-    branches: [ main ]
+  push:
+    branches:
+      - main
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+  # Run tests for any PRs.
+  pull_request:
+
 jobs:
-  build_test:
-    # The type of runner that the job will run on
+  # Run tests.
+  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
+  test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [14.x] # We will deploy with only one version of node  
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: 14
-      - name: Test Docker Build
+      - uses: actions/checkout@v2
+
+      - name: Run tests
         working-directory: .
         run: |
-          docker build . --file Dockerfile
+          if [ -f docker-compose.test.yml ]; then
+            docker-compose --file docker-compose.test.yml build
+            docker-compose --file docker-compose.test.yml run sut
+          else
+            docker build . --file Dockerfile
+          fi
