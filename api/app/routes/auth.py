@@ -1,4 +1,6 @@
+from http import client
 from flask import Blueprint, request, jsonify
+from app.lib.auth import ldap_client
 
 bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
@@ -6,9 +8,9 @@ bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 @bp.route('/login', methods=['POST'])
 def login():
 
-    email_address = request.form['email_address']
-    password = request.form['password']
-    
+    data = request.get_json()
+    client = ldap_client(user=data['user'], password=data['password'])
+    print(client)
     return jsonify(error="error")
 
 
@@ -24,6 +26,5 @@ def update_password():
     if request.method == 'GET':
         token = request.args.get('token')
         user_id = request.args.get('user_id')
-
 
     return jsonify(error="rror")
