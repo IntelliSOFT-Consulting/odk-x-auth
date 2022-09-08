@@ -1,7 +1,9 @@
 import os
 
-# fauna database configuration
-FAUNA_SECRET = os.environ["FAUNA_SECRET"]
+SECRET_KEY = "someSecret"
+
+LDAP_HOST = "ipa.demo1.freeipa.org"
+# LDAP_HOST = "ldap-service"
 
 
 # email configuration
@@ -13,4 +15,4 @@ SMTP_PASSWORD = "password"
 
 
 # application configuration
-TOKEN_EXPIRY = 60 * 15 #Seconds
+TOKEN_EXPIRY = 60 * 15  # Seconds

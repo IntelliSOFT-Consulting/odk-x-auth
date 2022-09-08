@@ -1,14 +1,20 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, send_from_directory
+import os
+bp = Blueprint('index', __name__, url_prefix='',
+               static_folder=os.path.realpath(os.path.join(os.getcwd(), '../ui/build')), static_url_path='/')
 
-bp = Blueprint('index', __name__, url_prefix='')
+
+# Serve React App
+@bp.route('/', defaults={'path': ''})
+@bp.route('/<path:path>')
+def serve(path):
+    print(path)
+    if path != "" and os.path.exists(bp.static_folder + '/' + path):
+        return send_from_directory(bp.static_folder+"/static/", path)
+    else:
+        return send_from_directory(bp.static_folder, 'index.html')
 
 
-@bp.route('/')
-def index():
-    return render_template("index.html")
-
-# @bp.route('/secured')
-# @login_required
-# def index_unsecured():
-
-#     return render_template("index.html")
+@bp.route('/static/<string:folder>/<string:filename>')
+def serve_static(folder, filename):
+    return send_from_directory(bp.static_folder + "/static/", "{}/{}".format(folder, filename))
