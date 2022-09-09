@@ -17,4 +17,4 @@ def create_app():
     return app
 
 
-app = create_app()
+application = create_app()
