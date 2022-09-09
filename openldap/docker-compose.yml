@@ -30,41 +30,8 @@ networks:
     driver_opts:
       encrypted: ""
     internal: true
-  db-network:
-    driver: overlay
-    driver_opts:
-      encrypted: ""
-    internal: true
-  sync-network:
-    driver: overlay
-    driver_opts:
-      encrypted: ""
-    internal: true
 
 volumes:
-  db-vol: # preserve db
   # these 2 need to be removed together
   ldap-vol: # preserve ldap db
   ldap-slapd.d-vol: # preserve ldap settings
-
-configs:
-  # uncomment this to import a CA certificate into the Sync service
-  # org.opendatakit.sync.ldapcert:
-    # external: true
-  # uncomment this to override logging configuration
-  # org.opendatakit.aggregate.logging.properties:
-    # file: ./logging.properties
-  org.opendatakit.sync-web-ui.application.properties:
-    file: ./config/web-ui/application.properties
-  com.nginx.sync-endpoint.conf:
-    file: ./config/nginx/sync-endpoint-http.conf
-  com.nginx.sync-endpoint-locations.conf:
-    file: ./config/nginx/sync-endpoint-locations.conf
-  com.nginx.proxy_buffer.conf:
-    file: ./config/nginx/proxy_buffer.conf
-
-secrets:
-  org.opendatakit.aggregate.security.properties:
-    file: ./config/sync-endpoint/security.properties
-  org.opendatakit.aggregate.jdbc.properties:
-    file: ./config/sync-endpoint/jdbc.properties
