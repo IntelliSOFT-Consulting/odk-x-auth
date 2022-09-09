@@ -1,4 +1,3 @@
-from http import client
 from flask import Blueprint, request, jsonify
 from app.lib.auth import ldap_client
 
