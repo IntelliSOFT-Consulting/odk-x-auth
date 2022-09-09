@@ -1,11 +1,10 @@
 import React from 'react'
-import DataGrid from "../components/DataGrid"
-import AppHeader from "../components/AppHeader"
-
+import AppHeader from '../components/AppHeader';
+import DataGrid from '../components/DataGrid';
 const headers = [
     {
-      key: 'user_name',
-      header: 'User Name',
+      key: 'group_name',
+      header: 'Group Name',
     },
     {
       key: 'role',
@@ -30,8 +29,8 @@ const headers = [
   ];
   const rows = [
     {
-      id: '9593593',
-      user_name: 'pgreg',
+      id: '9593d593',
+      group_name: 'Administrators',
       role:"Admin",
       created_by: 'Admin 1',
       date_created: '2017-01-01',
@@ -40,13 +39,11 @@ const headers = [
     },
 
   ];
-  const users =<DataGrid headers={headers} rows={rows} title="Users"/> 
-const Users = () => {
-return (
-    
-    <AppHeader children={users} pageHeading="Users"/>
-    
+  const users =<DataGrid headers={headers} rows={rows} title="Groups"/> 
+const Groups = () => {
+  return (
+    <AppHeader children={users} pageHeading="Groups"/>
   )
 }
 
-export default Users
+export default Groups

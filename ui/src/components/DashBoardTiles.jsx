@@ -14,6 +14,7 @@ const DashBoardTiles = () => {
     },
   ];
   return (
+    <>
     <FlexGrid>
       <Row>
         {tileOptions.map((option) => (
@@ -26,6 +27,7 @@ const DashBoardTiles = () => {
         ))}
       </Row>
     </FlexGrid>
+    </>
   );
 };
 
