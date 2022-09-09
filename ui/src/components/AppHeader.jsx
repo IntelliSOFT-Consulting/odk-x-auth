@@ -3,7 +3,6 @@ import {
   Header,
   HeaderContainer,
   HeaderName,
-  HeaderNavigation,
   HeaderMenuButton,
   HeaderMenuItem,
   HeaderGlobalBar,
@@ -19,10 +18,11 @@ import {
   Grid,
   Column,
 } from "carbon-components-react";
-import { Notification, Search, Carbon, Fade } from "@carbon/icons-react";
+import { Notification, Search, Carbon,Power,Copy,Folder } from "@carbon/icons-react";
+import contentStyles from 'carbon-components/scss/components/ui-shell/_content.scss';
 
 const action = (someAction) => {};
-const AppHeader = ({ children }) => (
+const AppHeader = ({ children, pageHeading, customClassName }) => (
   <HeaderContainer
     render={({ isSideNavExpanded, onClickSideNavExpand }) => (
       <>
@@ -33,7 +33,7 @@ const AppHeader = ({ children }) => (
             onClick={onClickSideNavExpand}
             isActive={isSideNavExpanded}
           />
-          <HeaderName href="#" prefix="ODK-X Admin"></HeaderName>
+          <HeaderName href="/" prefix="ODK-X Admin"></HeaderName>
 
           <HeaderGlobalBar>
             <HeaderGlobalAction
@@ -43,27 +43,26 @@ const AppHeader = ({ children }) => (
               <Search size={20} />
             </HeaderGlobalAction>
             <HeaderGlobalAction
-              aria-label="Notifications"
+              aria-label="Copy"
               onClick={action("notification click")}
             >
-              <Notification size={20} />
+              <Folder size={20} />
             </HeaderGlobalAction>
             <HeaderGlobalAction
-              aria-label="App Switcher"
-              onClick={action("app-switcher click")}
+              aria-label="Power"
+              onClick={action("power-off click")}
               tooltipAlignment="end"
             >
-              <Carbon size={20} />
+              <Power size={20} />
             </HeaderGlobalAction>
           </HeaderGlobalBar>
-
           <SideNav aria-label="Side navigation" expanded={isSideNavExpanded}>
-            <SideNavLink href="https://www.carbondesignsystem.com/">
+            <SideNavLink href="/dashboard">
               Dashboard
             </SideNavLink>
             <SideNavItems>
               <HeaderSideNavItems hasDivider={true}>
-                <HeaderMenuItem href="#">Users</HeaderMenuItem>
+                <HeaderMenuItem href="/users">Users</HeaderMenuItem>
                 <HeaderMenuItem href="#">Link 2</HeaderMenuItem>
                 <HeaderMenuItem href="#">Link 3</HeaderMenuItem>
                 <HeaderMenu aria-label="Link 4" menuLinkName="Link 4">
@@ -73,47 +72,82 @@ const AppHeader = ({ children }) => (
                 </HeaderMenu>
               </HeaderSideNavItems>
               <SideNavMenu title="Users">
-                <SideNavMenuItem href="https://www.carbondesignsystem.com/">
-                  Dashboard
+                <SideNavMenuItem href="/users">
+                  Users List
+                </SideNavMenuItem>
+                <SideNavMenuItem href="/new-user">
+                  Create New User
                 </SideNavMenuItem>
               </SideNavMenu>
               <SideNavMenu title="Groups">
-                <SideNavMenuItem href="https://www.carbondesignsystem.com/">
-                  Link
+                <SideNavMenuItem href="/groups">
+                  Groups
                 </SideNavMenuItem>
-                <SideNavMenuItem href="https://www.carbondesignsystem.com/">
-                  Link
+                <SideNavMenuItem href="/new-group">
+                  Create New Group
                 </SideNavMenuItem>
-                <SideNavMenuItem href="https://www.carbondesignsystem.com/">
-                  Link
+                <SideNavMenuItem href="/assign-user-to-group">
+                  Assign User to Group
                 </SideNavMenuItem>
               </SideNavMenu>
               <SideNavMenu
                 title="Account Information"
                 isActive={true}
-              ></SideNavMenu>
+                
+              >
+                <SideNavMenuItem href="/account-information">
+                  My Account
+                </SideNavMenuItem>
+                <SideNavMenuItem href="/reset-password">
+                  Reset Password
+                </SideNavMenuItem>
+              </SideNavMenu>
             </SideNavItems>
           </SideNav>
         </Header>
-        <WebPageContent content={children} />
+
+        <StoryContent content={children} pageHeading={pageHeading} customClassName={customClassName} className={customClassName || "LoggedInContent" }/>
       </>
     )}
   />
 );
-const WebPageContent = ({ content }) => {
+const WebPageContent = ({ content, pageHeading,customClassName }) => {
   // alert(content)
   return (
-    <div className="bx--grid PageContent">
-      <div class="bx--row">
-        <div class="bx--col">
-          <div class="outside bx--aspect-ratio bx--aspect-ratio--1x1">
-            <div class="inside">{content}</div>
+    <>
+      <div className={customClassName || "LoggedInContent"}>
+        <div classname="bx--grid">
+          <div className="bx--row">
+          <div className="cds--col-sm-4 cds--col-md-8 cds--col-lg-16">
+            <h1>
+              {pageHeading || "ODK-X Admin"}
+            </h1>
+            </div>
+       
+              {content}
+            </div>
           </div>
         </div>
-       
-      </div>
-    </div>
+    </>
   );
 };
+const StoryContent = ({ content, pageHeading,customClassName }) =>{
+  return (
+    <>
+    <style type="text/css">{contentStyles.cssText}</style>
+    <main className="bx--content bx-ce-demo-devenv--ui-shell-content">
+      <div className="bx--grid">
+        <div className="bx--row">
+          <div className="bx--offset-lg-3 bx--col-lg-13">
+          <h2>{pageHeading}</h2>
+            {content}
+          </div>
+        </div>
+      </div>
+    </main>
+    </>
+  )
 
+}
 export default AppHeader;
+

@@ -9,23 +9,22 @@ import {
   HeaderGlobalBar,
   HeaderGlobalAction,
   SkipToContent,
-  
 } from "carbon-components-react";
-import { Notification, Search, Carbon, Fade } from "@carbon/icons-react";
+import { Notification, Search, Carbon } from "@carbon/icons-react";
 
 const action = (someAction) => {};
-const LoginHeader = ({ children }) => (
+const LoginHeader = ({ children, pageHeading }) => (
   <HeaderContainer
     render={({ isSideNavExpanded, onClickSideNavExpand }) => (
       <>
-        <Header aria-label="Carbon">
+        <Header  aria-label="Carbon">
           <SkipToContent />
           <HeaderMenuButton
             aria-label="Open menu"
             onClick={onClickSideNavExpand}
             isActive={isSideNavExpanded}
           />
-          <HeaderName href="#" prefix="ODK-X Admin"></HeaderName>
+          <HeaderName href="/" prefix="ODK-X Admin"></HeaderName>
 
           <HeaderGlobalBar>
             <HeaderGlobalAction
@@ -49,24 +48,23 @@ const LoginHeader = ({ children }) => (
             </HeaderGlobalAction>
           </HeaderGlobalBar>
         </Header>
-        <WebPageContent content={children} />
+        <WebPageContent content={children} pageHeading={pageHeading} />
       </>
     )}
   />
 );
-const WebPageContent = ({ content }) => {
+const WebPageContent = ({ content, pageHeading }) => {
   // alert(content)
   return (
-    <div className="bx--grid PageContent">
-      <div className="bx--row">
-        <div className="bx--col">
-          <div className="outside bx--aspect-ratio bx--aspect-ratio--1x1">
-            <div className="inside">{content}</div>
+    <>
+      <div className="bx--grid login-centered LoginFormComponent ">
+        <div className="bx--row">
+          <div className="cds--col-sm-4 cds--col-md-8 cds--col-lg-16">
+            {content}
           </div>
         </div>
-       
       </div>
-    </div>
+    </>
   );
 };
 
