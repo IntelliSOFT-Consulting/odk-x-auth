@@ -5,9 +5,16 @@ bp = Blueprint('index', __name__, url_prefix='',
 
 
 # Serve React App
-@bp.route('/', defaults={'path': ''})
-@bp.route('/<path:path>')
+@bp.route('/<string:path>')
 def serve(path):
+    print(path)
+    if path != "" and os.path.exists(bp.static_folder + '/' + path):
+        return send_from_directory(bp.static_folder+"/static/", path)
+    else:
+        return send_from_directory(bp.static_folder, 'index.html')
+
+@bp.route('/', defaults={'path': ''})
+def serve_(path):
     print(path)
     if path != "" and os.path.exists(bp.static_folder + '/' + path):
         return send_from_directory(bp.static_folder+"/static/", path)

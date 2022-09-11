@@ -2,8 +2,8 @@ import os
 
 SECRET_KEY = "someSecret"
 
-LDAP_HOST = "ipa.demo1.freeipa.org"
-# LDAP_HOST = "ldap-service"
+# LDAP_HOST = "ipa.demo1.freeipa.org"
+LDAP_HOST = "ldap-service"
 
 
 # email configuration
