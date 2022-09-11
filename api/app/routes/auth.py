@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.lib.auth import ldap_client
+from app.lib.auth import generate_token, ldap_client
 
 bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
@@ -10,7 +10,7 @@ def login():
         data = request.get_json()
         client = ldap_client(user=data['user'], password=data['password'])
         print(client)
-        return jsonify(status="success")
+        return jsonify(status="success", token=generate_token(data['user']))
     except Exception as e:
         return jsonify(error=str(e), status="error")
 
