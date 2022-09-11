@@ -6,11 +6,13 @@ bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
 @bp.route('/login', methods=['POST'])
 def login():
-
-    data = request.get_json()
-    client = ldap_client(user=data['user'], password=data['password'])
-    print(client)
-    return jsonify(error="error")
+    try:
+        data = request.get_json()
+        client = ldap_client(user=data['user'], password=data['password'])
+        print(client)
+        return jsonify(status="success")
+    except Exception as e:
+        return jsonify(error=str(e), status="error")
 
 
 @bp.route('/register', methods=['POST'])
