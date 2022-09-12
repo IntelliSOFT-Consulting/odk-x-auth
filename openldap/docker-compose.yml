@@ -1,0 +1,29 @@
+version: "3.3"
+
+services:
+  ldap-service:
+    image: odk/openldap
+    restart: always
+    volumes:
+      - ldap-vol:/var/lib/ldap
+      - ldap-slapd.d-vol:/etc/ldap/slapd.d
+    env_file:
+      - ldap.env
+    ports:
+      - "389:389"
+
+  # phpldapadmin:
+  #   image: odk/phpldapadmin
+  #   deploy:
+  #     replicas: 1
+  #   ports:
+  #     - "${PHP_LDAPADMIN_PORT:-40000}:443"
+  #   networks:
+  #     - ldap-network
+  #   env_file:
+  #     - ldap.env
+
+volumes:
+  # these 2 need to be removed together
+  ldap-vol: # preserve ldap db
+  ldap-slapd.d-vol: # preserve ldap settings
