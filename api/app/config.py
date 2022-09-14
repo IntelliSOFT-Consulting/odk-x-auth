@@ -4,8 +4,14 @@ SECRET_KEY = "someSecret"
 
 # LDAP_HOST = "ipa.demo1.freeipa.org"
 # LDAP_HOST = "ldap-service"
-LDAP_HOST = "127.0.0.1"
+LDAP_HOST = os.environ.get("LDAP_HOST") or "localhost"
 
+# openldap
+# LDAP_ORGANISATION=Open Data Kit
+LDAP_DOMAIN = "example.org"
+# LDAP_READONLY_USER=true
+# LDAP_READONLY_USER_PASSWORD=readonly
+# LDAP_ADMIN_PASSWORD=admin
 
 
 # email configuration

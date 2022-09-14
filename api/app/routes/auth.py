@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from ldap3 import generate_token, ldap_client
+
+from app.lib.auth import add_new_user_to_group, generate_token, ldap_client
 
 bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
@@ -10,22 +11,31 @@ def login():
         data = request.get_json()
         client = ldap_client(user=data['user'], password=data['password'])
         print(client)
-        return jsonify(status="success", token=generate_token(data['user']))
+        return jsonify(status="success", token=generate_token(data['user'])), 200
     except Exception as e:
-        return jsonify(error=str(e), status="error")
+        return jsonify(error=str(e), status="error"), 200
 
 
 @bp.route('/register', methods=['POST'])
 def register():
-    data = request.get_json()
-
-    return jsonify(data)
+    try:
+        data = request.get_json()
+        return jsonify(add_new_user_to_group(data['first_name'],data['last_name'] ,data['email'], data['group'])), 200
+    except Exception as e:
+        return jsonify(error=str(e), status="error"), 400
 
 
 @bp.route('/reset-password', methods=['GET', 'POST'])
 def update_password():
     if request.method == 'GET':
         token = request.args.get('token')
-        user_id = request.args.get('user_id')
+        user = request.args.get('user')
+        return jsonify(status="success")
+    if request.method == 'POST':
+        data = request.get_json()
+        password = data['password']
+        ## find user.
 
-    return jsonify(error="rror")
+        ## alter user attributes.
+
+        return jsonify(status="success")
