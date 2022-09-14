@@ -3,8 +3,8 @@ import os
 SECRET_KEY = "someSecret"
 
 # LDAP_HOST = "ipa.demo1.freeipa.org"
-# LDAP_HOST = "ldap-service"
-LDAP_HOST = "127.0.0.1"
+LDAP_HOST = "ldap-service"
+# LDAP_HOST = "127.0.0.1"
 
 
 
