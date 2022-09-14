@@ -10,22 +10,32 @@ def login():
         data = request.get_json()
         client = ldap_client(user=data['user'], password=data['password'])
         print(client)
-        return jsonify(status="success", token=generate_token(data['user']))
+        return jsonify(status="success", token=generate_token(data['user'])), 200
     except Exception as e:
-        return jsonify(error=str(e), status="error")
+        return jsonify(error=str(e), status="error"), 200
 
 
 @bp.route('/register', methods=['POST'])
 def register():
-    data = request.get_json()
+    try:
+        data = request.get_json()
+        return jsonify(status="success", data=data), 200
 
-    return jsonify(data)
+    except Exception as e:
+        return jsonify(error=str(e), status="error"), 400
 
 
 @bp.route('/reset-password', methods=['GET', 'POST'])
 def update_password():
     if request.method == 'GET':
         token = request.args.get('token')
-        user_id = request.args.get('user_id')
+        user = request.args.get('user')
+        return jsonify(status="success")
+    if request.method == 'POST':
+        data = request.get_json()
+        password = data['password']
+        ## find user.
 
-    return jsonify(error="rror")
+        ## alter user attributes.
+
+        return jsonify(status="success")
