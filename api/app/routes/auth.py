@@ -19,7 +19,7 @@ def login():
 def register():
     try:
         data = request.get_json()
-        return jsonify(add_new_user_to_group(data['name'],data['email'], data['group'])), 200
+        return jsonify(add_new_user_to_group(data['first_name'],data['last_name'] ,data['email'], data['group'])), 200
     except Exception as e:
         return jsonify(error=str(e), status="error"), 400
 

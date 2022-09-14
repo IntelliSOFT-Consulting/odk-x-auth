@@ -47,22 +47,21 @@ def access_token_required(f):
 """ add method takes a user_dn, objectclass and attributes as    dictionary  """
 
 
-def add_new_user_to_group(name, email, group="people"):
+def add_new_user_to_group(first_name,last_name, email, group="people"):
+    full_names = first_name + " " + last_name
 
-    # sample attributes
-    ldap_attr = {"name": name, "cn": name, "mail": email}
 
     # Bind connection to LDAP server
     ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
 
     # this will create testuser inside group1
-    user_dn = "cn={},ou={},dc=example,dc=org".format(name, group)
+    user_dn = "cn={},ou={},dc=example,dc=org".format((last_name + "_" + first_name).lower(), group)
 
     try:
         # object class for a user is inetOrgPerson
         response = ldap_conn.add(user_dn, 
             attributes={'objectClass':  ['inetOrgPerson', 'top', ], 
-            'commonname': name, "mail":email, 'sn': name})
+            'commonname': full_names, "mail":email, 'sn': last_name})
         print(response[1])
         print(response[3])
         if response[0] == True:
