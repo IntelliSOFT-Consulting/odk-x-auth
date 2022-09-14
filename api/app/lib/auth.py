@@ -47,23 +47,28 @@ def access_token_required(f):
 """ add method takes a user_dn, objectclass and attributes as    dictionary  """
 
 
-def add_new_user_to_group(name, email, group):
+def add_new_user_to_group(name, email, group="people"):
 
     # sample attributes
     ldap_attr = {"name": name, "cn": name, "mail": email}
 
     # Bind connection to LDAP server
-    ldap_conn = ldap_client("cn=admin,dc={},dc=org".format(LDAP_DOMAIN), "admin")
+    ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
 
     # this will create testuser inside group1
-    user_dn = "cn={},cn={},dc=example,dc=com".format(name, group)
+    user_dn = "cn={},ou={},dc=example,dc=org".format(name, group)
 
     try:
         # object class for a user is inetOrgPerson
-        response = ldap_conn.add(dn=user_dn,
-                                 object_class='inetOrgPerson',
-                                 attributes=ldap_attr)
-        return {"response": response, "status": "success"}
+        response = ldap_conn.add(user_dn, 
+            attributes={'objectClass':  ['inetOrgPerson', 'top'], 
+            'sn': 'user_sn',})
+        print(response[0])
+        if response[0] == True:
+            print(response[0])
+            return {"response": response[1], "data":response[3] ,"status": "success"}
+        elif response[0] == False:
+            return {"error": response[1]['description'], "status": "error"}
     except LDAPException as e:
         response = e
         return {"error": response, "status": "error"}
