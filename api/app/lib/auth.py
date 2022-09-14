@@ -61,9 +61,10 @@ def add_new_user_to_group(name, email, group="people"):
     try:
         # object class for a user is inetOrgPerson
         response = ldap_conn.add(user_dn, 
-            attributes={'objectClass':  ['inetOrgPerson', 'top'], 
-            'sn': 'user_sn',})
-        print(response[0])
+            attributes={'objectClass':  ['inetOrgPerson', 'top', ], 
+            'commonname': name, "mail":email, 'sn': name})
+        print(response[1])
+        print(response[3])
         if response[0] == True:
             print(response[0])
             return {"response": response[1], "data":response[3] ,"status": "success"}
