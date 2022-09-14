@@ -1,6 +1,12 @@
 import React from 'react'
+import { LDAPApi } from '../api/auth';
 import AppHeader from '../components/AppHeader';
 import DataGrid from '../components/DataGrid';
+import DynamicDataGrid from '../components/DynamicDataGrid';
+
+
+// let allGroups = await LDAPApi({ url: `/api/groups`, method: 'GET' })
+
 const headers = [
     {
       key: 'group_name',
@@ -39,7 +45,7 @@ const headers = [
     },
 
   ];
-  const users =<DataGrid headers={headers} rows={rows} title="Groups"/> 
+  const users =<DynamicDataGrid headers={headers} rows={rows} title="Groups" description="This table contains a list of created Groups"/> 
 const Groups = () => {
   return (
     <AppHeader children={users} pageHeading="Groups"/>

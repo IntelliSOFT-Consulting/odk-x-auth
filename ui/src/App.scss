@@ -2,6 +2,32 @@
 @use './components/app-header';
 @use '@carbon/grid';
 @include grid.flex-grid();
+@media screen and (min-width: 600px) {
+    .loginForm {
+        min-width: 500px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .site-footer {
+        img {
+            height: 60%;
+            width: 60%;
+        }
+    }
+    Form {
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: 1%;
+        margin-right: 1%;
+        Button {
+            margin: 0px;
+            padding: 0px;
+            display: inline-block;
+        }
+    }
+}
+
 .login-centered {
     display: flex;
     align-content: center;
@@ -30,9 +56,14 @@
     flex-wrap: wrap;
     width: 100%;
     margin-left: 2%;
+    margin-right: 2%;
+    box-sizing: border-box;
     * {
         margin: 2%;
         padding-bottom: 3px;
+    }
+    DataTable {
+        width: 100%;
     }
 }
 
@@ -50,43 +81,43 @@
     display: grid;
     align-content: center;
     justify-content: center;
+    box-sizing: border-box;
     padding-bottom: 15px;
     font-weight: bold;
-}
-
-.LoginFooter {
-    max-height: 150px;
-    bottom: 0;
-    left: 0;
-    /* Re-designed by IntelliSOFT Consulting Ltd via Digital Square Funding */
-    .FooterText {
-        position: absolute;
-        width: 652px;
-        height: 24px;
-        left: 1253px;
-        top: 981px;
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 20px;
-        line-height: 24px;
-        color: #000000;
-    }
-    /* image 1 */
-    .Logo1 {
-        position: absolute;
-        width: 109px;
-        height: 103px;
-    }
-    /* image 2 */
-    .Logo2 {
-        position: absolute;
-        width: 161px;
-        height: 105px;
-    }
 }
 
 .inline_component {
     display: inline-block;
     width: 50%;
+}
+
+.site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin: 2%;
+    position: absolute;
+    bottom: 0;
+    align-content: right;
+    justify-content: right;
+    * {
+        margin-right: 1%;
+        align-content: right;
+        justify-content: right;
+        text-align: right;
+    }
+}
+
+.clickable-tile {
+    width: 250px;
+    height: 200px;
+    padding-bottom: 10px;
+    border: 1px solid black outset;
+    border-style: outset;
+}
+
+Form {
+    Button {
+        width: 100%;
+    }
 }

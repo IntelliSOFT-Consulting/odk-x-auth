@@ -4,106 +4,100 @@ import React from "react";
 
 const NewUserForm = () => {
   return (
-    <div className="LoginFormComponent">
-      <div className="cds--grid">
-        <div className="cds--row">
-          <div className="cds--col-sm-4 cds--col-md-8 cds--col-lg-16">
-            <p>Group Name</p>
-            <Form style={{ minWidth: "500px" }}>
+    <div>
+      <Form>
+        <div className="cds--grid">
+          <div className="cds--row">
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <p>First Name</p>
               <TextInput
                 className="spacing-05"
-                id="group_name"
-                placeholder="Input Group Name"
+                id="first_name"
+                placeholder="Input First Name"
+                required
               />
-              <div className="inline-component">
-                <p>First Name</p>
-                <TextInput
-                  className="spacing-05"
-                  id="first_name"
-                  placeholder="Input First Name"
-                  required
+            </div>
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <p>Last Name</p>
+              <TextInput
+                className="spacing-05"
+                id="last_name"
+                placeholder="Input Last Name"
+              />
+            </div>
+          </div>
+          <div className="cds--row">
+            <div className="cds--col-lg-16">
+              <p>Email</p>
+              <TextInput
+                className="spacing-05"
+                type="email"
+                id="email"
+                placeholder="Input Email Address"
+              />
+            </div>
+          </div>
+          <div className="cds--row">
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <p>Password</p>
+              <TextInput
+                className="spacing-05"
+                type="password"
+                id="password"
+                placeholder="Input Password"
+                required
+              />
+            </div>
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <p>Confirm Password</p>
+              <TextInput
+                className="spacing-05"
+                type="password"
+                id="confirm_password"
+                placeholder="Confirm Password"
+                required
+              />
+            </div>
+          </div>
+          <div className="cds--row">
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2"></div>
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <Select
+                id="gid_number"
+                defaultValue="placeholder-item"
+                labelText=""
+              >
+                <SelectItem
+                  disabled
+                  hidden
+                  value="placeholder-item"
+                  text="Choose Group"
                 />
-                <p>Last Name</p>
-                <TextInput
-                  className="spacing-05"
-                  id="last_name"
-                  placeholder="Input Last Name"
-                />
-                <p>Email</p>
-                <TextInput
-                  className="spacing-05"
-                  type="email"
-                  id="email"
-                  placeholder="Input Email Address"
-                />
-                <p>Common Name</p>
-                <TextInput
-                  className="spacing-05"
-                  id="common_name"
-                  placeholder="Input common Name"
-                />
-                <p>User ID</p>
-                <TextInput
-                  className="spacing-05"
-                  id="user_id"
-                  placeholder="Input User ID"
-                />
-                <hr />
-                <p>Password</p>
-                <TextInput
-                  className="spacing-05"
-                  type="password"
-                  id="password"
-                  placeholder="Input Password"
-                  required
-                />
-
-                <p>Confirm Password</p>
-                <TextInput
-                  className="spacing-05"
-                  type="password"
-                  id="confirm_password"
-                  placeholder="Confirm Password"
-                  required
-                />
-                <hr />
-                <p>UID Number</p>
-                <TextInput
-                  className="spacing-05"
-                  id="uid_number"
-                  placeholder="Input UID Number"
-                />
-                <p>GID Number</p>
-                <Select
-                  id="gid_number"
-                  defaultValue="placeholder-item"
-                  labelText=""
-                >
-                  <SelectItem
-                    disabled
-                    hidden
-                    value="placeholder-item"
-                    text="Choose Group"
-                  />
-                  <SelectItem value="Group 1" text="Group 1" />
-                  <SelectItem value="Group 2" text="Group 2" />
-                </Select>
-              </div>
-
-              <div className="inline_component">
-                <Button kind="secondary">Cancel</Button>
-                <Button
-                  onClick={() => {
-                    window.location.href = "#";
-                  }}
-                >
-                  Save
-                </Button>
-              </div>
-            </Form>
+                <SelectItem value="Group 1" text="Group 1" />
+                <SelectItem value="Group 2" text="Group 2" />
+              </Select>
+            </div>
+          </div>
+          <br/>
+          <div className="cds--row">
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <Button style={{ width: "100%" }} kind="secondary">
+                Cancel
+              </Button>
+            </div>
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <Button
+                style={{ width: "100%" }}
+                onClick={() => {
+                  window.location.href = "#";
+                }}
+              >
+                Save
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      </Form>
     </div>
   );
 };

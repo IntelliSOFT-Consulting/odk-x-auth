@@ -2,7 +2,7 @@ import { getCookie } from './cookie';
 //0735 096 284
 export let apiHost = (process.env['REACT_APP_NODE_ENV'] === "dev") ? 'http://localhost:8080' : '/api';
 
-export let FhirApi = async(params) => {
+export let LDAPApi = async(params) => {
     let _defaultHeaders = {
         "Content-Type": 'application/json',
         "Authorization": `Bearer ${getCookie("token")}`,
@@ -23,7 +23,7 @@ export let FhirApi = async(params) => {
     } catch (error) {
         console.error(error)
         let res = {
-            statusText: "FHIRFetch: server error",
+            statusText: "LDAPFetch: server error",
             status: "error",
             error: error
         }

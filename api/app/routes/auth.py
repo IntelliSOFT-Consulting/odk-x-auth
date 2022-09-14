@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.lib.auth import generate_token, ldap_client
+from ldap3 import generate_token, ldap_client
 
 bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 

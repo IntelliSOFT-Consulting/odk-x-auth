@@ -38,5 +38,8 @@ const DataGrid = ({ headers, rows, title }) => {
     </div>
   );
 };
-
+const routeMappings = {
+  "groups": "/new-group",
+  "users": "/new-user",
+};
 export default DataGrid;
