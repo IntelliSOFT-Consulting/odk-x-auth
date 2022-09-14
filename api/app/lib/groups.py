@@ -1,4 +1,4 @@
-from api.app.lib.auth import ldap_client
+from app.lib.auth import ldap_client
 from ldap3.core.exceptions import LDAPException, LDAPBindError
 
 
