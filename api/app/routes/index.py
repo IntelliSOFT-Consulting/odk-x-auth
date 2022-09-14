@@ -16,9 +16,9 @@ def serve_(path):
         return send_from_directory(bp.static_folder, 'index.html')
 
 
-@bp.errorhandler(404)
-def not_found(e):
-    return send_from_directory(bp.static_folder, 'index.html')
+# @bp.errorhandler(404)
+# def not_found(e):
+#     return send_from_directory(bp.static_folder, 'index.html')
 
 
 @bp.route('/static/<string:folder>/<string:filename>')
