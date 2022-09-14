@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from app.lib.auth import generate_token, ldap_client
 from app.lib.groups import add_ldap_group
 
-bp = Blueprint('auth', __name__, url_prefix='/api/groups')
+bp = Blueprint('groups', __name__, url_prefix='/api/groups')
 
 
 @bp.route('/', methods=['POST'])

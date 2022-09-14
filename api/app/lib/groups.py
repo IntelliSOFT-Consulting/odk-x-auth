@@ -1,3 +1,4 @@
+from app.config import LDAP_DOMAIN
 from app.lib.auth import ldap_client
 from ldap3.core.exceptions import LDAPException, LDAPBindError
 
@@ -16,7 +17,7 @@ def add_ldap_group(group, gid):
 
     try:
         # this will add group1 to the base directory tree
-        response = ldap_conn.add('cn={},dc=example,dc=com'.format(group), 
+        response = ldap_conn.add('cn={},dc={},dc=com'.format(group, LDAP_DOMAIN), 
                                   attributes=ldap_attr)
     except LDAPException as e:
         response = (" The error is ", e)

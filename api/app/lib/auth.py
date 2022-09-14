@@ -3,7 +3,7 @@ import uuid
 import datetime
 from functools import wraps
 from flask import request, jsonify
-from app.config import SECRET_KEY, LDAP_HOST
+from app.config import LDAP_DOMAIN, SECRET_KEY, LDAP_HOST
 import jwt
 from ldap3 import Connection, SAFE_SYNC
 from ldap3.core.exceptions import LDAPException, LDAPBindError
@@ -53,7 +53,7 @@ def add_new_user_to_group(name, email, group):
     ldap_attr = {"name": name, "cn": name, "mail": email}
 
     # Bind connection to LDAP server
-    ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+    ldap_conn = ldap_client("cn=admin,dc={},dc=org".format(LDAP_DOMAIN), "admin")
 
     # this will create testuser inside group1
     user_dn = "cn={},cn={},dc=example,dc=com".format(name, group)
