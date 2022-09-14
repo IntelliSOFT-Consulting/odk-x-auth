@@ -11,10 +11,11 @@ def create_app():
     app.config.from_mapping(SECRET_KEY=os.environ.get(
         'SECRET_KEY') or 'you-will-never-guess',)
 
-    from app.routes import index, auth
+    from app.routes import index, auth, users
 
     app.register_blueprint(index.bp)
     app.register_blueprint(auth.bp)
+    app.register_blueprint(users.bp)
 
     return app
 

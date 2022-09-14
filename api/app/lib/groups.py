@@ -16,7 +16,7 @@ def add_ldap_group(group, gid):
 
     try:
         # this will add group1 to the base directory tree
-        response = ldap_conn.add('cn={},dc=testldap,dc=com'.format(group), 
+        response = ldap_conn.add('cn={},dc=example,dc=com'.format(group), 
                                   attributes=ldap_attr)
     except LDAPException as e:
         response = (" The error is ", e)
