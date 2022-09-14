@@ -21,7 +21,7 @@ RUN apt-get install -y python-pip python-dev build-essential
 RUN mkdir -p /ui/build
 COPY --from=builder /usr/odk-x-auth/ui/build /ui/build
 
-COPY ./api /app
+COPY api app
 WORKDIR /app
 RUN pip install -r requirements.txt
 
@@ -29,4 +29,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 8080
 
-CMD ["gunicorn", "-b", "0.0.0.0:8080", "app"]
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "app:app"]
