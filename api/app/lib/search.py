@@ -9,10 +9,10 @@ from ldap3.core.exceptions import LDAPException, LDAPBindError, LDAPInvalidFilte
 def get_ldap_users():
 
     # Provide a search base to search for.
-    search_base = 'dc=example,dc=org'
+    search_base = 'ou=people,dc=example,dc=org'
     # provide a uidNumber to search for. '*" to fetch all users/groups
     # search_filter = '(*)'
-    search_filter = '(cn=admin)'
+    search_filter = '(cn=*)'
 
 
     # Establish connection to the server
