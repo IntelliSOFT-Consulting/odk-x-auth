@@ -11,6 +11,7 @@ import {
   SkipToContent,
 } from "carbon-components-react";
 import { Notification, Search, Carbon } from "@carbon/icons-react";
+import Footer from "../pages/Footer";
 
 const action = (someAction) => {};
 const LoginHeader = ({ children, pageHeading }) => (
@@ -49,6 +50,7 @@ const LoginHeader = ({ children, pageHeading }) => (
           </HeaderGlobalBar>
         </Header>
         <WebPageContent content={children} pageHeading={pageHeading} />
+        <Footer className="site-footer" />
       </>
     )}
   />
