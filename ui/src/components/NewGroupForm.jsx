@@ -29,7 +29,7 @@ const NewGroupForm = () => {
 
       if (missingFields.length > 0) {
         Swal.fire({
-          title: "Error!",
+          title: "Error. Missing data!",
           html: `Missing MANDATORY fields:[ <b style="color:blue">${missingFields.join(
             ", "
           )}</b>] .`,
