@@ -34,6 +34,7 @@ const NewUserForm = () => {
         icon: "error",
         confirmButtonText: "Okay, let me check",
       });
+      return
     }
     if (missingFields.length > 0) {
       Swal.fire({

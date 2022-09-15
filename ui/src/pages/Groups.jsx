@@ -53,7 +53,7 @@ const Groups = () => {
   })
   console.log(groupList)
 
-  let groupComponent = <DynamicDataGrid headers={headers} rows={groupList} title="Users"  description="This table contains a list of created Groups"/>;
+  let groupComponent = <DynamicDataGrid headers={headers} rows={groupList} title="Groups"  description="This table contains a list of created Groups"/>;
   return <AppHeader children={groupComponent} pageHeading="Groups" />;
   
 }
