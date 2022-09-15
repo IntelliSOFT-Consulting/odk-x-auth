@@ -11,6 +11,7 @@
         "@testing-library/jest-dom": "^5.14.1",
         "@testing-library/react": "^13.0.0",
         "@testing-library/user-event": "^13.2.1",
+        "airtable": "^0.11.4",
         "carbon-components": "10.41.0",
         "carbon-components-react": "7.41.0",
         "carbon-icons": "7.0.7",
@@ -20,6 +21,7 @@
         "react-router-dom": "^6.3.0",
         "react-scripts": "5.0.1",
         "sass": "1.51.0",
+        "sweetalert2": "^11.4.33",
         "web-vitals": "^2.1.0"
     },
     "scripts": {
