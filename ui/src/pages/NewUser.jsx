@@ -58,17 +58,5 @@ const NewUser = () => {
     <AppHeader children={<NewUserForm />} pageHeading="New User Account" />
   );
 };
-const CenteredForm = (FormComponent) => {
-  return (
-    <div class="cds--grid">
-      <div class="cds--row">
-        <div class="cds--col-lg-4"></div>
-        <div class="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
-          <FormComponent/>
-        </div>
-        <div class="cds--col-lg-4"></div>
-      </div>
-    </div>
-  );
-};
+
 export default NewUser;

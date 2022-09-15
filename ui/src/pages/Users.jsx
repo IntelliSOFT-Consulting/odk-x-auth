@@ -3,6 +3,7 @@ import DataGrid from "../components/DataGrid";
 import AppHeader from "../components/AppHeader";
 import { LDAPApi } from "../api/auth";
 import DynamicDataGrid from "../components/DynamicDataGrid";
+import { getCookie } from "../api/cookie";
 
 // let allUsers = await LDAPApi({ url: `/api/users`, method: 'GET' })
 
@@ -43,9 +44,27 @@ const rows = [
     header: "Content",
   },
 ];
-const users = <DynamicDataGrid headers={headers} rows={rows} title="Users"  description="This table contains a list of created Users"/>;
+
 const Users = () => {
-  return <AppHeader children={users} pageHeading="Users" />;
+ const cookieUsers = JSON.parse(getCookie("odk-users")) 
+ console.log("The Cookie Users: ",cookieUsers)  
+  const userList =[];
+  cookieUsers.forEach(user =>{
+    let row =  {
+      id: user.id || user.user_name,
+      user_name: user.user_name,
+      role: user.role,
+      created_by: user.created_by.name,
+      date_created: user.created_time,
+      number_of_groups: !user.group_name ? 0: user.group_name.length,
+      header: "Content",
+    }
+    userList.push(row)
+  })
+  console.log(userList)
+  
+  let userComponent = <DynamicDataGrid headers={headers} rows={userList} title="Users"  description="This table contains a list of created Users"/>;
+  return <AppHeader children={userComponent} pageHeading="Users" />;
 };
 
 export default Users;

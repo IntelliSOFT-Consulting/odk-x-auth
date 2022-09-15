@@ -27,6 +27,7 @@ import SystemAlert from "./SystemAlert";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../pages/Footer";
+import { eraseCookie, setCookie } from "../api/cookie";
 
 const action = (someAction) => {
   switch (someAction) {
@@ -84,6 +85,7 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
   };
   const onRequestSubmit = () => {
     setIsOpen(false);
+    eraseCookie("token")
     navigate("/");
   };
 

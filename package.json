@@ -5,5 +5,8 @@
   "main": "index.js",
   "repository": "https://github.com/IntelliSOFT-Consulting/odk-x-auth",
   "author": "Amolo <dev@intellisoftkenya.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "airtable": "^0.11.4"
+  }
 }
