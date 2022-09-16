@@ -26,13 +26,9 @@ const headers = [
         header: 'Date Created',
       },
       {
-        key: 'number_of_groups',
-        header: 'Number of Groups',
+        key: 'number_of_users',
+        header: 'Number of Users',
       },
-      {
-        key: 'header',
-        header: 'Header',
-      }
   ];
   
 const Groups = () => {
@@ -43,11 +39,10 @@ const Groups = () => {
     let row =  {
       id: group.id || group.group_name,
       group_name: group.group_name,
-      role:group.role,
+      role:group.roles ? group.roles.join(", ") : "-" ,
       created_by: group.created_by.name,
       date_created: group.created_time,
-      number_of_groups: 3,
-      header: 'Content'
+      number_of_users: group.Users ? group.Users.length : 0
     }
     groupList.push(row)
   })
