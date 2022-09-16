@@ -56,8 +56,7 @@ def add_new_user_to_group(first_name, last_name, email, group="people"):
     ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
 
     # this will create testuser inside group1
-    user_dn = "cn={},ou={},dc=example,dc=org".format(
-        (last_name + "_" + first_name).lower(), group)
+    user_dn = "cn={},ou={},dc=example,dc=org".format((last_name + "_" + first_name).lower(), group)
 
     try:
         # object class for a user is inetOrgPerson
@@ -68,7 +67,7 @@ def add_new_user_to_group(first_name, last_name, email, group="people"):
         print(response[3])
         if response[0] == True:
             print(response[0])
-            return {"response": response[1], "data": response[3], "status": "success"}
+            return {"data": response[3], "status": "success"}
         elif response[0] == False:
             return {"error": response[1]['description'], "status": "error"}
     except LDAPException as e:
