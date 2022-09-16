@@ -29,12 +29,8 @@ def add_ldap_group(group, gid):
 
 
 def delete_ldap_group(group):
-
-    # object class for group should be mentioned.
-    # set all the group attributes
     ldap_attr = {
-        'gidNumber': group
-    }
+        'gidNumber': group}
     # object class for group should be mentioned.
     ldap_attr['objectClass'] = 'posixGroup'
     # ldap_attr['gidNumber'] = '500'

@@ -11,7 +11,6 @@ def get_users():
         users = get_ldap_users()
         if users["status"] == "error":
             return jsonify(error=str(users["error"]), status="error"), 400
-
         return jsonify(status="success", data=users['data'])
             
     except Exception as e:

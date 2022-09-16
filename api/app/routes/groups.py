@@ -9,7 +9,7 @@ bp = Blueprint('groups', __name__, url_prefix='/api/groups')
 def create_group():
     try:
         data = request.get_json()
-        response = add_ldap_group(data['name'], data['gid'])
+        response = add_ldap_group(data['name'], data['gidNumber'])
         return jsonify(response), 200 if response['status'] == "success" else 400
     except Exception as e:
         # raise e
@@ -20,7 +20,7 @@ def list_groups():
     try:
         data = request.get_json()
         response = add_ldap_group(data['name'], data['gid'])
-        print(client)
+        print(response)
         return jsonify(response), 200
     except Exception as e:
         return jsonify(error=str(e), status="error"), 200
