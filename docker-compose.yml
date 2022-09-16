@@ -20,6 +20,17 @@ services:
       - "8080:8080"
     env_file:
       - ldap.env
+  
+  phpldapadmin:
+    image: osixia/phpldapadmin
+    deploy:
+      replicas: 1
+    ports:
+      - "6443:443"
+    env_file:
+      - ldap.env
+
+  
 
 volumes:
   # these 2 need to be removed together

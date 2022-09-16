@@ -13,14 +13,15 @@ def login():
         print(client)
         return jsonify(status="success", token=generate_token(data['user'])), 200
     except Exception as e:
-        return jsonify(error=str(e), status="error"), 200
+        return jsonify(error=str(e), status="error"), 401
 
 
 @bp.route('/register', methods=['POST'])
 def register():
     try:
         data = request.get_json()
-        return jsonify(add_new_user_to_group(data['first_name'],data['last_name'] ,data['email'], data['group'])), 200
+        response = add_new_user_to_group(data['first_name'],data['last_name'] ,data['email'], data['group'])
+        return jsonify(response), 200 if response['status'] == "success" else 400
     except Exception as e:
         return jsonify(error=str(e), status="error"), 400
 
