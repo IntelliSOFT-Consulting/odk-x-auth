@@ -8,6 +8,7 @@ import {
   TableCell,
   DataTable,
 } from "carbon-components-react";
+import { Pagination } from "@carbon/react";
 const DataGrid = ({ headers, rows, title }) => {
   return (
     <div class="cds--grid">
