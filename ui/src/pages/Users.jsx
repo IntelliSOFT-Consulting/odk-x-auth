@@ -27,23 +27,9 @@ const headers = [
   {
     key: "number_of_groups",
     header: "Number of Groups",
-  },
-  {
-    key: "header",
-    header: "Header",
-  },
+  }
 ];
-const rows = [
-  {
-    id: "9593593",
-    user_name: "pgreg",
-    role: "Admin",
-    created_by: "Admin 1",
-    date_created: "2017-01-01",
-    number_of_groups: 3,
-    header: "Content",
-  },
-];
+
 
 const Users = () => {
  const cookieUsers = JSON.parse(getCookie("odk-users")) 
@@ -56,8 +42,8 @@ const Users = () => {
       role: user.role,
       created_by: user.created_by.name,
       date_created: user.created_time,
-      number_of_groups: !user.group_name ? 0: user.group_name.length,
-      header: "Content",
+      number_of_groups: !user.group_name ? 0: user.group_name.length
+     
     }
     userList.push(row)
   })

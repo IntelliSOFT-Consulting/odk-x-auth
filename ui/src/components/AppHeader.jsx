@@ -148,28 +148,52 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
               </HeaderGlobalAction>
             </HeaderGlobalBar>
             <SideNav aria-label="Side navigation" expanded={isSideNavExpanded}>
-              <SideNavLink href="/dashboard" isActive={pageHeading.includes("Dashboard")}>Dashboard</SideNavLink>
+              <SideNavLink
+                href="/dashboard"
+                isActive={pageHeading.includes("Dashboard")}
+              >
+                Dashboard
+              </SideNavLink>
               <SideNavItems>
-                <SideNavMenu title="Users" isActive={pageHeading.includes("Users")}>
-                  <SideNavMenuItem href="/users">Users List</SideNavMenuItem>
-                  <SideNavMenuItem href="/new-user">
+                <SideNavMenu
+                  title="Users"
+                  isActive={["Users","New User Account"].includes(pageHeading)}
+                  defaultExpanded={["Users","New User Account"].includes(pageHeading)}
+                >
+                  <SideNavMenuItem href="/users" isActive={pageHeading.includes("Users")}>Users List</SideNavMenuItem>
+                  <SideNavMenuItem href="/new-user" isActive={pageHeading.includes("New User Account")}>
                     Create New User
                   </SideNavMenuItem>
                 </SideNavMenu>
-                <SideNavMenu title="Groups">
-                  <SideNavMenuItem href="/groups" isActive={pageHeading.includes("Groups")}>Groups</SideNavMenuItem>
-                  <SideNavMenuItem href="/new-group">
+                <SideNavMenu
+                  title="Groups"
+                  isActive={["Groups","Add a new group","Assign User to Group"].includes(pageHeading)}
+                  defaultExpanded={["Groups","Add a new group","Assign User to Group"].includes(pageHeading)}
+                >
+                  <SideNavMenuItem
+                    href="/groups"
+                    isActive={pageHeading.includes("Groups")}
+                    defaultExpanded={pageHeading.includes("Groups")}
+                  >
+                    Groups
+                  </SideNavMenuItem>
+                  <SideNavMenuItem href="/new-group" isActive={pageHeading.includes("Add a new group")}>
                     Create New Group
                   </SideNavMenuItem>
-                  <SideNavMenuItem href="/assign-user-to-group">
+                  <SideNavMenuItem href="/assign-user-to-group" isActive={pageHeading.includes("Assign User to Group")}>
                     Assign User to Group
                   </SideNavMenuItem>
                 </SideNavMenu>
-                <SideNavMenu title="Account Information" isActive={pageHeading.includes("Account Information")}>
-                  <SideNavMenuItem href="/account-information">
+                <SideNavMenu
+                  title="Account Information"
+                  isActive={["Account Information","Reset Password"].includes(pageHeading)}
+                  defaultExpanded={["Account Information","Reset Password"].includes(pageHeading)}
+                 
+                >
+                  <SideNavMenuItem href="/account-information" isActive={["Account Information"].includes(pageHeading)} >
                     My Account
                   </SideNavMenuItem>
-                  <SideNavMenuItem href="/reset-password">
+                  <SideNavMenuItem href="/Reset Password" isActive={["Reset Password"].includes(pageHeading)} >
                     Reset Password
                   </SideNavMenuItem>
                 </SideNavMenu>
@@ -180,7 +204,6 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
           <StoryContent
             content={children}
             pageHeading={pageHeading}
-            customClassName={customClassName}
             path={path}
           />
           {isOpen === true && (
@@ -198,21 +221,24 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
   );
 };
 
-const StoryContent = ({ content, pageHeading, customClassName, path }) => {
+const StoryContent = ({ content, pageHeading, path }) => {
   return (
     <>
       <style type="text/css">{contentStyles.cssText}</style>
       <main className="bx--content bx-ce-demo-devenv--ui-shell-content">
         <div className="bx--grid">
           <div className="bx--row">
-            <div class="cds--col-lg-4"></div>
-            <div class="cds--col-lg-12">
+            <div class="cds--col-lg-3 cds--col-md-3"></div>
+            <div class="cds--col-lg-11">
               <Breadcrumb>
-                <BreadcrumbItem isCurrentPage href={path}>{`${path.replace("/","").toProperCase()}`}</BreadcrumbItem>
+                <BreadcrumbItem isCurrentPage href={path}>{`${path
+                  .replace("/", "")
+                  .toProperCase()}`}</BreadcrumbItem>
               </Breadcrumb>
               <h2>{pageHeading}</h2>
               <div style={{ "margin-top": "7%" }}>{content}</div>
             </div>
+            <div class="cds--col-lg-5"></div>
           </div>
         </div>
       </main>
@@ -220,6 +246,8 @@ const StoryContent = ({ content, pageHeading, customClassName, path }) => {
   );
 };
 String.prototype.toProperCase = function () {
-  return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+  return this.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
 };
 export default AppHeader;

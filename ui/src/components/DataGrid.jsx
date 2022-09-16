@@ -8,38 +8,49 @@ import {
   TableCell,
   DataTable,
 } from "carbon-components-react";
+import { Pagination } from "@carbon/react";
 const DataGrid = ({ headers, rows, title }) => {
   return (
-    <div className="ResponsiveDataTable">
-      <DataTable rows={rows} headers={headers} title={title || ""}>
-        {({ rows, headers, getTableProps, getHeaderProps, getRowProps }) => (
-          <Table {...getTableProps()}>
-            <TableHead>
-              <TableRow style={{ backgroundColor: "red" }}>
-                {headers.map((header) => (
-                  <TableHeader {...getHeaderProps({ header })}>
-                    {header.header}
-                  </TableHeader>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow {...getRowProps({ row })}>
-                  {row.cells.map((cell) => (
-                    <TableCell key={cell.id}>{cell.value}</TableCell>
+    <div class="cds--grid">
+      <div class="cds--row">
+        <div class="cds--col-lg-16">
+          <DataTable rows={rows} headers={headers} title={title || ""}>
+            {({
+              rows,
+              headers,
+              getTableProps,
+              getHeaderProps,
+              getRowProps,
+            }) => (
+              <Table {...getTableProps()}>
+                <TableHead>
+                  <TableRow style={{ backgroundColor: "red" }}>
+                    {headers.map((header) => (
+                      <TableHeader {...getHeaderProps({ header })}>
+                        {header.header}
+                      </TableHeader>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {rows.map((row) => (
+                    <TableRow {...getRowProps({ row })}>
+                      {row.cells.map((cell) => (
+                        <TableCell key={cell.id}>{cell.value}</TableCell>
+                      ))}
+                    </TableRow>
                   ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        )}
-      </DataTable>
+                </TableBody>
+              </Table>
+            )}
+          </DataTable>
+        </div>
+      </div>
     </div>
   );
 };
 const routeMappings = {
-  "groups": "/new-group",
-  "users": "/new-user",
+  groups: "/new-group",
+  users: "/new-user",
 };
 export default DataGrid;
