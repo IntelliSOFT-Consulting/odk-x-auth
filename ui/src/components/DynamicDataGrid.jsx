@@ -21,7 +21,6 @@ import {
   TableToolbarSearch,
 } from "@carbon/react";
 import React, { useState } from "react";
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DynamicDataGrid = ({ headers, rows, title, description }) => {
@@ -31,9 +30,6 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
 
   return (
     <>
-      <p>
-        Splice: {start} to {end}
-      </p>
       <DataTable rows={rows} headers={headers}>
         {({
           rows,

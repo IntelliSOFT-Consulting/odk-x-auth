@@ -1,31 +1,36 @@
-import TextInput from '@carbon/react/lib/components/TextInput';
-import { Button, Form } from 'carbon-components-react';
-import React from 'react'
+import TextInput from "@carbon/react/lib/components/TextInput";
+import { Button, Form } from "carbon-components-react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { getCookie } from "../api/cookie";
 
 const ResetPasswordForm = () => {
+  const navigate = useNavigate();
   return (
     <div className="LoginFormComponent">
       <div className="cds--grid">
         <div className="cds--row">
           <div className="cds--col-sm-4 cds--col-md-8 cds--col-lg-16">
-            
-            <Form style={{ minWidth: "500px" }}>
-            <p>User Name</p>
+            <Form>
+              <p>User Name</p>
               <TextInput
-
-                type ="email"
+                type="email"
                 id="email_address"
                 placeholder="Input Email Address"
+                defaultValue={getCookie("login_id")}
               />
-              
 
-              <div className="inline_component">
-                <Button kind="secondary">Cancel</Button>
+              <div className="cds--row">
                 <Button
+                  kind="secondary"
+                  className="block"
                   onClick={() => {
-                    window.location.href = "#";
+                    navigate("/");
                   }}
                 >
+                  Cancel
+                </Button>
+                <Button className="block" onClick={() => {}}>
                   Request Link
                 </Button>
               </div>
@@ -34,7 +39,7 @@ const ResetPasswordForm = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ResetPasswordForm
+export default ResetPasswordForm;

@@ -116,3 +116,20 @@
 .narrowForm {
     max-width: 400px;
 }
+
+.block {
+    display: inline-block;
+    width: 50%;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    padding-top: 5px;
+}
+
+.input-block {
+    padding: 2px;
+}
+
+.cds--row {
+    padding: 2px;
+}
