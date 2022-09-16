@@ -1,10 +1,12 @@
 import os
 
-SECRET_KEY = "someSecret"
+
+SECRET_KEY = os.environ.get("SECRET_KEY") or "someSecret"
 
 # LDAP_HOST = "ipa.demo1.freeipa.org"
 # LDAP_HOST = "ldap-service"
 LDAP_HOST = os.environ.get("LDAP_HOST") or "localhost"
+LDAP_PORT = os.environ.get("LDAP_PORT") or "389"
 
 # openldap
 # LDAP_ORGANISATION=Open Data Kit
@@ -17,7 +19,7 @@ LDAP_DOMAIN = "example.org"
 # email configuration
 SMTP_HOST = "smtp.gmail.com"
 SMTP_PORT = 465
-SMTP_SENDER = "test-sender@gmail.com"
+SMTP_SENDER = "@gmail.com"
 SMTP_USERNAME = "Test User"
 SMTP_PASSWORD = "password"
 
