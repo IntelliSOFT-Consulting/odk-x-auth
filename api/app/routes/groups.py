@@ -9,19 +9,19 @@ bp = Blueprint('groups', __name__, url_prefix='/api/groups')
 def create_group():
     try:
         data = request.get_json()
-        client = add_ldap_group(data['name'], data['gid'])
-        print(client)
-        return jsonify(status="success", gid=data['gid']), 200
+        response = add_ldap_group(data['name'], data['gid'])
+        return jsonify(response), 200 if response['status'] == "success" else 400
     except Exception as e:
+        # raise e
         return jsonify(error=str(e), status="error"), 200
 
 @bp.route('/', methods=['GET'])
 def list_groups():
     try:
         data = request.get_json()
-        client = add_ldap_group(data['name'], data['gid'])
+        response = add_ldap_group(data['name'], data['gid'])
         print(client)
-        return jsonify(status="success", gid=data['gid']), 200
+        return jsonify(response), 200
     except Exception as e:
         return jsonify(error=str(e), status="error"), 200
 

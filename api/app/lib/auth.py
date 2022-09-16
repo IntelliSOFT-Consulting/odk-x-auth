@@ -12,7 +12,7 @@ from ldap3.core.exceptions import LDAPException, LDAPBindError
 def ldap_client(user, password):
     try:
         return Connection(LDAP_HOST, user=user,
-                          password=password, source_port=LDAP_PORT, auto_bind=True, client_strategy=SAFE_SYNC)
+                          password=password, auto_bind=True, client_strategy=SAFE_SYNC)
     except LDAPBindError as e:
         print(e)
 

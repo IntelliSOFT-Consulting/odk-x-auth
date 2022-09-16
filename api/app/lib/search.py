@@ -12,7 +12,7 @@ def get_ldap_users():
     search_base = 'dc=example,dc=org'
     # provide a uidNumber to search for. '*" to fetch all users/groups
     # search_filter = '(*)'
-    search_filter = '(objectClass=*)'
+    search_filter = '(objectClass=posixGroup)'
 
 
     # Establish connection to the server

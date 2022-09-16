@@ -6,11 +6,13 @@ SECRET_KEY = os.environ.get("SECRET_KEY") or "someSecret"
 # LDAP_HOST = "ipa.demo1.freeipa.org"
 # LDAP_HOST = "ldap-service"
 LDAP_HOST = os.environ.get("LDAP_HOST") or "localhost"
-LDAP_PORT = os.environ.get("LDAP_PORT") or "389"
+LDAP_PORT = os.environ.get("LDAP_PORT") or int("389")
+
+LDAP_PORT = 44617
 
 # openldap
 # LDAP_ORGANISATION=Open Data Kit
-LDAP_DOMAIN = "example.org"
+LDAP_DOMAIN = os.environ.get("LDAP_HOST") or "example.org"
 # LDAP_READONLY_USER=true
 # LDAP_READONLY_USER_PASSWORD=readonly
 # LDAP_ADMIN_PASSWORD=admin
