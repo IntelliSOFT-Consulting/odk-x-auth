@@ -24,6 +24,13 @@ def list_groups():
     except Exception as e:
         return jsonify(error=str(e), status="error"), 400
 
+@bp.route('/<string:id>', methods=['GET'])
+def list_groups():
+    try:
+        response = search_ldap(entity="groups")
+        return jsonify(response), 200 if response['status'] == "success" else 400
+    except Exception as e:
+        return jsonify(error=str(e), status="error"), 400
 
 @bp.route('/<int:gidNumber>', methods=['PUT'])
 def edit_group(gidNumber):
