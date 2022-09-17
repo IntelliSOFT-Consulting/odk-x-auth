@@ -8,7 +8,6 @@ def add_ldap_group(group, gid):
     ldap_attr = {'cn': group}
     # object class for group should be mentioned.
     ldap_attr['objectClass'] = ['posixGroup', 'top']
-
     # ldap_conn = ldap_client()
     ldap_conn = ldap_client("cn=admin,{}".format(LDAP_BASE), "admin")
     try:
@@ -17,9 +16,11 @@ def add_ldap_group(group, gid):
         print(response[1])
         print(response[3])
         if response[0] == True:
-            print(response[0])
-            response = {"response": response[1],
-                        "data": response[3], "status": "success"}
+            response = {"group": {
+                "name": dict(response[3]['attributes'])['cn'][0],
+                "dn": response[3]['entry'],
+                "gidNumber":gid
+            }, "status": "success"}
         elif response[0] == False:
             response = {"error": response[1]['description'], "status": "error"}
     except LDAPException as e:
@@ -30,11 +31,10 @@ def add_ldap_group(group, gid):
 
 
 def delete_ldap_group(gidNumber):
-    ldap_conn = ldap_client("cn=admin,{}".format(LDAP_BASE), "admin")
     try:
-        # this will add group1 to the base directory tree
-        # response = ldap_conn.modify('gidNumber={},{}'.format(gidNumber, BASE_GROUP_DN),{"*":[(MODIFY_DELETE)]})
-        response = ldap_conn.delete('gidNumber={},{}'.format(gidNumber, BASE_GROUP_DN))
+        ldap_conn = ldap_client("cn=admin,{}".format(LDAP_BASE), "admin")
+        response = ldap_conn.delete(
+            'gidNumber={},{}'.format(gidNumber, BASE_GROUP_DN))
         print(response)
         if response[0] == True:
             return {"message": "group {} delete successfully", "status": "success"}
