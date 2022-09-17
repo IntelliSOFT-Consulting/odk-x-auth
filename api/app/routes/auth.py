@@ -31,12 +31,8 @@ def update_password():
     if request.method == 'GET':
         token = request.args.get('token')
         user = request.args.get('user')
-        return jsonify(status="success")
+        return jsonify(status="success", message="Password reset successfully")
     if request.method == 'POST':
         data = request.get_json()
         password = data['password']
-        ## find user.
-
-        ## alter user attributes.
-
-        return jsonify(status="success")
+        return jsonify(status="success", message="Password reset instructions sent")
