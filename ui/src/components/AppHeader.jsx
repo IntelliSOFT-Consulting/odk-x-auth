@@ -84,6 +84,7 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
 
   useEffect(() => {
     setPath(location.pathname);
+    
   }, []);
 
   const navigate = useNavigate();
@@ -193,7 +194,7 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
                   <SideNavMenuItem href="/account-information" isActive={["Account Information"].includes(pageHeading)} >
                     My Account
                   </SideNavMenuItem>
-                  <SideNavMenuItem href="/Reset Password" isActive={["Reset Password"].includes(pageHeading)} >
+                  <SideNavMenuItem href="/reset-password" isActive={["Reset Password"].includes(pageHeading)} >
                     Reset Password
                   </SideNavMenuItem>
                 </SideNavMenu>

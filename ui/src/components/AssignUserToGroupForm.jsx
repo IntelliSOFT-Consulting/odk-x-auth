@@ -21,15 +21,15 @@ const AssignUserToGroupForm = () => {
   const updateSelected = (value, action) => {
     setSelected(selected.filter((item) => item !== value));
     if (action === true) {
-      setSelected([...new Set(selected), value]);
+      setSelected([...selected, value]);
     }
   };
 
-  const users =[]
-  cookieUsers.forEach(user=>{
-    users.push(user.id || user.user_name)
-  })
-  
+  const users = [];
+  cookieUsers.forEach((user) => {
+    users.push(user.id || user.user_name);
+  });
+
   const groupSelectComponents = cookieRoles.map((row, idx) => (
     <Checkbox
       labelText={row.group_name}
@@ -39,74 +39,78 @@ const AssignUserToGroupForm = () => {
       }}
     />
   ));
-  const adduserToGroup =()=>{
-    if (!userInfo.user_name){
-      return
+  const adduserToGroup = () => {
+    if (!userInfo.user_name) {
+      return;
     }
-    if(selected.length < 0){
-
+    if (selected.length < 0) {
     }
-  }
+  };
   return (
-    <div>
+    <>
       <div className="cds--grid">
         <div className="cds--row">
-          <div className="cds--col-sm-4 cds--col-md-8 cds--col-lg-16">
-            <Form>
-              <p>User ID</p>
-              <ComboBox
-                ariaLabel="ComboBox"
-                id="user_id"
-                items={users}
-                label="Combo box menu options"
-                titleText="Select A user"
-                onChange={(e) => {
-                  setUserInfo({
-                    ...userInfo,
-                    user_name: e.target.value,
-                  });
-                }}
-              />
-
-              <p>Groups</p>
-              <em style={{ color: "green" }}>
-                Groups Selected: [{selected.join(",")}]
-              </em>
-              <ExpandableTile
-                tabIndex={0}
-                tileCollapsedIconText="Interact to Expand tile"
-                tileExpandedIconText="Interact to Collapse tile"
-                tileMaxHeight={0}
-                tilePadding={0}
-              >
-                <TileAboveTheFoldContent>
-                  <div style={{ height: "32px" }}>Select Group</div>
-                </TileAboveTheFoldContent>
-                <TileBelowTheFoldContent>
-                  {groupSelectComponents}
-                </TileBelowTheFoldContent>
-              </ExpandableTile>
-
-              <br />
-              <div className="LoginButtons">
-                <Button kind="secondary" style={{ width: "100%" }}>
+          <div className="cds--col-lg-2 cds--col-md-2"></div>
+          <div className="cds--col">
+            <div className="cds--row">
+              <div className="cds--col">
+                <ComboBox
+                  ariaLabel="ComboBox"
+                  id="user_id"
+                  items={users}
+                  label="Combo box menu options"
+                  className="input-block"
+                  titleText="Select A user"
+                  onChange={(e) => {
+                    setUserInfo({
+                      ...userInfo,
+                      user_name: e.selectedItem,
+                    });
+                  }}
+                />
+              </div>
+            </div>
+            <div className="cds--row">
+              <div className="cds--col">
+                <p>Groups</p>
+                <em style={{ color: "green" }}>
+                  Groups Selected: [{selected.join(",")}]
+                </em>
+                <ExpandableTile
+                  tabIndex={0}
+                  tileCollapsedIconText="Interact to Expand tile"
+                  tileExpandedIconText="Interact to Collapse tile"
+                  tileMaxHeight={0}
+                  tilePadding={0}
+                >
+                  <TileAboveTheFoldContent>
+                    <div style={{ height: "32px" }}>Select Group</div>
+                  </TileAboveTheFoldContent>
+                  <TileBelowTheFoldContent>
+                    {groupSelectComponents}
+                  </TileBelowTheFoldContent>
+                </ExpandableTile>
+              </div>
+            </div>
+            <br />
+            <div className="cds--row">
+              <div className="cds--col">
+                <Button kind="secondary" className="block">
                   Cancel
                 </Button>
-                <Button
-                  style={{ width: "100%" }}
-                  onClick={() => {
-                    window.location.href = "#";
-                  }}
-                >
+                <Button className="block" onClick={() => {}}>
                   Save
                 </Button>
               </div>
-            </Form>
+            </div>
           </div>
+          <div className="cds--col-lg-2 cds--col-md-2"></div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
+
+const TestForm = () => {};
 
 export default AssignUserToGroupForm;

@@ -42,9 +42,10 @@ const AccountInformationForm = () => {
                 </Select>
               </div>
 
-              <div className="inline_component">
-                <Button kind="secondary">Cancel</Button>
+              <div className="cds--row">
+                <Button kind="secondary" className="block">Cancel</Button>
                 <Button
+                className="block"
                   onClick={() => {
                     window.location.href = "#";
                   }}
