@@ -22,7 +22,7 @@ def search_ldap(entity="users", name=None, filter=None):
         res = (ldap_conn.search(search_base, search_filter, attributes=['*']))
         print(res[0])
         print(len(res))
-        if res[0] == True:
+        if res[0] == True and entity=="users":
             results = [({
                 "dn": i['dn'],
                 "attributes":dict(i['attributes']),
@@ -30,6 +30,14 @@ def search_ldap(entity="users", name=None, filter=None):
                 "username": dict(i['attributes'])['cn'][1],
                 "email":dict(i['attributes'])['mail'][0],
                 "surname":dict(i['attributes'])['sn'][0]
+            }) 
+            for i in res[2]]
+        if res[0] == True and entity=="groups":
+            results = [({
+                "dn": i['dn'],
+                "attributes":dict(i['attributes']),
+                "name":dict(i['attributes'])['cn'][0],
+                "gidNumber":dict(i['attributes'])['gidNumber']
             }) 
             for i in res[2]]
         # print(json.dumps(results))

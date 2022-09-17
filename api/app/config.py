@@ -30,7 +30,6 @@ SMTP_HOST = os.environ.get("SMTP_HOST")
 SMTP_SSL = False
 SMTP_PORT = 465
 SMTP_SENDER = os.environ.get("SMTP_SENDER")
-SMTP_USERNAME = "Test User"
 SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
 
 
