@@ -3,7 +3,7 @@ import uuid
 import datetime
 from functools import wraps
 from flask import request, jsonify
-from app.config import LDAP_DOMAIN, SECRET_KEY, LDAP_HOST, LDAP_PORT
+from app.config import BASE_USER_DN, LDAP_DOMAIN, SECRET_KEY, LDAP_HOST, LDAP_PORT
 import jwt
 from ldap3 import Connection, SAFE_SYNC
 from ldap3.core.exceptions import LDAPException, LDAPBindError
@@ -49,24 +49,31 @@ def access_token_required(f):
 
 """ add method takes a user_dn, objectclass and attributes as    dictionary  """
 
+
 def add_new_user(first_name, last_name, email):
     full_names = first_name + " " + last_name
     # Bind connection to LDAP server
     ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
 
     # this will create testuser inside group1
-    user_dn = "cn={},ou=people,dc=example,dc=org".format((last_name + "_" + first_name).lower())
+    user_dn = "cn={},{}".format(
+        (last_name + "_" + first_name).lower(), BASE_USER_DN)
 
     try:
         # object class for a user is inetOrgPerson
         response = ldap_conn.add(user_dn,
-                                attributes={'objectClass':  ['inetOrgPerson', 'top'],
+                                 attributes={'objectClass':  ['inetOrgPerson', 'top'],
                                              'commonname': full_names, "mail": email, 'sn': last_name})
         print(response[1])
         print(response[3])
         if response[0] == True:
             print(response[0])
-            return {"data": response[3], "status": "success"}
+            return {"user": {
+                "names": dict(response[3]['attributes'])['commonname'][0],
+                "email": dict(response[3]['attributes'])['mail'][0],
+                "surname": dict(response[3]['attributes'])['sn'][0],
+                "dn":response[3]['entry']
+            }, "status": "success"}
         elif response[0] == False:
             return {"error": response[1]['description'], "status": "error"}
     except LDAPException as e:

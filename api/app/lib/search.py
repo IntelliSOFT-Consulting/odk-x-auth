@@ -29,6 +29,7 @@ def search_ldap(entity="users", name=None, filter=None):
                 "names":dict(i['attributes'])['cn'][0],
                 "username": dict(i['attributes'])['cn'][1],
                 "email":dict(i['attributes'])['mail'][0],
+                "surname":dict(i['attributes'])['sn'][0]
             }) 
             for i in res[2]]
         # print(json.dumps(results))
