@@ -18,6 +18,9 @@ for i in LDAP_DOMAIN.split("."):
     LDAP_BASE += "dc={},".format(i)
 
 LDAP_BASE = LDAP_BASE[:len(LDAP_BASE) - 1]
+
+BASE_GROUP_DN = "ou=default_prefix,ou=groups,{}".format(LDAP_BASE)
+BASE_USER_DN = "{}".format(LDAP_BASE)
 # LDAP_READONLY_USER=true
 # LDAP_READONLY_USER_PASSWORD=readonly
 # LDAP_ADMIN_PASSWORD=admin
@@ -25,8 +28,9 @@ LDAP_BASE = LDAP_BASE[:len(LDAP_BASE) - 1]
 
 # email configuration
 SMTP_HOST = "smtp.gmail.com"
+SMTP_SSL = False
 SMTP_PORT = 465
-SMTP_SENDER = "@gmail.com"
+SMTP_SENDER = "test@gmail.com"
 SMTP_USERNAME = "Test User"
 SMTP_PASSWORD = "password"
 

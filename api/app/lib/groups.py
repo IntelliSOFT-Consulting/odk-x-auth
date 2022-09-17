@@ -1,4 +1,4 @@
-from app.config import LDAP_DOMAIN
+from app.config import BASE_GROUP_DN, BASE_USER_DN, LDAP_BASE, LDAP_DOMAIN
 from app.lib.auth import ldap_client
 from ldap3.core.exceptions import LDAPException, LDAPBindError
 
@@ -9,9 +9,9 @@ def add_ldap_group(group, gid):
     ldap_attr['objectClass'] = ['posixGroup', 'top']
 
     # ldap_conn = ldap_client()
-    ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+    ldap_conn = ldap_client("cn=admin,{}".format(LDAP_BASE), "admin")
     try:
-        response = ldap_conn.add('gidNumber={},ou=default_prefix,ou=groups,dc=example,dc=org'.format(gid), ['posixGroup', 'top'], ldap_attr)
+        response = ldap_conn.add('gidNumber={},{}'.format(gid, BASE_GROUP_DN) , ['posixGroup', 'top'], ldap_attr)
         print(response[1])
         print(response[3])
         if response[0] == True:
@@ -30,12 +30,10 @@ def delete_ldap_group(group):
     ldap_attr = {'gidNumber': group}
     # object class for group should be mentioned.
     ldap_attr['objectClass'] = 'posixGroup'
-    ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
-
+    ldap_conn = ldap_client("cn=admin,{}".format(LDAP_BASE), "admin")
     try:
         # this will add group1 to the base directory tree
-        response = ldap_conn.add('cn={},ou=default_prefix,ou=groups,dc=example,dc=com'.format(
-            group), 'posixGroup')
+        response = ldap_conn.add('cn={},{}'.format(group, BASE_GROUP_DN), 'posixGroup')
     except LDAPException as e:
         response = ("The error is ", e)
     ldap_conn.unbind()
@@ -50,21 +48,21 @@ def modify_ldap_group(group):
 
     try:
         # this will add group1 to the base directory tree
-        response = ldap_conn.add('cn={},ou=default_prefix,ou=groups,dc=example,dc=com'.format(
-            group), 'posixGroup')
+        response = ldap_conn.add('cn={},{}'.format(
+            group, BASE_GROUP_DN), 'posixGroup')
     except LDAPException as e:
         response = ("The error is ", e)
     ldap_conn.unbind()
     return response
 
 
-def add_user_to_group():
-
-    ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+def add_user_to_group(user, group):
     try:
         # this will add group1 to the base directory tree
+        user = "{},{}".format(user, BASE_USER_DN)
+        group = "{},{}".format(group, BASE_GROUP_DN)
         response = ldap_conn.modify()
     except LDAPException as e:
-        response = (" The error is ", e)
+        response = ("The error is ", e)
     ldap_conn.unbind()
     return response
