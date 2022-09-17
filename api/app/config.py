@@ -8,7 +8,6 @@ SECRET_KEY = os.environ.get("SECRET_KEY") or "someSecret"
 LDAP_HOST = os.environ.get("LDAP_HOST") or "localhost"
 LDAP_PORT = os.environ.get("LDAP_PORT") or int("389")
 
-LDAP_PORT = 44617
 
 # openldap
 # LDAP_ORGANISATION=Open Data Kit
@@ -27,13 +26,13 @@ LDAP_ADMIN_PASSWORD = os.environ.get("LDAP_ADMIN_PASSWORD") or "admin"
 
 
 # email configuration
-SMTP_HOST = "smtp.gmail.com"
+SMTP_HOST = os.environ.get("SMTP_HOST")
 SMTP_SSL = False
 SMTP_PORT = 465
-SMTP_SENDER = "test@gmail.com"
+SMTP_SENDER = os.environ.get("SMTP_SENDER")
 SMTP_USERNAME = "Test User"
-SMTP_PASSWORD = "password"
+SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
 
 
 # application configuration
-TOKEN_EXPIRY = 60 * 15  # Seconds
+TOKEN_EXPIRY = 60 * 15  #Seconds
