@@ -51,31 +51,45 @@ def access_token_required(f):
 
 
 def add_new_user(first_name, last_name, email):
-    full_names = first_name + " " + last_name
-    # Bind connection to LDAP server
-    ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
-
-    # this will create testuser inside group1
-    user_dn = "cn={},{}".format(
-        (last_name + "_" + first_name).lower(), BASE_USER_DN)
 
     try:
+        full_names = first_name + " " + last_name
+    # Bind connection to LDAP server
+        ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+
+        # this will create testuser inside group1
+        user_dn = "cn={},{}".format(
+            (last_name + "_" + first_name).lower(), BASE_USER_DN)
         # object class for a user is inetOrgPerson
         response = ldap_conn.add(user_dn,
-                                 attributes={'objectClass':  ['inetOrgPerson', 'top'],
-                                             'commonname': full_names, "mail": email, 'sn': last_name})
+                              attributes={'objectClass':  ['inetOrgPerson', 'top'],
+                                           'commonname': full_names, "mail": email, 'sn': last_name})
         print(response[1])
         print(response[3])
         if response[0] == True:
-            print(response[0])
             return {"user": {
                 "names": dict(response[3]['attributes'])['commonname'][0],
                 "email": dict(response[3]['attributes'])['mail'][0],
                 "surname": dict(response[3]['attributes'])['sn'][0],
-                "dn":response[3]['entry']
+                "dn": response[3]['entry']
             }, "status": "success"}
         elif response[0] == False:
             return {"error": response[1]['description'], "status": "error"}
     except LDAPException as e:
         response = e
         return {"error": response, "status": "error"}
+
+
+def modify_ldap_user(gidNumber, data):
+    try:
+        ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+        # this will add group1 to the base directory tree
+        response = ldap_conn.modify('gidNumber={},{}'.format(
+            group, BASE_GROUP_DN),
+            MODIFY_ADD,
+            "{},{}".format(user, )
+        )
+    except LDAPException as e:
+        response = ("The error is ", e)
+    ldap_conn.unbind()
+    return response

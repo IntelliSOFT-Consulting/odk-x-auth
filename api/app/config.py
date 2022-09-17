@@ -23,7 +23,7 @@ BASE_GROUP_DN = "ou=default_prefix,ou=groups,{}".format(LDAP_BASE)
 BASE_USER_DN = "ou=people,{}".format(LDAP_BASE)
 # LDAP_READONLY_USER=true
 # LDAP_READONLY_USER_PASSWORD=readonly
-# LDAP_ADMIN_PASSWORD=admin
+LDAP_ADMIN_PASSWORD = os.environ.get("LDAP_ADMIN_PASSWORD") or "admin"
 
 
 # email configuration
