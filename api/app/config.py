@@ -13,6 +13,11 @@ LDAP_PORT = 44617
 # openldap
 # LDAP_ORGANISATION=Open Data Kit
 LDAP_DOMAIN = os.environ.get("LDAP_HOST") or "example.org"
+LDAP_BASE = ""
+for i in LDAP_DOMAIN.split("."):
+    LDAP_BASE += "dc={},".format(i)
+
+LDAP_BASE = LDAP_BASE[:len(LDAP_BASE) - 1]
 # LDAP_READONLY_USER=true
 # LDAP_READONLY_USER_PASSWORD=readonly
 # LDAP_ADMIN_PASSWORD=admin
