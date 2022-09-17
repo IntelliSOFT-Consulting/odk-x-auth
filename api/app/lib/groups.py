@@ -10,10 +10,8 @@ def add_ldap_group(group, gid):
 
     # ldap_conn = ldap_client()
     ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
-
     try:
-        response = ldap_conn.add('gidNumber={},ou=default_prefix,ou=groups,dc=example,dc=org'.format(
-            gid), ['posixGroup', 'top'], ldap_attr)
+        response = ldap_conn.add('gidNumber={},ou=default_prefix,ou=groups,dc=example,dc=org'.format(gid), ['posixGroup', 'top'], ldap_attr)
         print(response[1])
         print(response[3])
         if response[0] == True:
@@ -29,21 +27,43 @@ def add_ldap_group(group, gid):
 
 
 def delete_ldap_group(group):
-    ldap_attr = {
-        'gidNumber': group}
+    ldap_attr = {'gidNumber': group}
     # object class for group should be mentioned.
     ldap_attr['objectClass'] = 'posixGroup'
-    # ldap_attr['gidNumber'] = '500'
-    # ldap_attr['dn'] = group
-
-    # Bind connection to LDAP server
-    # ldap_conn = ldap_client()
     ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
 
     try:
         # this will add group1 to the base directory tree
         response = ldap_conn.add('cn={},ou=default_prefix,ou=groups,dc=example,dc=com'.format(
             group), 'posixGroup')
+    except LDAPException as e:
+        response = ("The error is ", e)
+    ldap_conn.unbind()
+    return response
+
+
+def modify_ldap_group(group):
+    ldap_attr = {'gidNumber': group}
+    # object class for group should be mentioned.
+    ldap_attr['objectClass'] = 'posixGroup'
+    ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+
+    try:
+        # this will add group1 to the base directory tree
+        response = ldap_conn.add('cn={},ou=default_prefix,ou=groups,dc=example,dc=com'.format(
+            group), 'posixGroup')
+    except LDAPException as e:
+        response = ("The error is ", e)
+    ldap_conn.unbind()
+    return response
+
+
+def add_user_to_group():
+
+    ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+    try:
+        # this will add group1 to the base directory tree
+        response = ldap_conn.modify()
     except LDAPException as e:
         response = (" The error is ", e)
     ldap_conn.unbind()

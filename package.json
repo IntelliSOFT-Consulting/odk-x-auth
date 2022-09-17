@@ -1,9 +1,0 @@
-{
-  "name": "odk-x-auth",
-  "version": "1.0.0",
-  "description": "An open source implementation of the LDAP Auth components and workflows relevant to ODK-X",
-  "main": "index.js",
-  "repository": "https://github.com/IntelliSOFT-Consulting/odk-x-auth",
-  "author": "Amolo <dev@intellisoftkenya.com>",
-  "license": "MIT"
-}

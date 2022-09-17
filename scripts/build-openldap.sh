@@ -1,1 +1,1 @@
-docker build -t odk/openldap ../openldap/
+docker build -t odk/openldap openldap/
