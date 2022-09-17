@@ -1,109 +1,217 @@
 import TextInput from "@carbon/react/lib/components/TextInput";
 import { Button, Form, Select, SelectItem } from "carbon-components-react";
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getCookie, setCookie } from "../api/cookie";
+import Swal from "sweetalert2";
+import base from "../api/airtable";
 
 const NewUserForm = () => {
+  const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState({});
+  const cookieRoles = JSON.parse(getCookie("odk-roles"));
+
+  const roleSelectComponents = cookieRoles.map((row) => (
+    <SelectItem value={row.role_name} text={row.role_name} />
+  ));
+  const addUser = () => {
+    console.log(userInfo);
+    let requiredFields = [
+      "first_name",
+      "email",
+      "last_name",
+      "password",
+      "role",
+    ];
+    let filledInFields = Object.keys(userInfo);
+    let missingFields =
+      requiredFields.filter((key) => !filledInFields.includes(key)) || [];
+    let passwordMatch = userInfo.password === userInfo.confirm_password;
+    if (!passwordMatch) {
+      Swal.fire({
+        title: "Error!",
+        html: `Sorry, your passwords do not match`,
+        icon: "error",
+        confirmButtonText: "Okay, let me check",
+      });
+      return
+    }
+    if (missingFields.length > 0) {
+      Swal.fire({
+        title: "Error!",
+        html: `Missing MANDATORY fields:[ <b style="color:blue">${missingFields.join(
+          ", "
+        )}</b>] .`,
+        icon: "error",
+        confirmButtonText: "Okay",
+      });
+    } else {
+      base("Users").create(
+        [
+          {
+            fields: {
+              user_name: userInfo.email,
+              last_name: userInfo.last_name,
+              password: userInfo.password,
+              first_name: userInfo.first_name,
+              email: userInfo.email,
+              role: userInfo.role,
+            },
+          },
+        ],
+        function (err, records) {
+          if (err) {
+            console.error(err);
+            Swal.fire({
+              title: `Error!:${err.error}`,
+              html: `${err.message}`,
+              icon: "error",
+              confirmButtonText: "Okay",
+            });
+            return;
+          }
+          records.forEach(function (record) {
+            console.log(record.getId());
+            Swal.fire({
+              title: "Success!",
+              html: `Created User ${userInfo.email} with ID:[ <b style="color:blue">${record.getId()}</b>] .`,
+              icon: "success",
+              confirmButtonText: "Okay",
+            });
+            refreshUserList()
+          });
+        }
+      );
+    }
+    const refreshUserList =()=>{
+      base("Users")
+          .select({
+            view: "Grid view",
+          })
+          .eachPage((records, fetchNextPage) => {
+            console.log(`${records.length} Users`);
+            let users = records.map((row) => row._rawJson.fields);
+            setCookie("odk-users",users,1);
+            navigate("/");
+          });
+    }
+  };
   return (
-    <div className="LoginFormComponent">
-      <div className="cds--grid">
-        <div className="cds--row">
-          <div className="cds--col-sm-4 cds--col-md-8 cds--col-lg-16">
-            <p>Group Name</p>
-            <Form style={{ minWidth: "500px" }}>
+    <div>
+      <Form>
+        <div className="cds--grid">
+          <div className="cds--row">
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <p>First Name</p>
               <TextInput
                 className="spacing-05"
-                id="group_name"
-                placeholder="Input Group Name"
+                id="first_name"
+                placeholder="Input First Name"
+                required
+                onChange={(e) => {
+                  setUserInfo({ ...userInfo, first_name: e.target.value });
+                }}
               />
-              <div className="inline-component">
-                <p>First Name</p>
-                <TextInput
-                  className="spacing-05"
-                  id="first_name"
-                  placeholder="Input First Name"
-                  required
+            </div>
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <p>Last Name</p>
+              <TextInput
+                className="spacing-05"
+                id="last_name"
+                placeholder="Input Last Name"
+                onChange={(e) => {
+                  setUserInfo({ ...userInfo, last_name: e.target.value });
+                }}
+              />
+            </div>
+          </div>
+          <div className="cds--row">
+            <div className="cds--col-lg-16">
+              <p>Email</p>
+              <TextInput
+                className="spacing-05"
+                type="email"
+                id="email"
+                placeholder="Input Email Address"
+                onChange={(e) => {
+                  setUserInfo({ ...userInfo, email: e.target.value });
+                }}
+              />
+            </div>
+          </div>
+          <div className="cds--row">
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <p>Password</p>
+              <TextInput
+                className="spacing-05"
+                type="password"
+                id="password"
+                placeholder="Input Password"
+                required
+                onChange={(e) => {
+                  setUserInfo({ ...userInfo, password: e.target.value });
+                }}
+              />
+            </div>
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <p>Confirm Password</p>
+              <TextInput
+                className="spacing-05"
+                type="password"
+                id="confirm_password"
+                placeholder="Confirm Password"
+                required
+                onChange={(e) => {
+                  setUserInfo({
+                    ...userInfo,
+                    confirm_password: e.target.value,
+                  });
+                }}
+              />
+            </div>
+          </div>
+          <div className="cds--row">
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2"></div>
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <Select
+                id="role_name"
+                defaultValue="placeholder-item"
+                labelText=""
+                onChange={(e) => {
+                  setUserInfo({ ...userInfo, role: e.target.value });
+                }}
+              >
+                <SelectItem
+                  disabled
+                  hidden
+                  value="placeholder-item"
+                  text="Choose Role"
                 />
-                <p>Last Name</p>
-                <TextInput
-                  className="spacing-05"
-                  id="last_name"
-                  placeholder="Input Last Name"
-                />
-                <p>Email</p>
-                <TextInput
-                  className="spacing-05"
-                  type="email"
-                  id="email"
-                  placeholder="Input Email Address"
-                />
-                <p>Common Name</p>
-                <TextInput
-                  className="spacing-05"
-                  id="common_name"
-                  placeholder="Input common Name"
-                />
-                <p>User ID</p>
-                <TextInput
-                  className="spacing-05"
-                  id="user_id"
-                  placeholder="Input User ID"
-                />
-                <hr />
-                <p>Password</p>
-                <TextInput
-                  className="spacing-05"
-                  type="password"
-                  id="password"
-                  placeholder="Input Password"
-                  required
-                />
-
-                <p>Confirm Password</p>
-                <TextInput
-                  className="spacing-05"
-                  type="password"
-                  id="confirm_password"
-                  placeholder="Confirm Password"
-                  required
-                />
-                <hr />
-                <p>UID Number</p>
-                <TextInput
-                  className="spacing-05"
-                  id="uid_number"
-                  placeholder="Input UID Number"
-                />
-                <p>GID Number</p>
-                <Select
-                  id="gid_number"
-                  defaultValue="placeholder-item"
-                  labelText=""
-                >
-                  <SelectItem
-                    disabled
-                    hidden
-                    value="placeholder-item"
-                    text="Choose Group"
-                  />
-                  <SelectItem value="Group 1" text="Group 1" />
-                  <SelectItem value="Group 2" text="Group 2" />
-                </Select>
-              </div>
-
-              <div className="inline_component">
-                <Button kind="secondary">Cancel</Button>
-                <Button
-                  onClick={() => {
-                    window.location.href = "#";
-                  }}
-                >
-                  Save
-                </Button>
-              </div>
-            </Form>
+                {roleSelectComponents}
+              </Select>
+            </div>
+          </div>
+          <br />
+          <div className="cds--row">
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <Button style={{ width: "100%" }} kind="secondary" onClick={()=>{navigate("/users")}}>
+                Cancel 
+               
+              </Button>
+            </div>
+            <div className="cds--col-lg-8 cds--col-md-4 cds--col-sm-2">
+              <Button
+                style={{ width: "100%" }}
+                onClick={() => {
+                  addUser();
+                }}
+              >
+                Save
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      </Form>
     </div>
   );
 };

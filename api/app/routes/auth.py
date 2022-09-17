@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+
 from app.lib.auth import add_new_user_to_group, generate_token, ldap_client
 
 bp = Blueprint('auth', __name__, url_prefix='/api/auth')

@@ -2,22 +2,26 @@
     "name": "ui",
     "version": "0.1.0",
     "private": true,
-    "homepage":".",
+    "homepage": ".",
     "dependencies": {
         "@carbon/grid": "^11.5.0",
+        "@carbon/ibmdotcom-react": "^1.38.0",
         "@carbon/icons-react": "^11.7.0",
         "@carbon/react": "^1.12.0",
         "@testing-library/jest-dom": "^5.14.1",
         "@testing-library/react": "^13.0.0",
         "@testing-library/user-event": "^13.2.1",
+        "airtable": "^0.11.4",
         "carbon-components": "10.41.0",
         "carbon-components-react": "7.41.0",
         "carbon-icons": "7.0.7",
+        "json-server": "^0.17.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-router-dom": "^6.3.0",
         "react-scripts": "5.0.1",
         "sass": "1.51.0",
+        "sweetalert2": "^11.4.33",
         "web-vitals": "^2.1.0"
     },
     "scripts": {
@@ -43,5 +47,8 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "devDependencies": {
+        "@faker-js/faker": "^7.5.0"
     }
 }

@@ -4,7 +4,7 @@ import NewGroupForm from '../components/NewGroupForm'
 
 const NewGroup = () => {
   return (
-    <AppHeader children={<NewGroupForm/>} pageHeading="Add a new group" customClassName ="LoginFormComponent"/>
+    <AppHeader children={<NewGroupForm className="narrowForm"/>} pageHeading="Add a new group" />
   )
 }
 

@@ -1,16 +1,18 @@
 import React from "react";
 import Login from "./Login";
 import Dashboard from "./Dashboard";
+import { getCookie } from "../api/cookie";
 
-
-const confirmSession = () => {
-  return false;
+const sessionIsValid = () => {
+  let cookie = getCookie("token");
+  console.log(cookie);
+  return cookie;
 };
 const Index = () => {
-  if (!confirmSession()){
-    return <Login/>
-  }else{
-    return <Dashboard/>
+  if (!sessionIsValid()) {
+    return <Login />;
+  } else {
+    return <Dashboard />;
   }
 };
 

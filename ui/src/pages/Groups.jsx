@@ -1,6 +1,13 @@
 import React from 'react'
+import { LDAPApi } from '../api/auth';
+import { getCookie } from '../api/cookie';
 import AppHeader from '../components/AppHeader';
 import DataGrid from '../components/DataGrid';
+import DynamicDataGrid from '../components/DynamicDataGrid';
+
+
+// let allGroups = await LDAPApi({ url: `/api/groups`, method: 'GET' })
+
 const headers = [
     {
       key: 'group_name',
@@ -19,31 +26,31 @@ const headers = [
         header: 'Date Created',
       },
       {
-        key: 'number_of_groups',
-        header: 'Number of Groups',
+        key: 'number_of_users',
+        header: 'Number of Users',
       },
-      {
-        key: 'header',
-        header: 'Header',
-      }
   ];
-  const rows = [
-    {
-      id: '9593d593',
-      group_name: 'Administrators',
-      role:"Admin",
-      created_by: 'Admin 1',
-      date_created: '2017-01-01',
-      number_of_groups: 3,
-      header: 'Content'
-    },
-
-  ];
-  const users =<DataGrid headers={headers} rows={rows} title="Groups"/> 
+  
 const Groups = () => {
-  return (
-    <AppHeader children={users} pageHeading="Groups"/>
-  )
+  const cookieGroups = JSON.parse(getCookie("odk-groups")) 
+ console.log("The Cookie Users: ",cookieGroups)  
+  const groupList =[];
+  cookieGroups.forEach(group =>{
+    let row =  {
+      id: group.id || group.group_name,
+      group_name: group.group_name,
+      role:group.roles ? group.roles.join(", ") : "-" ,
+      created_by: group.created_by.name,
+      date_created: group.created_time,
+      number_of_users: group.Users ? group.Users.length : 0
+    }
+    groupList.push(row)
+  })
+  console.log(groupList)
+
+  let groupComponent = <DynamicDataGrid headers={headers} rows={groupList} title="Groups"  description="This table contains a list of created Groups"/>;
+  return <AppHeader children={groupComponent} pageHeading="Groups" />;
+  
 }
 
 export default Groups
