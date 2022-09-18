@@ -2,7 +2,7 @@
 from ldap3 import Server, Connection, ALL, SUBTREE
 from app.config import BASE_GROUP_DN, BASE_USER_DN, LDAP_BASE, LDAP_DOMAIN
 from .auth import ldap_client
-from ldap3.core.exceptions import LDAPException, LDAPBindError, LDAPInvalidFilterError
+from ldap3.core.exceptions import LDAPException, LDAPInvalidFilterError
 
 
 def search_ldap(entity="users", name=None, filter=None):

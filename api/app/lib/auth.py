@@ -5,8 +5,9 @@ from functools import wraps
 from flask import request, jsonify
 from app.config import BASE_USER_DN, LDAP_DOMAIN, SECRET_KEY, LDAP_HOST, LDAP_PORT
 import jwt
-from ldap3 import Connection, SAFE_SYNC
+from ldap3 import Connection, SAFE_SYNC, HASHED_SALTED_SHA, MODIFY_REPLACE
 from ldap3.core.exceptions import LDAPException, LDAPBindError, LDAPInvalidValueError
+from ldap3.utils.hashed import hashed
 
 
 def ldap_client(user, password):
@@ -30,6 +31,28 @@ def generate_token(user):
 
 def get_user_from_token(token):
     return jwt.decode(token, key=SECRET_KEY, algorithms=["HS512"])["user"]
+
+
+def modify_password(user, password):
+    try:
+        ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+        user = "cn={},{}".format(user, BASE_USER_DN)
+        response = ldap_conn.modify(
+            user,
+            changes={
+                "userPassword": [
+                    (MODIFY_REPLACE, [hashed(HASHED_SALTED_SHA, password)])
+                ]
+            },
+        )
+        print(response)
+        print(ldap_conn.result)
+        return {"response": response, "status": "success"}
+    except LDAPException as e:
+        print(e)
+        response = {"status": "error", "error": str(e)}
+    ldap_conn.unbind()
+    return response
 
 
 def access_token_required(f):
@@ -57,17 +80,13 @@ def access_token_required(f):
 
 
 def add_new_user(first_name, last_name, email, gidNumber):
-
     try:
         full_names = first_name + " " + last_name
-        # Bind connection to LDAP server
         ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
 
-        # this will create testuser inside group1
         user_dn = "cn={},{}".format(
             (last_name + "_" + first_name).lower(), BASE_USER_DN
         )
-        # object class for a user is inetOrgPerson
         response = ldap_conn.add(
             user_dn,
             attributes={
@@ -78,7 +97,7 @@ def add_new_user(first_name, last_name, email, gidNumber):
                 "givenName": first_name,
                 "gidNumber": gidNumber,
                 "uid": email.lower(),
-                "uidNumber": int(sum([randint(1000,9999), randint(1000,9999)])/2),
+                "uidNumber": int(sum([randint(11111111, 99999999), randint(111111, 999999)]) / 2),
                 "homeDirectory": "/home/users/test",
                 "userPassword": str(uuid.uuid4()),
             },
@@ -108,18 +127,5 @@ def add_new_user(first_name, last_name, email, gidNumber):
     return {"error": response, "status": "error"}
 
 
-def modify_ldap_user(gidNumber, data):
-    try:
-        ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
-        # this will add group1 to the base directory tree
-        response = ldap_conn.modify(
-            "gidNumber={},{}".format(group, BASE_GROUP_DN),
-            MODIFY_ADD,
-            "{},{}".format(
-                user,
-            ),
-        )
-    except LDAPException as e:
-        response = ("The error is ", e)
-    ldap_conn.unbind()
-    return response
+
+
