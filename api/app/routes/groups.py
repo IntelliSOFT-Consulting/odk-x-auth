@@ -9,7 +9,6 @@ from app.lib.groups import (
 
 bp = Blueprint("groups", __name__, url_prefix="/api/groups")
 
-
 @bp.route("/", methods=["POST"])
 def create_group():
     try:
@@ -17,7 +16,6 @@ def create_group():
         response = add_ldap_group(data["name"], data["gidNumber"])
         return jsonify(response), 200 if response["status"] == "success" else 400
     except Exception as e:
-        # raise e
         return jsonify(error=str(e), status="error"), 400
 
 

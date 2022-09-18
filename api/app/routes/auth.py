@@ -20,7 +20,7 @@ def login():
 def register():
     try:
         data = request.get_json()
-        response = add_new_user(data['first_name'],data['last_name'] ,data['email'])
+        response = add_new_user(data['first_name'], data['last_name'] , data['email'], data['gidNumber'])
         return jsonify(response), 200 if response['status'] == "success" else 400
     except Exception as e:
         return jsonify(error=str(e), status="error"), 400
