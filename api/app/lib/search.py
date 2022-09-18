@@ -21,7 +21,6 @@ def search_ldap(entity="users", name=None, filter=None):
         # only the attributes specified will be returned
         res = ldap_conn.search(search_base, search_filter, attributes=["*"])
         print(res)
-        print(len(res))
         if res[0] == True and entity == "users":
             results = [
                 (
@@ -32,6 +31,7 @@ def search_ldap(entity="users", name=None, filter=None):
                         "username": dict(i["attributes"])["cn"][1],
                         "email": dict(i["attributes"])["mail"][0],
                         "surname": dict(i["attributes"])["sn"][0],
+                        "gidNumber":dict(i["attributes"])["gidNumber"][0] or None,
                     }
                 )
                 for i in res[2]
