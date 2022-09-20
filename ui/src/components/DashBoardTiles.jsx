@@ -30,9 +30,9 @@ const DashBoardTiles = ({ users, groups, roles }) => {
   return (
     <>
       <div class="cds--grid">
-        <div class="cds--row" style={{"display":"flex","flex-wrap": "wrap", "flex-shrink": "shrink"}}> 
+        <div class="cds--row"> 
           {tileOptions.map((option) => (
-            <div class="cds--col-lg-4 cds--col-md-2 cds--col-sm-1">
+            <div class="cds--col-lg-4 cds--col-md-8 cds--col-sm-4" style={{"padding-bottom":"1em"}}>
               <ClickableTile
                 style={{"padding":"5px"}}
                 href={option.path}

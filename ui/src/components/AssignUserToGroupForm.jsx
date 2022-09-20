@@ -18,6 +18,7 @@ const AssignUserToGroupForm = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
 
+  const [group, setGroup] =useState("");
   const updateSelected = (value, action) => {
     setSelected(selected.filter((item) => item !== value));
     if (action === true) {
@@ -26,8 +27,10 @@ const AssignUserToGroupForm = () => {
   };
 
   const users = [];
+  const groups =[];
   cookieUsers.forEach((user) => {
     users.push(user.id || user.user_name);
+    groups.push(user.group_name)
   });
 
   const groupSelectComponents = cookieRoles.map((row, idx) => (
@@ -48,12 +51,12 @@ const AssignUserToGroupForm = () => {
   };
   return (
     <>
-      <div className="cds--grid">
+      <div className="cds--grid" >
         <div className="cds--row">
           <div className="cds--col-lg-2 cds--col-md-2"></div>
-          <div className="cds--col">
+          <div className="cds--col-lg-8 formWrapper">
             <div className="cds--row">
-              <div className="cds--col">
+              <div className="cds--col-lg-16">
                 <ComboBox
                   ariaLabel="ComboBox"
                   id="user_id"
@@ -71,34 +74,30 @@ const AssignUserToGroupForm = () => {
               </div>
             </div>
             <div className="cds--row">
-              <div className="cds--col">
-                <p>Groups</p>
-                <em style={{ color: "green" }}>
-                  Groups Selected: [{selected.join(",")}]
-                </em>
-                <ExpandableTile
-                  tabIndex={0}
-                  tileCollapsedIconText="Interact to Expand tile"
-                  tileExpandedIconText="Interact to Collapse tile"
-                  tileMaxHeight={0}
-                  tilePadding={0}
-                >
-                  <TileAboveTheFoldContent>
-                    <div style={{ height: "32px" }}>Select Group</div>
-                  </TileAboveTheFoldContent>
-                  <TileBelowTheFoldContent>
-                    {groupSelectComponents}
-                  </TileBelowTheFoldContent>
-                </ExpandableTile>
+              <div className="cds--col-lg-16">
+                <ComboBox
+                  ariaLabel="ComboBox"
+                  id="group_name"
+                  items={groups}
+                  label="Select a Group"
+                  className="input-block"
+                  titleText="Select A Group"
+                  onChange={(e) => {
+                    setUserInfo({
+                      ...userInfo,
+                      group_name: e.selectedItem,
+                    });
+                  }}
+                />
               </div>
             </div>
             <br />
-            <div className="cds--row">
-              <div className="cds--col">
-                <Button kind="secondary" className="block">
+            <div className="cds--row" style={{"margin": "auto;"}}>
+              <div className="cds--col-lg-16" style={{"margin": "0 !important;"}}>
+                <Button kind="secondary" className="block" >
                   Cancel
                 </Button>
-                <Button className="block" onClick={() => {}}>
+                <Button className="block" onClick={() => {}} >
                   Save
                 </Button>
               </div>

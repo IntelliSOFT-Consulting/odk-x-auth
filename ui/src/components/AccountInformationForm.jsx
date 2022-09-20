@@ -7,7 +7,7 @@ const AccountInformationForm = () => {
     <div className="LoginFormComponent">
       <div className="cds--grid">
         <div className="cds--row">
-          <div className="cds--col-sm-4 cds--col-md-8 cds--col-lg-16">
+          <div className="cds--col-sm-4 cds--col-md-8 cds--col-lg-16" style={{"backgroundColor": "lightgray"}}>
             
             <Form style={{ minWidth: "500px" }}>
             <p>User Name</p>
