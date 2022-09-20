@@ -1,1 +1,1 @@
-docker build -t intellisoftkenya/odk-x-auth ../
+docker build -t intellisoftkenya/odk-x-auth /

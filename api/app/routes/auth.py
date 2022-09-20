@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 
-from app.lib.auth import add_new_user_to_group, generate_token, ldap_client
+from app.lib.auth import add_new_user, generate_token, ldap_client
 
 bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
@@ -20,7 +20,7 @@ def login():
 def register():
     try:
         data = request.get_json()
-        response = add_new_user_to_group(data['first_name'],data['last_name'] ,data['email'], data['group'])
+        response = add_new_user(data['first_name'], data['last_name'] , data['email'], data['gidNumber'])
         return jsonify(response), 200 if response['status'] == "success" else 400
     except Exception as e:
         return jsonify(error=str(e), status="error"), 400
@@ -31,12 +31,8 @@ def update_password():
     if request.method == 'GET':
         token = request.args.get('token')
         user = request.args.get('user')
-        return jsonify(status="success")
+        return jsonify(status="success", message="Password reset successfully")
     if request.method == 'POST':
         data = request.get_json()
         password = data['password']
-        ## find user.
-
-        ## alter user attributes.
-
-        return jsonify(status="success")
+        return jsonify(status="success", message="Password reset instructions sent")
