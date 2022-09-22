@@ -92,8 +92,8 @@ const NewUserForm = () => {
         })
         .eachPage((records, fetchNextPage) => {
           console.log(`${records.length} Users`);
-          let users = records.map((row) => row._rawJson.fields);
-          setCookie("odk-users", users, 1);
+          // let users = records.map((row) => row._rawJson.fields);
+          // setCookie("odk-users", users, 1);
           navigate("/");
         });
     };

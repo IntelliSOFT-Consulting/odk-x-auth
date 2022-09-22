@@ -1,20 +1,26 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import DataGrid from "../components/DataGrid";
 import AppHeader from "../components/AppHeader";
 import { LDAPApi } from "../api/auth";
 import DynamicDataGrid from "../components/DynamicDataGrid";
 import { getCookie } from "../api/cookie";
+import ApplicationContext from "../ApplicationContext";
 
 // let allUsers = await LDAPApi({ url: `/api/users`, method: 'GET' })
 
 const headers = [
+
+  {
+    key: "id",
+    header: "UID",
+  },
   {
     key: "user_name",
     header: "User Name",
   },
   {
-    key: "role",
-    header: "Role",
+    key: "group_name",
+    header: "Group Name",
   },
   {
     key: "created_by",
@@ -23,26 +29,21 @@ const headers = [
   {
     key: "date_created",
     header: "Date Created",
-  },
-  {
-    key: "number_of_groups",
-    header: "Number of Groups",
   }
 ];
 
-
 const Users = () => {
- const cookieUsers = JSON.parse(getCookie("odk-users")) 
- console.log("The Cookie Users: ",cookieUsers)  
-  const userList =[];
-  cookieUsers.forEach(user =>{
+const { users } = useContext(ApplicationContext);
+ const storedUsers = users; //JSON.parse(getCookie("odk-users")) 
+ console.log("The Cookie Users From Cookies: ",storedUsers)  
+ const userList =[];
+  storedUsers.forEach(user =>{
     let row =  {
-      id: user.id || user.user_name,
+      id: user.uid || "-",
       user_name: user.user_name,
-      role: user.role,
-      created_by: user.created_by.name,
+      group_name: user.group_name || "",
+      created_by: "",
       date_created: user.created_time,
-      number_of_groups: !user.group_name ? 0: user.group_name.length
      
     }
     userList.push(row)
