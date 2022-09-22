@@ -8,16 +8,15 @@ import { apiHost } from "../api/auth";
 import Footer from "../pages/Footer";
 import base from "../api/airtable";
 import Swal from "sweetalert2";
-
-
+import { Link, Modal } from "@carbon/react";
+import ApplicationContext from "../ApplicationContext";
+import { useContext } from "react";
 
 const LoginForm = () => {
   const [loginInfo, setLoginInfo] = useState({});
   let navigate = useNavigate();
-  let [open, setOpen] = useState(false);
-  let [message, setMessage] = useState(false);
-
- 
+  let [isOpen, setIsOpen] = useState(false);
+  const [passwordChangeInfo, setPasswordChangeInfo] = useState({});
 
   const [allRecords, setAllRecords] = useState([]);
   useEffect(() => {
@@ -63,12 +62,82 @@ const LoginForm = () => {
             icon: "error",
             confirmButtonText: "Okay",
           });
-        }else{
-            setCookie("token",loginInfo["username"],1)
-            navigate("/dashboard")
+        } else {
+          setCookie("token", loginInfo["username"], 1);
+          navigate("/dashboard");
         }
       }
     }
+  };
+  const defaultModaloptions = () => {
+    const danger = false;
+    const modalHeading = "Change Password";
+    const modalLabel = "";
+    const primaryButtonText = "Save";
+    const secondaryButtonText = "Cancel";
+    let content = (
+      <ChangePasswordForm setPasswordChangeInfo={setPasswordChangeInfo} />
+    );
+    const someFun = () => {
+      alert("I am pied piper...");
+    };
+    return {
+      danger,
+      modalHeading,
+      modalLabel,
+      secondaryButtonText,
+      primaryButtonText,
+      content,
+      someFun,
+    };
+  };
+  let onRequestClose = () => {
+    setIsOpen(false);
+  };
+  let onRequestSubmit = () => {
+    setIsOpen(false);
+    const payload = passwordChangeInfo;
+
+    const actualID = payload.id;
+    delete payload["id"];
+    console.log("id:" + actualID + ", fields: " + JSON.stringify(payload));
+
+    if (actualID === undefined || payload === {}) {
+      Swal.fire({
+        title: "No data to change",
+        icon: "info",
+        text: "Nothing to change",
+      });
+
+      return;
+    }
+    base("Users").update(
+      [
+        {
+          id: actualID,
+          fields: payload,
+        },
+      ],
+      function (err, records) {
+        if (err) {
+          Swal.fire({
+            title: `Error!:${err.error}`,
+            icon: "error",
+            html: `${err.message}`,
+            confirmButtonText: "Okay",
+          });
+          return;
+        }
+        // records.forEach(function (record) {
+        Swal.fire({
+          title: "Records Updated",
+          icon: "success",
+          html: `Updated record for ${actualID}`,
+          confirmButtonText: "Okay",
+        });
+        window.location.reload(false);
+      }
+    );
   };
 
   return (
@@ -108,12 +177,97 @@ const LoginForm = () => {
                   Log In
                 </Button>
               </div>
+              <div>
+                <Button
+                  kind="ghost"
+                  onClick={() => {
+                    setIsOpen(true);
+                  }}
+                >
+                  Forgot Password
+                </Button>
+              </div>
             </Form>
           </div>
         </div>
       </div>
+      {isOpen && (
+        <ChangePasswordModal
+          options={{
+            ...defaultModaloptions(),
+            onRequestClose,
+            onRequestSubmit,
+          }}
+        />
+      )}
     </>
   );
 };
 
+const ChangePasswordModal = ({ options }) => {
+  return (
+    <Modal
+      open
+      alert={true}
+      danger={options.danger}
+      modalHeading={options.modalHeading}
+      modalLabel={options.modalLabel || ""}
+      primaryButtonText={options.primaryButtonText}
+      secondaryButtonText={options.secondaryButtonText}
+      onRequestClose={options.onRequestClose}
+      onRequestSubmit={options.onRequestSubmit}
+    >
+      {options.content}
+    </Modal>
+  );
+};
+
+const ChangePasswordForm = ({ setPasswordChangeInfo }) => {
+  const { users, groups } = useContext(ApplicationContext);
+  const [passwordPayload, setPasswordPayLoad] = useState({});
+  return (
+    <>
+      <div className="cds--grid">
+        <div className="cds--row">
+          <div className="cds--col-lg-16">
+            <Form>
+              <div className="cds--row">
+                <div className="cds--col-lg-16">
+                  <Button kind="danger--ghost">Get token</Button>
+                  <br />
+                </div>
+              </div>
+              <div className="cds--row">
+                <div className="cds--col-lg-16">
+                  <TextInput id="token" type="text" required placeholder="Input Token" />
+                  <br />
+                </div>
+              </div>
+
+              <div className="cds--row">
+                <div className="cds--col-lg-16">
+                  <TextInput
+                    id="new_password"
+                    type="password"
+                    placeholder="Input New Password"
+                  />
+                  <br />
+                </div>
+              </div>
+              <div className="cds--row">
+                <div className="cds--col-lg-16">
+                  <TextInput
+                    type="password"
+                    id="confirm_password"
+                    placeholder="Confirm New Password"
+                  />
+                </div>
+              </div>
+            </Form>
+          </div>
+        </div>{" "}
+      </div>
+    </>
+  );
+};
 export default LoginForm;

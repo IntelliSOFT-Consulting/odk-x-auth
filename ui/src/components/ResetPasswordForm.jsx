@@ -30,7 +30,7 @@ const ResetPasswordForm = () => {
                 >
                   Cancel
                 </Button>
-                <Button className="block" onClick={() => {}}>
+                <Button className="block" onClick={() => {alert("Link sent to email.")}}>
                   Request Link
                 </Button>
               </div>

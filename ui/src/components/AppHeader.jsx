@@ -187,8 +187,8 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
                 </SideNavMenu>
                 <SideNavMenu
                   title="Account Information"
-                  isActive={["Account Information","Reset Password"].includes(pageHeading)}
-                  defaultExpanded={["Account Information","Reset Password"].includes(pageHeading)}
+                  isActive={["Account Information","Reset Password","Confirm Password"].includes(pageHeading)}
+                  defaultExpanded={["Account Information","Reset Password","Confirm Password"].includes(pageHeading)}
                  
                 >
                   <SideNavMenuItem href="/account-information" isActive={["Account Information"].includes(pageHeading)} >
@@ -229,8 +229,8 @@ const StoryContent = ({ content, pageHeading, path }) => {
       <main className="bx--content bx-ce-demo-devenv--ui-shell-content">
         <div className="bx--grid">
           <div className="bx--row">
-            <div class="cds--col-lg-3 cds--col-md-3"></div>
-            <div class="cds--col-lg-11">
+            <div className="cds--col-lg-3 cds--col-md-3"></div>
+            <div className="cds--col-lg-11">
               <Breadcrumb>
                 <BreadcrumbItem isCurrentPage href={path}>{`${path
                   .replace("/", "")
@@ -239,7 +239,7 @@ const StoryContent = ({ content, pageHeading, path }) => {
               <h2>{pageHeading}</h2>
               <div style={{ "margin-top": "7%" }}>{content}</div>
             </div>
-            <div class="cds--col-lg-5"></div>
+            <div className="cds--col-lg-5"></div>
           </div>
         </div>
       </main>

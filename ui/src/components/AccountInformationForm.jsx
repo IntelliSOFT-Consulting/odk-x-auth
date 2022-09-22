@@ -1,8 +1,13 @@
 import TextInput from '@carbon/react/lib/components/TextInput';
 import { Button, Form, Select, SelectItem } from 'carbon-components-react';
-import React from 'react'
+import React, { useContext } from 'react'
+import ApplicationContext from '../ApplicationContext';
 
 const AccountInformationForm = () => {
+
+  const {users, groups} = useContext(ApplicationContext);
+
+  const groupList = groups.map(row=><SelectItem value={row.group_name} text={row.group_name} />)
   return (
     <div className="LoginFormComponent">
       <div className="cds--grid">
@@ -37,8 +42,7 @@ const AccountInformationForm = () => {
                     value="placeholder-item"
                     text="Select a user group"
                   />
-                  <SelectItem value="Group 1" text="Admin" />
-                  <SelectItem value="Group 2" text="User" />
+                 {groupList}
                 </Select>
               </div>
 

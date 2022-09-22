@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
-import { ClickableTile, FlexGrid, Row, Column } from "@carbon/react";
-import { Card } from "@carbon/ibmdotcom-react";
+import React, { useEffect,useContext  } from "react";
+import { ClickableTile} from "@carbon/react";
 import { setCookie } from "../api/cookie";
 import {User, Group } from "@carbon/icons-react";
 
 const DashBoardTiles = ({ users, groups, roles }) => {
+ 
   const tileOptions = [
     {
       tileName: "Users",
@@ -21,14 +21,12 @@ const DashBoardTiles = ({ users, groups, roles }) => {
       icon: <Group size={40}/>
     },
   ];
-  useEffect(() => {
-    console.log("To store in cookies", JSON.stringify(groups));
-    setCookie("odk-users", JSON.stringify(users), 1);
-    setCookie("odk-groups", JSON.stringify(groups), 1);
-    setCookie("odk-roles", JSON.stringify(roles), 1);
-  }, [users, groups, roles]);
+  
+
+  
   return (
     <>
+    
       <div class="cds--grid">
         <div class="cds--row"> 
           {tileOptions.map((option) => (
