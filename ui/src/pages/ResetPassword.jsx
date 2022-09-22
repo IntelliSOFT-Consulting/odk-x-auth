@@ -1,10 +1,10 @@
 import React from 'react'
-import AppHeader from '../components/AppHeader'
+import SelfService from '../components/SelfService'
 import ResetPasswordForm from '../components/ResetPasswordForm'
 
 const ResetPassword = () => {
   return (
-    <AppHeader children={<ResetPasswordForm/>} pageHeading="Reset Password"/>
+    <SelfService children={<ResetPasswordForm/>} pageHeading="Reset Password"/>
   )
 }
 

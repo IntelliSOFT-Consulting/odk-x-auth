@@ -5,20 +5,21 @@ import React from "react";
 import { useState } from "react";
 import { useContext } from "react";
 import ApplicationContext from "../ApplicationContext";
-
+import * as qs from 'query-string';
 import Swal from "sweetalert2";
 import base from "../api/airtable";
 
 const ConfirmPasswordForm = () => {
   const { users } = useContext(ApplicationContext);
 
-  const userList = users.map((user) => user.user_name);
-
+  const args = qs.parse(window.location.search);
   const [userInfo, setUserInfo] = useState({});
-
+  const handleCancel =()=>{
+    console.log(args);
+  };
   const changePassword = () => {
     const userRecord = users.filter(
-      (user) => user.user_name === userInfo.user_name
+      (user) => user.user_name === args.user_name
     );
     const actualID = userRecord[0].uid;
 
@@ -87,24 +88,7 @@ const ConfirmPasswordForm = () => {
           <div className="cds--col-lg-2 cds--col-md-2"></div>
           <div className="cds--col-lg-8">
             <Form>
-              <div className="cds--row">
-                <div className="cds--col-lg-16">
-                  <ComboBox
-                    ariaLabel="ComboBox"
-                    id="group_name"
-                    items={userList}
-                    label="Select a User"
-                    className="input-block"
-                    titleText="User"
-                    onChange={(e) => {
-                      setUserInfo({
-                        ...userInfo,
-                        user_name: e.selectedItem,
-                      });
-                    }}
-                  />
-                </div>
-              </div>
+              
               <div className="cds--row">
                 <div className="cds--col-lg-16">
                   <TextInput
@@ -140,7 +124,7 @@ const ConfirmPasswordForm = () => {
               </div>
               <div className="cds--row">
                 <div className="cds--col-lg-16">
-                  <Button kind="secondary" className="block">
+                  <Button kind="secondary" className="block" onClick={()=>{handleCancel()}}>
                     Cancel
                   </Button>
                   <Button
