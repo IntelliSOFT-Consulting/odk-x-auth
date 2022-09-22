@@ -5,14 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { getCookie, setCookie } from "../api/cookie";
 import Swal from "sweetalert2";
 import base from "../api/airtable";
+import ApplicationContext from "../ApplicationContext";
+import { useContext } from "react";
 
 const NewUserForm = () => {
   const navigate = useNavigate();
-  const [userInfo, setUserInfo] = useState({});
-  const cookieRoles = JSON.parse(getCookie("odk-roles"));
 
-  const roleSelectComponents = cookieRoles.map((row) => (
-    <SelectItem value={row.role_name} text={row.role_name} />
+  const {groups} = useContext(ApplicationContext)
+  const [userInfo, setUserInfo] = useState({});
+  const allGroups = groups;//JSON.parse(getCookie("odk-roles"));
+
+  const roleSelectComponents = allGroups.map((row) => (
+    <SelectItem value={row.group_name} text={row.group_name} />
   ));
   const addUser = () => {
     console.log(userInfo);
@@ -21,7 +25,7 @@ const NewUserForm = () => {
       "email",
       "last_name",
       "password",
-      "role",
+      "group_name",
     ];
     let filledInFields = Object.keys(userInfo);
     let missingFields =
@@ -174,11 +178,11 @@ const NewUserForm = () => {
               <div className="cds--row">
                 <div className="cds--col">
                   <Select
-                    id="role_name"
+                    id="group_name"
                     defaultValue="placeholder-item"
                     labelText="Group Name"
                     onChange={(e) => {
-                      setUserInfo({ ...userInfo, role: e.target.value });
+                      setUserInfo({ ...userInfo, group_name: e.target.value });
                     }}
                   >
                     <SelectItem
