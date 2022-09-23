@@ -84,7 +84,6 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
 
   useEffect(() => {
     setPath(location.pathname);
-    
   }, []);
 
   const navigate = useNavigate();

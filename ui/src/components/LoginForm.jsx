@@ -178,10 +178,11 @@ const LoginForm = () => {
                 </Button>
               </div>
               <div>
+                <Button kind="ghost"></Button>
                 <Button
                   kind="ghost"
                   onClick={() => {
-                    setIsOpen(true);
+                    navigate("/reset-password")
                   }}
                 >
                   Forgot Password

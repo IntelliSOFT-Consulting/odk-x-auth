@@ -26,7 +26,7 @@ function App() {
         <Route path="/new-group" exact element={<NewGroup />} />
         <Route path="/assign-user-to-group" exact element={<AssignUserToGroup />} />
         <Route path="/account-information" exact element={<AccountInformation />} />
-        <Route path="/reset-password" exact element={<ConfirmPassword />} />
+        <Route path="/reset-password" exact element={<ResetPassword />} />
         <Route path="/confirm-password" exact element={<ConfirmPassword />} />
       </Routes>
     </Router>
