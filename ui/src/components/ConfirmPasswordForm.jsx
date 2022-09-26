@@ -19,7 +19,7 @@ const ConfirmPasswordForm = () => {
   };
   const changePassword = () => {
     const userRecord = users.filter(
-      (user) => user.user_name === args.user_name
+      (user) => user.user_name === args.username_rp
     );
     const actualID = userRecord[0].uid;
 
