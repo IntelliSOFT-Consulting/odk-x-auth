@@ -44,7 +44,7 @@ const AssignUserToGroupForm = () => {
     let contextGroup = cookieGroups.filter(row => row.group_name === userInfo.group_name)
     let contextUser = cookieUsers.filter(row => row.user_name === userInfo.user_name)
     
-    alert(JSON.stringify(contextUser))
+    
     const actualID = contextUser[0].uid;
     const group_name = userInfo.group_name
     console.log(actualID, group_name);
