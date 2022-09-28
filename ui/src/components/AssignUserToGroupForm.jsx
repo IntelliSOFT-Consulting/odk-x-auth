@@ -10,103 +10,133 @@ import { Button, Form, Select, SelectItem } from "carbon-components-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCookie } from "../api/cookie";
+import Swal from "sweetalert2";
+import base from "../api/airtable";
+import { useContext } from "react";
+import ApplicationContext from "../ApplicationContext";
+
 
 const AssignUserToGroupForm = () => {
-  const cookieRoles = JSON.parse(getCookie("odk-groups"));
-  const cookieUsers = JSON.parse(getCookie("odk-users"));
-  const [selected, setSelected] = useState([]);
+  const {users, groups} = useContext(ApplicationContext);
+  const cookieGroups = groups;
+  const cookieUsers = users;
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
+  const usersList = [];
+  let allGroups =[];
+  cookieUsers.forEach((u) => {
+    usersList.push(u.user_name || u.id );
+  });
 
-  const updateSelected = (value, action) => {
-    setSelected(selected.filter((item) => item !== value));
-    if (action === true) {
-      setSelected([...new Set(selected), value]);
-    }
-  };
-
-  const users =[]
-  cookieUsers.forEach(user=>{
-    users.push(user.id || user.user_name)
-  })
+  cookieGroups.forEach((groupObj)=>allGroups.push(groupObj.group_name))
+  console.log("e===>"+JSON.stringify(cookieUsers))
   
-  const groupSelectComponents = cookieRoles.map((row, idx) => (
-    <Checkbox
-      labelText={row.group_name}
-      id={row.group_name}
-      onChange={(e) => {
-        updateSelected(e.target.id, e.target.checked);
-      }}
-    />
-  ));
-  const adduserToGroup =()=>{
-    if (!userInfo.user_name){
-      return
+  const adduserToGroup = () => {
+    if (!userInfo.user_name || !userInfo.group_name) {
+        Swal.fire({
+          title: `Error!`,
+          html: `Please Provide both Username and Group`,
+          icon: "error",
+          confirmButtonText: "Okay",
+        })
+      return;
     }
-    if(selected.length < 0){
+    let contextGroup = cookieGroups.filter(row => row.group_name === userInfo.group_name)
+    let contextUser = cookieUsers.filter(row => row.user_name === userInfo.user_name)
+    
+    
+    const actualID = contextUser[0].uid;
+    const group_name = userInfo.group_name
+    console.log(actualID, group_name);
+    base('Users').update([
+      {
+        "id": actualID,
+        "fields": {group_name}
+      }
+      
+    ], function(err, records) {
+      if (err) {
+        Swal.fire({
+          title:`Error!:${err.error}`,
+          icon: "error",
+          html:`${err.message}`,
+          confirmButtonText: "Okay",
+        })
+        return;
+      }
+      records.forEach(function(record) {
+        Swal.fire({
+          title:"Assignment Successful",
+          icon: "success",
+          html:`Updated record for ${userInfo.user_name}`,
+          confirmButtonText: "Okay",
+        })
 
-    }
+      });
+    });
   }
   return (
-    <div>
-      <div className="cds--grid">
+    <>
+    <p>{ }</p>
+      <div className="cds--grid" >
         <div className="cds--row">
-          <div className="cds--col-sm-4 cds--col-md-8 cds--col-lg-16">
-            <Form>
-              <p>User ID</p>
-              <ComboBox
-                ariaLabel="ComboBox"
-                id="user_id"
-                items={users}
-                label="Combo box menu options"
-                titleText="Select A user"
-                onChange={(e) => {
-                  setUserInfo({
-                    ...userInfo,
-                    user_name: e.target.value,
-                  });
-                }}
-              />
-
-              <p>Groups</p>
-              <em style={{ color: "green" }}>
-                Groups Selected: [{selected.join(",")}]
-              </em>
-              <ExpandableTile
-                tabIndex={0}
-                tileCollapsedIconText="Interact to Expand tile"
-                tileExpandedIconText="Interact to Collapse tile"
-                tileMaxHeight={0}
-                tilePadding={0}
-              >
-                <TileAboveTheFoldContent>
-                  <div style={{ height: "32px" }}>Select Group</div>
-                </TileAboveTheFoldContent>
-                <TileBelowTheFoldContent>
-                  {groupSelectComponents}
-                </TileBelowTheFoldContent>
-              </ExpandableTile>
-
-              <br />
-              <div className="LoginButtons">
-                <Button kind="secondary" style={{ width: "100%" }}>
+          <div className="cds--col-lg-2 cds--col-md-2"></div>
+          <div className="cds--col-lg-8 formWrapper">
+            <div className="cds--row">
+              <div className="cds--col-lg-16">
+                <ComboBox
+                  ariaLabel="ComboBox"
+                  id="user_id"
+                  items={usersList}
+                  label="Combo box menu options"
+                  className="input-block"
+                  titleText="Select A user"
+                  onChange={(e) => {
+                    setUserInfo({
+                      ...userInfo,
+                      user_name: e.selectedItem,
+                    });
+                  }}
+                />
+              </div>
+            </div>
+            <div className="cds--row">
+              <div className="cds--col-lg-16">
+                <ComboBox
+                  ariaLabel="ComboBox"
+                  id="group_name"
+                  items={allGroups}
+                  label="Select a Group"
+                  className="input-block"
+                  titleText="Select A Group"
+                  onChange={(e) => {
+                    setUserInfo({
+                      ...userInfo,
+                      group_name: e.selectedItem,
+                    });
+                  }}
+                />
+              </div>
+            </div>
+            <br />
+            <div className="cds--row" style={{"margin": "auto;"}}>
+              <div className="cds--col-lg-16" style={{"margin": "0 !important;"}}>
+                <Button kind="secondary" className="block" onClick={() =>{navigate("/")}}>
                   Cancel
                 </Button>
-                <Button
-                  style={{ width: "100%" }}
-                  onClick={() => {
-                    window.location.href = "#";
-                  }}
-                >
+                <Button className="block" onClick={() => {adduserToGroup()}} >
                   Save
                 </Button>
               </div>
-            </Form>
+            </div>
           </div>
+          <div className="cds--col-lg-2 cds--col-md-2"></div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
+
+const TestForm = () => {};
 
 export default AssignUserToGroupForm;

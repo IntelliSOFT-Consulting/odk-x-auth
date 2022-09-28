@@ -1,3 +1,4 @@
+import { Modal } from '@carbon/react';
 import React from 'react'
 
 const LogoutForm = () => {
@@ -5,5 +6,8 @@ const LogoutForm = () => {
     <div></div>
   )
 }
+
+
+
 
 export default LogoutForm

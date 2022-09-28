@@ -5,7 +5,7 @@ import { getCookie } from "../api/cookie";
 
 const sessionIsValid = () => {
   let cookie = getCookie("token");
-  console.log(cookie);
+  console.log("The cookie is "+cookie);
   return cookie;
 };
 const Index = () => {

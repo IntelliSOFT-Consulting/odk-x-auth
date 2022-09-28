@@ -11,10 +11,11 @@ import AccountInformation from "./pages/AccountInformation";
 import ResetPassword from "./pages/ResetPassword";
 import ConfirmPassword from "./pages/ConfirmPassword";
 import NewUser from "./pages/NewUser";
-
+import {ApplicationProvider} from "./ApplicationContext";
 function App() {
   return (
     <>
+    <ApplicationProvider>
     <Router>
       <Routes>
         <Route path="/" exact element={<Index />} />
@@ -29,6 +30,7 @@ function App() {
         <Route path="/confirm-password" exact element={<ConfirmPassword />} />
       </Routes>
     </Router>
+    </ApplicationProvider>
     </>
   );
 }

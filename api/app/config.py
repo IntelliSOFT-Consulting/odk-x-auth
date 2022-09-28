@@ -11,12 +11,12 @@ LDAP_PORT = os.environ.get("LDAP_PORT") or int("389")
 
 # openldap
 # LDAP_ORGANISATION=Open Data Kit
-LDAP_DOMAIN = os.environ.get("LDAP_HOST") or "example.org"
+LDAP_DOMAIN = os.environ.get("LDAP_DOMAIN") or "example.org"
 LDAP_BASE = ""
 for i in LDAP_DOMAIN.split("."):
     LDAP_BASE += "dc={},".format(i)
 
-LDAP_BASE = LDAP_BASE[:len(LDAP_BASE) - 1]
+LDAP_BASE = LDAP_BASE[: len(LDAP_BASE) - 1]
 
 BASE_GROUP_DN = "ou=default_prefix,ou=groups,{}".format(LDAP_BASE)
 BASE_USER_DN = "ou=people,{}".format(LDAP_BASE)
@@ -34,4 +34,4 @@ SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
 
 
 # application configuration
-TOKEN_EXPIRY = 60 * 15  #Seconds
+TOKEN_EXPIRY = 60 * 15  # Seconds

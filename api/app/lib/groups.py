@@ -67,15 +67,13 @@ def add_user_to_group(user, gidNumber):
     try:
         ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
         # this will add group1 to the base directory tree
-        user = "{},{}".format(user, BASE_USER_DN)
-        print(user)
-        group = "{},{}".format(gidNumber, BASE_GROUP_DN)
-        # response = ldap_conn.modify(
-        #     'gidNumber={},{}'.format(group, BASE_GROUP_DN),
-
-        # )
-        response = addUsersInGroups(ldap_conn, [user], [group])
-        return {"error": response, "status": "error"}
+        user = "cn={},{}".format(user, BASE_USER_DN)
+        group = "gidNumber={},{}".format(gidNumber, BASE_GROUP_DN)
+        print(user, group)
+        response = ldap_conn.extend.microsoft.add_members_to_groups(user, group)
+        print(response)
+        print(ldap_conn.result)
+        return {"response": response, "status": "success"}
     except LDAPException as e:
         print(e)
         response = {"status": "error", "error": str(e)}
