@@ -51,7 +51,6 @@ def access_token_required(f):
 
 
 def add_new_user(first_name, last_name, email):
-
     try:
         full_names = first_name + " " + last_name
     # Bind connection to LDAP server
@@ -79,17 +78,16 @@ def add_new_user(first_name, last_name, email):
         response = e
         return {"error": response, "status": "error"}
 
-
-def modify_ldap_user(gidNumber, data):
-    try:
-        ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
-        # this will add group1 to the base directory tree
-        response = ldap_conn.modify('gidNumber={},{}'.format(
-            group, BASE_GROUP_DN),
-            MODIFY_ADD,
-            "{},{}".format(user, )
-        )
-    except LDAPException as e:
-        response = ("The error is ", e)
-    ldap_conn.unbind()
-    return response
+# def modify_ldap_user(gidNumber, data):
+#     try:
+#         ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+#         # this will add group1 to the base directory tree
+#         response = ldap_conn.modify('gidNumber={},{}'.format(
+#             group, BASE_GROUP_DN),
+#             MODIFY_ADD,
+#             "{},{}".format(user, )
+#         )
+#     except LDAPException as e:
+#         response = ("The error is ", e)
+#     ldap_conn.unbind()
+#     return response

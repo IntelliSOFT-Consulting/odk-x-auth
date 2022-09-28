@@ -48,19 +48,19 @@ def delete_ldap_group(gidNumber):
     return response
 
 
-def modify_ldap_group(gidNumber, data):
-    try:
-        ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
-        # this will add group1 to the base directory tree
-        response = ldap_conn.modify('gidNumber={},{}'.format(
-            group, BASE_GROUP_DN),
-            MODIFY_ADD,
-            "{},{}".format(user, )
-        )
-    except LDAPException as e:
-        response = ("The error is ", e)
-    ldap_conn.unbind()
-    return response
+# def modify_ldap_group(gidNumber, data):
+#     try:
+#         ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+#         # this will add group1 to the base directory tree
+#         response = ldap_conn.modify('gidNumber={},{}'.format(
+#             group, BASE_GROUP_DN),
+#             MODIFY_ADD,
+#             "{},{}".format(user, )
+#         )
+#     except LDAPException as e:
+#         response = ("The error is ", e)
+#     ldap_conn.unbind()
+#     return response
 
 
 def add_user_to_group(user, gidNumber):
