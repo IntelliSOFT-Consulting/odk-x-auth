@@ -1,11 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.lib.search import search_ldap
-from app.lib.groups import (
-    add_ldap_group,
-    add_user_to_group,
-    delete_ldap_group,
-    modify_ldap_group,
-)
+from app.lib.groups import add_ldap_group, add_user_to_group, delete_ldap_group
+
 
 bp = Blueprint("groups", __name__, url_prefix="/api/groups")
 
@@ -26,6 +22,7 @@ def list_groups():
         return jsonify(response), 200 if response["status"] == "success" else 400
     except Exception as e:
         return jsonify(error=str(e), status="error"), 400
+
 
 
 @bp.route("/<string:gidNumber>", methods=["GET"])
