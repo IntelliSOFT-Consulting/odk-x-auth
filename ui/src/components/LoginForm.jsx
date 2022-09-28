@@ -8,9 +8,10 @@ import { apiHost } from "../api/auth";
 import Footer from "../pages/Footer";
 import base from "../api/airtable";
 import Swal from "sweetalert2";
-import { Link, Modal } from "@carbon/react";
+import { Modal } from "@carbon/react";
 import ApplicationContext from "../ApplicationContext";
 import { useContext } from "react";
+
 
 const LoginForm = () => {
   const [loginInfo, setLoginInfo] = useState({});
@@ -29,10 +30,39 @@ const LoginForm = () => {
         fetchNextPage();
       });
   }, []);
-  const login = () => {
-    const content = allRecords.map((row) => row._rawJson.fields);
-    console.log(content);
+  const validateCredentials = async (user, password) => {
+    const data = { user, password };
+    const url = "/api/auth/login";
 
+    const method = "GET";
+    const params = { method, data, url, apiHost };
+    console.log("Params: "+JSON.stringify(params));
+    try {
+      let response = await fetch(String(`${apiHost}${params.url}`), {
+        headers: { "Content-Type": "application/json"},
+        method: params.method ? String(params.method) : "GET",
+        ...(params.method !== "GET" && { body: String(params.data) }),
+      });
+      let responseJSON = await response.json();
+      let res = {
+        status: "success",
+        statusText: response.statusText,
+        data: responseJSON,
+      };
+      return res;
+    } catch (error) {
+      console.error(error);
+      let res = {
+        statusText: "LDAPAPIFetch: "+JSON.stringify(params),
+        status: "error",
+        error: error,
+      };
+      console.error(error);
+      return res;
+    }
+  };
+  const login = () => {
+   
     if (!loginInfo["username"] || !loginInfo["password"]) {
       Swal.fire({
         title: "Error!",
@@ -41,32 +71,23 @@ const LoginForm = () => {
         confirmButtonText: "Okay",
       });
     } else {
-      let match = content.filter(
-        (user) => user.user_name === loginInfo["username"]
-      );
-
-      if (!match[0]) {
-        Swal.fire({
-          title: "Error!",
-          text: `Sorry, user ${loginInfo["username"]} does not exist in our database`,
-          icon: "error",
-          confirmButtonText: "Okay",
-        });
-      } else {
-        console.log(match);
-        let record = match[0];
-        if (record["password"] !== loginInfo["password"]) {
-          Swal.fire({
-            title: "Error",
-            text: `Oops, you got the password wrong.`,
-            icon: "error",
-            confirmButtonText: "Okay",
-          });
-        } else {
-          setCookie("token", loginInfo["username"], 1);
-          navigate("/dashboard");
+      console.log(loginInfo["username"], loginInfo["password"])
+      validateCredentials(loginInfo["username"], loginInfo["password"]).then(
+        (res) => {
+          if (res.status === "error") {
+            Swal.fire({
+              title: "Error!",
+              text: res.statusText,
+              icon: "error",
+              confirmButtonText: "Okay",
+            });
+          } else {
+            setCookie("token", res["token"], 1);
+            setCookie("username", loginInfo["username"], 1);
+            navigate("/dashboard");
+          }
         }
-      }
+      );
     }
   };
   const defaultModaloptions = () => {
@@ -182,7 +203,7 @@ const LoginForm = () => {
                 <Button
                   kind="ghost"
                   onClick={() => {
-                    navigate("/reset-password")
+                    navigate("/reset-password");
                   }}
                 >
                   Forgot Password
@@ -240,7 +261,12 @@ const ChangePasswordForm = ({ setPasswordChangeInfo }) => {
               </div>
               <div className="cds--row">
                 <div className="cds--col-lg-16">
-                  <TextInput id="token" type="text" required placeholder="Input Token" />
+                  <TextInput
+                    id="token"
+                    type="text"
+                    required
+                    placeholder="Input Token"
+                  />
                   <br />
                 </div>
               </div>

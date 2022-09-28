@@ -1,10 +1,12 @@
 import React, { createContext, useState } from "react";
 import { useEffect } from "react";
 import base from "./api/airtable";
+import {LDAPApi} from "./api/auth"
 const ApplicationContext = createContext();
 export function ApplicationProvider({ children }) {
   const [users, setUsers] = useState([]);
   const [groups, setGroups] = useState([]);
+  const [usersLDAP,setUsersLDAP] = useState([]);
   const fetchUsers = () => {
     base("Users")
       .select({
@@ -40,6 +42,15 @@ export function ApplicationProvider({ children }) {
         setGroups(globalGroups);
       });
   }
+
+  const fetchLDAPUSers =()=>{
+
+    const params ={
+      "method":"/users"
+    }
+    LDAPApi(params).then(r=>setUsersLDAP(r))
+
+  }
   useEffect(() => {
     fetchUsers();
     fetchGroups()
@@ -53,7 +64,7 @@ export function ApplicationProvider({ children }) {
     pageTitle === "Users"? setUsers([...users,...newArray]): setGroups([...groups,...newArray]) 
   }
   return (
-    <ApplicationContext.Provider value={{ users, groups, updateGrid }}>
+    <ApplicationContext.Provider value={{ users, groups, updateGrid, usersLDAP }}>
       {children}
     </ApplicationContext.Provider>
   );
