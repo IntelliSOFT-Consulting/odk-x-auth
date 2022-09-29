@@ -12,25 +12,27 @@ import ResetPassword from "./pages/ResetPassword";
 import ConfirmPassword from "./pages/ConfirmPassword";
 import NewUser from "./pages/NewUser";
 import {ApplicationProvider} from "./ApplicationContext";
+import Login from "./pages/Login";
 function App() {
   return (
     <>
-    <ApplicationProvider>
+    
     <Router>
       <Routes>
-        <Route path="/" exact element={<Index />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/users" exact element={<Users />} />
+        <Route path="/" exact element={<ApplicationProvider><Dashboard /></ApplicationProvider>} />
+        <Route path="/login" exact element={<Login />} />
+        <Route path="/dashboard" element={<ApplicationProvider><Dashboard /></ApplicationProvider>} />
+        <Route path="/users" exact element={<ApplicationProvider><Users /></ApplicationProvider>} />
         <Route path="/new-user" exact element={<NewUser />} />
-        <Route path="/groups" exact element={<Groups />} />
+        <Route path="/groups" exact element={<ApplicationProvider><Groups /></ApplicationProvider>} />
         <Route path="/new-group" exact element={<NewGroup />} />
         <Route path="/assign-user-to-group" exact element={<AssignUserToGroup />} />
-        <Route path="/account-information" exact element={<AccountInformation />} />
+        <Route path="/account-information" exact element={<ApplicationProvider><AccountInformation /></ApplicationProvider>} />
         <Route path="/reset-password" exact element={<ResetPassword />} />
         <Route path="/confirm-password" exact element={<ConfirmPassword />} />
       </Routes>
     </Router>
-    </ApplicationProvider>
+  
     </>
   );
 }

@@ -9,9 +9,8 @@ import Footer from "../pages/Footer";
 import base from "../api/airtable";
 import Swal from "sweetalert2";
 import { Modal } from "@carbon/react";
-import ApplicationContext from "../ApplicationContext";
-import { useContext } from "react";
 
+import { useContext } from "react";
 
 const LoginForm = () => {
   const [loginInfo, setLoginInfo] = useState({});
@@ -31,19 +30,23 @@ const LoginForm = () => {
       });
   }, []);
   const validateCredentials = async (user, password) => {
-    const data = { user, password };
+    const ldapSpecUser = `cn=${user},dc=example,dc=org`;
+    const data = { user: ldapSpecUser, password };
     const url = "/api/auth/login";
 
-    const method = "GET";
+    const method = "POST";
     const params = { method, data, url, apiHost };
-    console.log("Params: "+JSON.stringify(params));
+    console.log("Params: " + JSON.stringify(params));
     try {
       let response = await fetch(String(`${apiHost}${params.url}`), {
-        headers: { "Content-Type": "application/json"},
-        method: params.method ? String(params.method) : "GET",
-        ...(params.method !== "GET" && { body: String(params.data) }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: params.method,
+        body: JSON.stringify(params.data),
       });
       let responseJSON = await response.json();
+      console.log(responseJSON);
       let res = {
         status: "success",
         statusText: response.statusText,
@@ -53,7 +56,7 @@ const LoginForm = () => {
     } catch (error) {
       console.error(error);
       let res = {
-        statusText: "LDAPAPIFetch: "+JSON.stringify(params),
+        statusText: "LDAPAPIFetch: " + error,
         status: "error",
         error: error,
       };
@@ -62,7 +65,6 @@ const LoginForm = () => {
     }
   };
   const login = () => {
-   
     if (!loginInfo["username"] || !loginInfo["password"]) {
       Swal.fire({
         title: "Error!",
@@ -71,10 +73,14 @@ const LoginForm = () => {
         confirmButtonText: "Okay",
       });
     } else {
-      console.log(loginInfo["username"], loginInfo["password"])
+      console.log(loginInfo["username"], loginInfo["password"]);
       validateCredentials(loginInfo["username"], loginInfo["password"]).then(
         (res) => {
-          if (res.status === "error") {
+          if (
+            res.status === "error" ||
+            res.data.token === undefined ||
+            res.data.token === null
+          ) {
             Swal.fire({
               title: "Error!",
               text: res.statusText,
@@ -82,7 +88,7 @@ const LoginForm = () => {
               confirmButtonText: "Okay",
             });
           } else {
-            setCookie("token", res["token"], 1);
+            setCookie("token", res.data.token, 1);
             setCookie("username", loginInfo["username"], 1);
             navigate("/dashboard");
           }
@@ -245,7 +251,6 @@ const ChangePasswordModal = ({ options }) => {
 };
 
 const ChangePasswordForm = ({ setPasswordChangeInfo }) => {
-  const { users, groups } = useContext(ApplicationContext);
   const [passwordPayload, setPasswordPayLoad] = useState({});
   return (
     <>

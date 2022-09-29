@@ -28,6 +28,7 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import base from "../api/airtable";
+import { LDAPApi } from "../api/auth";
 import { getCookie } from "../api/cookie";
 import ApplicationContext from "../ApplicationContext";
 import TransactionalModal from "./TransactionalModal";
@@ -58,7 +59,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
         setGroupEditInfo={setGroupEditInfo}
       />
     );
-  const { updateGrid } = useContext(ApplicationContext);
+  const { users, groups } =useContext(ApplicationContext);
   const defaultModaloptions = () => {
     const danger = false;
     const modalHeading = "Edit " + pageTitle;
@@ -124,19 +125,43 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
           html: `Updated record for ${actualID}`,
           confirmButtonText: "Okay",
         });
-        // });
-        // let newArray = rowData.map((element) =>
-        //   element.id === actualID ? { ...element, ...payload } : element
-        // );
-        // // setRowData([...rowData, ...newArray])
+       
         window.location.reload(false);
 
       }
     );
   };
 
+  const deleteSelectedRows =(pageTitle,action, selectedRows)=>{
+    console.error(selectedRows)
+    const context =  selectedRows.map(row => row.id)
+
+    console.log("To delete IDs "+ context+" "+pageTitle)
+
+    const url = pageTitle==="Users" ? "/api/users": "/api/groups"
+    const method = "DELETE";
+    const params = { method, url };
+    context.forEach(async(actualID)=>{
+      let body = {gid: actualID}
+      let payload = {...params, body}
+      let res = await LDAPApi(payload);
+
+      if(res.status==="success"){
+        Swal.fire({
+          title: "Records Updated",
+          icon: "success",
+          html: `Updated record for ${actualID}`,
+          confirmButtonText: "Okay",
+        });
+      }
+    })
+    
+    
+  }
   return (
     <>
+
+    
 
       <DataTable rows={rows} headers={headers}>
         {({
@@ -165,7 +190,8 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
                     tabIndex={batchActionProps.shouldShowBatchActions ? 0 : -1}
                     renderIcon={TrashCan}
                     onClick={() => {
-                      batchActionClick(title, "Delete", selectedRows);
+                      
+                      deleteSelectedRows(title,'Delete', selectedRows);
                     }}
                   >
                     Delete
@@ -278,6 +304,7 @@ const batchActionClick = (title, action, selectedRows) => {
   }
   if (action === "Delete") {
     deleteRows(title, selectedRows);
+    console.error("Deleting "+title+" "+JSON.stringify(selectedRows))
     return;
   }
 
@@ -287,7 +314,11 @@ const routeMappings = {
   groups: "/new-group",
   users: "/new-user",
 };
-const deleteRows = (title, rows) => {};
+const deleteRows = (title, rows) => {
+
+ 
+  
+};
 export default DynamicDataGrid;
 
 const EditUserComponent = ({ title, data, setUserEditInfo }) => {

@@ -27,8 +27,9 @@ import SystemAlert from "./SystemAlert";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Footer from "../pages/Footer";
-import { eraseCookie, setCookie } from "../api/cookie";
+import { eraseCookie, getCookie, setCookie } from "../api/cookie";
 import { Breadcrumb, BreadcrumbItem } from "@carbon/react";
+import Login from "../pages/Login";
 
 const action = (someAction) => {
   switch (someAction) {
@@ -83,6 +84,9 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
   console.log(location.pathname);
 
   useEffect(() => {
+    if (isLogged === undefined || isLogged === null) {
+      navigate("/login")
+    }
     setPath(location.pathname);
   }, []);
 
@@ -95,8 +99,14 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
   const onRequestSubmit = () => {
     setIsOpen(false);
     eraseCookie("token");
-    navigate("/");
+    eraseCookie("username");
+    navigate("/login");
   };
+  const isLogged = getCookie("token");
+
+  if (isLogged === undefined || isLogged === null) {
+    return <Login />;
+  }
 
   return (
     <HeaderContainer
@@ -157,18 +167,36 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
               <SideNavItems>
                 <SideNavMenu
                   title="Users"
-                  isActive={["Users","New User Account"].includes(pageHeading)}
-                  defaultExpanded={["Users","New User Account"].includes(pageHeading)}
+                  isActive={["Users", "New User Account"].includes(pageHeading)}
+                  defaultExpanded={["Users", "New User Account"].includes(
+                    pageHeading
+                  )}
                 >
-                  <SideNavMenuItem href="/users" isActive={pageHeading.includes("Users")}>Users List</SideNavMenuItem>
-                  <SideNavMenuItem href="/new-user" isActive={pageHeading.includes("New User Account")}>
+                  <SideNavMenuItem
+                    href="/users"
+                    isActive={pageHeading.includes("Users")}
+                  >
+                    Users List
+                  </SideNavMenuItem>
+                  <SideNavMenuItem
+                    href="/new-user"
+                    isActive={pageHeading.includes("New User Account")}
+                  >
                     Create New User
                   </SideNavMenuItem>
                 </SideNavMenu>
                 <SideNavMenu
                   title="Groups"
-                  isActive={["Groups","Add a new group","Assign User to Group"].includes(pageHeading)}
-                  defaultExpanded={["Groups","Add a new group","Assign User to Group"].includes(pageHeading)}
+                  isActive={[
+                    "Groups",
+                    "Add a new group",
+                    "Assign User to Group",
+                  ].includes(pageHeading)}
+                  defaultExpanded={[
+                    "Groups",
+                    "Add a new group",
+                    "Assign User to Group",
+                  ].includes(pageHeading)}
                 >
                   <SideNavMenuItem
                     href="/groups"
@@ -177,23 +205,42 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
                   >
                     Groups
                   </SideNavMenuItem>
-                  <SideNavMenuItem href="/new-group" isActive={pageHeading.includes("Add a new group")}>
+                  <SideNavMenuItem
+                    href="/new-group"
+                    isActive={pageHeading.includes("Add a new group")}
+                  >
                     Create New Group
                   </SideNavMenuItem>
-                  <SideNavMenuItem href="/assign-user-to-group" isActive={pageHeading.includes("Assign User to Group")}>
+                  <SideNavMenuItem
+                    href="/assign-user-to-group"
+                    isActive={pageHeading.includes("Assign User to Group")}
+                  >
                     Assign User to Group
                   </SideNavMenuItem>
                 </SideNavMenu>
                 <SideNavMenu
                   title="Account Information"
-                  isActive={["Account Information","Reset Password","Confirm Password"].includes(pageHeading)}
-                  defaultExpanded={["Account Information","Reset Password","Confirm Password"].includes(pageHeading)}
-                 
+                  isActive={[
+                    "Account Information",
+                    "Reset Password",
+                    "Confirm Password",
+                  ].includes(pageHeading)}
+                  defaultExpanded={[
+                    "Account Information",
+                    "Reset Password",
+                    "Confirm Password",
+                  ].includes(pageHeading)}
                 >
-                  <SideNavMenuItem href="/account-information" isActive={["Account Information"].includes(pageHeading)} >
+                  <SideNavMenuItem
+                    href="/account-information"
+                    isActive={["Account Information"].includes(pageHeading)}
+                  >
                     My Account
                   </SideNavMenuItem>
-                  <SideNavMenuItem href="/reset-password" isActive={["Reset Password"].includes(pageHeading)} >
+                  <SideNavMenuItem
+                    href="/reset-password"
+                    isActive={["Reset Password"].includes(pageHeading)}
+                  >
                     Reset Password
                   </SideNavMenuItem>
                 </SideNavMenu>
