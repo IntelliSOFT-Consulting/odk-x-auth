@@ -89,7 +89,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
       pageTitle === "Users" ? { ...userEditInfo } : { ...groupEditInfo };
 
     const actualID = payload.id;
-    delete payload["id"];
+    
     console.log("id:" + actualID + ", fields: " + JSON.stringify(payload));
 
     if (actualID === undefined || payload === {}) {
@@ -101,62 +101,73 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
 
       return;
     }
-    base(pageTitle).update(
-      [
-        {
-          id: actualID,
-          fields: payload,
-        },
-      ],
-      function (err, records) {
-        if (err) {
+    let url =""
+    const method = "PUT"
+    
+    let body ={}
+    if (pageTitle === "Groups"){
+      body["name"] = payload.name
+      body["gidNumber"] = payload.id
+      url = "/api/groups/"+payload.id
+    }
+    // body = JSON.stringify(body)
+    const params ={method, url, body}
+    console.log(params)
+    LDAPApi(params).then(res=>{
+      console.log(res);
+        if (res.status === "error" || res.data.error) {
           Swal.fire({
-            title: `Error!:${err.error}`,
+            title: `Error!:${res.status}`,
             icon: "error",
-            html: `${err.message}`,
+            html: `${res.statusText}`,
             confirmButtonText: "Okay",
           });
-          return;
-        }
-        // records.forEach(function (record) {
-        Swal.fire({
-          title: "Records Updated",
-          icon: "success",
-          html: `Updated record for ${actualID}`,
-          confirmButtonText: "Okay",
-        });
-       
-        window.location.reload(false);
 
-      }
-    );
+          return
+        }else{
+          Swal.fire({
+            title: "Records Updated",
+            icon: "success",
+            html: `Updated record for ${actualID}`,
+            confirmButtonText: "Okay",
+          });
+         
+          window.location.reload(false);
+        }
+    })
+   
   };
 
   const deleteSelectedRows =(pageTitle,action, selectedRows)=>{
     console.error(selectedRows)
     const context =  selectedRows.map(row => row.id)
 
-    console.log("To delete IDs "+ context+" "+pageTitle)
-
-    const url = pageTitle==="Users" ? "/api/users": "/api/groups"
+    console.log("To delete IDs "+ context+" from "+pageTitle)
     const method = "DELETE";
-    const params = { method, url };
+    const params = { method };
     context.forEach(async(actualID)=>{
-      let body = {gid: actualID}
-      let payload = {...params, body}
+      const url = pageTitle==="Users" ? "/api/users/"+actualID: "/api/groups/"+actualID
+      let body = {gidNumber: actualID}
+      let payload = {...params,url, body}
       let res = await LDAPApi(payload);
 
-      if(res.status==="success"){
+      if(res.status==="error"){
         Swal.fire({
-          title: "Records Updated",
-          icon: "success",
-          html: `Updated record for ${actualID}`,
+          title: "Error",
+          icon: "error",
+          html: `${res.statusText}`,
           confirmButtonText: "Okay",
         });
+        return
       }
     })
-    
-    
+    Swal.fire({
+      title: "Records Deleted",
+      icon: "success",
+      html: `Deleted records [ ${context.join(",")}]`,
+      confirmButtonText: "Okay",
+    });
+    window.location.reload()
   }
   return (
     <>

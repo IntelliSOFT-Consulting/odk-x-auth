@@ -26,7 +26,7 @@ const DashBoardTiles = ({ users, groups, roles }) => {
   
   return (
     <>
-  
+  {JSON.stringify(groups)}
       <div class="cds--grid">
         <div class="cds--row"> 
           {tileOptions.map((option) => (

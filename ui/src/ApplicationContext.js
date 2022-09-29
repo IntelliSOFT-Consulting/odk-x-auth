@@ -36,7 +36,7 @@ export function ApplicationProvider({ children }) {
     let p = res.data.data.map((row) => {
       return {
         Users: "",
-        group_name: row["name"] ? row["name"].split(" ")[1].toUpperCase() : "-",
+        group_name: row["name"] ? row["name"].toUpperCase() : "-",
         uid: row["gidNumber"], //GID
         created_time: row["created_time"] || "-",
         created_by: row["created_by"] || "-",
