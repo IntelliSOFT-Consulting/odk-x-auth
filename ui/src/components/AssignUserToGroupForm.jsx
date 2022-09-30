@@ -9,27 +9,26 @@ import TextInput from "@carbon/react/lib/components/TextInput";
 import { Button, Form, Select, SelectItem } from "carbon-components-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCookie } from "../api/cookie";
+
 import Swal from "sweetalert2";
-import base from "../api/airtable";
+
 import { useContext } from "react";
 import ApplicationContext from "../ApplicationContext";
+import { LDAPApi } from "../api/auth";
 
 
 const AssignUserToGroupForm = () => {
   const {users, groups} = useContext(ApplicationContext);
-  const cookieGroups = groups;
-  const cookieUsers = users;
+  
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
   const usersList = [];
   let allGroups =[];
-  cookieUsers.forEach((u) => {
+  users.forEach((u) => {
     usersList.push(u.user_name || u.id );
   });
-
-  cookieGroups.forEach((groupObj)=>allGroups.push(groupObj.group_name))
-  console.log("e===>"+JSON.stringify(cookieUsers))
+  groups.forEach((groupObj)=>allGroups.push(groupObj.group_name))
+  console.log("e===>"+JSON.stringify(users))
   
   const adduserToGroup = () => {
     if (!userInfo.user_name || !userInfo.group_name) {
@@ -41,39 +40,40 @@ const AssignUserToGroupForm = () => {
         })
       return;
     }
-    let contextGroup = cookieGroups.filter(row => row.group_name === userInfo.group_name)
-    let contextUser = cookieUsers.filter(row => row.user_name === userInfo.user_name)
-    
-    
-    const actualID = contextUser[0].uid;
-    const group_name = userInfo.group_name
-    console.log(actualID, group_name);
-    base('Users').update([
-      {
-        "id": actualID,
-        "fields": {group_name}
-      }
-      
-    ], function(err, records) {
-      if (err) {
+    let contextGroup = groups.filter(row => row.group_name === userInfo.group_name)
+
+    let gidNumber = contextGroup!==undefined || contextGroup!==null ? contextGroup[0] || "" : ""
+
+    if(!gidNumber){
+      Swal.fire({
+        title: "Error",
+        html: "Sorry, Invalid GID Number",
+        icon: "error",
+      });
+      return
+    }
+    let url ="/api/groups/"+gidNumber
+    let body ={"user":userInfo.user_name}
+    let method = "POST"
+    let params = {url,body,method}
+    LDAPApi(params).then(res=>{
+      console.log(res);
+      if (res.status === "error" || res.data.error) {
         Swal.fire({
-          title:`Error!:${err.error}`,
+          title: "Error",
+          html: res.statusText,
           icon: "error",
-          html:`${err.message}`,
-          confirmButtonText: "Okay",
-        })
+        });
         return;
       }
-      records.forEach(function(record) {
-        Swal.fire({
-          title:"Assignment Successful",
-          icon: "success",
-          html:`Updated record for ${userInfo.user_name}`,
-          confirmButtonText: "Okay",
-        })
-
+      Swal.fire({
+        title: "Success!",
+        html: `Assigned User  ${userInfo.user_name} to GID:[ <b style="color:blue">${gidNumber} </b>] .${res.statusText}`,
+        icon: "success",
+        confirmButtonText: "Okay",
       });
-    });
+    })
+    
   }
   return (
     <>

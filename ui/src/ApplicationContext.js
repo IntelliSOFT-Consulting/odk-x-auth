@@ -1,57 +1,76 @@
 import React, { createContext, useState } from "react";
 import { useEffect } from "react";
-import base from "./api/airtable";
+import { LDAPApi } from "./api/auth";
 const ApplicationContext = createContext();
 export function ApplicationProvider({ children }) {
   const [users, setUsers] = useState([]);
   const [groups, setGroups] = useState([]);
-  const fetchUsers = () => {
-    base("Users")
-      .select({
-        view: "Grid view",
-      })
-      .eachPage((records, fetchNextPage) => {
-        let globalUsers = [];
-        records.forEach((row) => {
-          let uid = row.getId();
-          let fields = row._rawJson.fields;
-          let obj = { ...fields, uid };
 
-          globalUsers.push(obj);
-        });
-        setUsers(globalUsers);
-      });
+  const fetchUsers = async () => {
+    const url = "/api/users";
+    const method = "GET";
+    const params = { method, url };
+
+    let res = await LDAPApi(params);
+
+    if (res.status === "error" || res.data.error || res.data.data === []) {
+      setGroups([]);
+      return;
+    }
+
+    let p = res.data.data.map((row) => {
+      //first_name, last_name, email, gidNumber
+      return {
+        uid: row["uid"] || "-",
+        user_name: row["user_name"] || "-",
+        email: row["email"] || "-",
+        group_name: row["group_name"] || row["gidNumber"] || "-",
+        first_name: row["first_name"] || "-",
+        last_name: row["last_name"] || "-",
+        created_time: row["created_time"] || "-",
+        created_by: row["created_by"] || "-",
+      };
+    });
+    setUsers(p);
+    return;
   };
 
-  const fetchGroups =()=>{
-    base("Groups")
-      .select({
-        view: "Grid view",
-      })
-      .eachPage((records, fetchNextPage) => {
-        let globalGroups = [];
-        records.forEach((row) => {
-          let uid = row.getId();
-          let fields = row._rawJson.fields;
-          let obj = { ...fields, uid };
+  const fetchGroups = async () => {
+    const url = "/api/groups";
+    const method = "GET";
+    const params = { method, url };
 
-          globalGroups.push(obj);
-        });
-        setGroups(globalGroups);
-      });
-  }
+    let res = await LDAPApi(params);
+
+    let p = res.data.data.map((row) => {
+      return {
+        Users: "",
+        group_name: row["name"] ? row["name"].toUpperCase() : "-",
+        uid: row["gidNumber"], //GID
+        created_time: row["created_time"] || "-",
+        created_by: row["created_by"] || "-",
+      };
+    });
+    setGroups(p);
+    return;
+  };
+
   useEffect(() => {
     fetchUsers();
-    fetchGroups()
+    //groups
+
+    fetchGroups();
   }, []);
 
-  const changePassword=({uid, newpassword})=>{
-
-  }
-  const updateGrid=({rowData, payload, pageTitle,actualID})=>{
-    let newArray = rowData.map(element => element.id === actualID ? {...element, ...payload} : element);
-    pageTitle === "Users"? setUsers([...users,...newArray]): setGroups([...groups,...newArray]) 
-  }
+  const changePassword = ({ uid, newpassword }) => {};
+  const updateGrid = ({ rowData, payload, pageTitle, actualID }) => {
+    let newArray = rowData.map((element) =>
+      element.id === actualID ? { ...element, ...payload } : element
+    );
+    pageTitle === "Users"
+      ? setUsers([...users, ...newArray])
+      : setGroups([...groups, ...newArray]);
+  };
   return (
     <ApplicationContext.Provider value={{ users, groups, updateGrid }}>
       {children}

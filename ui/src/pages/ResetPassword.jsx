@@ -6,13 +6,15 @@ import ResetPasswordEmailTemplate from '../components/ResetPasswordEmailTemplate
 const ResetPassword = () => {
   
   return (
-    <SelfService children={<ResetPasswordEmailTemplate
-      userName=""
-      fullName=""
-      subject="Password Reset"
-      confirmationUrl="https://odkxauth.intellisoftkenya.com/"
-    />} pageHeading="Reset Password"/>
+    <SelfService children={<ResetPasswordForm />} pageTitle="Reset Password"/>
   )
+  //   <SelfService children={<ResetPasswordEmailTemplate
+  //     userName=""
+  //     fullName=""
+  //     subject="Password Reset"
+  //     confirmationUrl="https://odkxauth.intellisoftkenya.com/"
+  //   />} pageHeading="Reset Password"/>
+  // )
 }
 
 export default ResetPassword;

@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import base from "../api/airtable";
 import ApplicationContext from "../ApplicationContext";
 import { useContext } from "react";
+import { LDAPApi } from "../api/auth";
 
 const NewUserForm = () => {
   const navigate = useNavigate();
@@ -50,57 +51,40 @@ const NewUserForm = () => {
         confirmButtonText: "Okay",
       });
     } else {
-      base("Users").create(
-        [
-          {
-            fields: {
-              user_name: userInfo.email,
-              last_name: userInfo.last_name,
-              password: userInfo.password,
-              first_name: userInfo.first_name,
-              email: userInfo.email,
-              role: userInfo.role,
-            },
-          },
-        ],
-        function (err, records) {
-          if (err) {
-            console.error(err);
-            Swal.fire({
-              title: `Error!:${err.error}`,
-              html: `${err.message}`,
-              icon: "error",
-              confirmButtonText: "Okay",
-            });
-            return;
-          }
-          records.forEach(function (record) {
-            console.log(record.getId());
-            Swal.fire({
-              title: "Success!",
-              html: `Created User ${
-                userInfo.email
-              } with ID:[ <b style="color:blue">${record.getId()}</b>] .`,
-              icon: "success",
-              confirmButtonText: "Okay",
-            });
-            refreshUserList();
+      let group = groups ? groups.filter(row=>row.name===userInfo.group_name) : []
+      let actualID = group[0] ? group[0]["uid"] : ""
+      let payload ={
+        "user_name": userInfo.email,
+        "last_name": userInfo.last_name,
+        "password": userInfo.password,
+        "first_name": userInfo.first_name,
+        "email": userInfo.email,
+        "gidNumber": actualID
+      }
+      let method = "POST"
+      let url ="/api/auth/register"
+      let body = payload
+      const params ={method,url,body}
+      LDAPApi(params).then(res=>{
+        console.log(res);
+        if (res.status === "error" || res.data.error) {
+          Swal.fire({
+            title: "Error",
+            html: res.statusText,
+            icon: "error",
           });
+          return;
         }
-      );
-    }
-    const refreshUserList = () => {
-      base("Users")
-        .select({
-          view: "Grid view",
-        })
-        .eachPage((records, fetchNextPage) => {
-          console.log(`${records.length} Users`);
-          // let users = records.map((row) => row._rawJson.fields);
-          // setCookie("odk-users", users, 1);
-          navigate("/");
+        Swal.fire({
+          title: "Success!",
+          html: `Created User ${ userInfo.last_name} ${userInfo.first_name} with Group ID:[ <b style="color:blue">${actualID} </b>] .${res.statusText}`,
+          icon: "success",
+          confirmButtonText: "Okay",
         });
-    };
+      })
+      navigate("/users")
+    }
+    
   };
   return (
     <>

@@ -1,0 +1,17 @@
+ {
+    "uid": "recoa4J2YELFAgkUa",
+    "user_name": "salim7916",
+    "email": "dsmwaura@intellisoft.com",
+    "group_name": "Programmers",
+    "first_name": "SALIM",
+    "last_name": "Mwaura Ruru",
+    "created_time": "2022-09-14T14:57:04.000Z",
+    "created_by": "Esther SMH"
+}
+{
+    "Users": "salim7916,brian3456,esthersmh", //Comma Seperated list. Please lemme know if this is not a good approach. I am avoiding too much changes on
+    "group_name": "System Administrators",
+    "group_id": "67867", //GID
+    "created_time": "2022-09-14T20:12:31.000Z",
+    "created_by": "Esther SMH"
+}

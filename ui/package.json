@@ -38,6 +38,10 @@
             "react-app/jest"
         ]
     },
+    "proxy": "http://localhost:8080",
+    "resolutions": {
+        "react-error-overlay": "6.0.9"
+    },
     "browserslist": {
         "production": [
             ">0.2%",

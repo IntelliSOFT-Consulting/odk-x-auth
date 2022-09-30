@@ -3,26 +3,21 @@ import TextInput from "@carbon/react/lib/components/TextInput";
 import { Button, Form } from "carbon-components-react";
 import React from "react";
 import { useState } from "react";
-import { useContext } from "react";
-import ApplicationContext from "../ApplicationContext";
-import * as qs from 'query-string';
+import * as qs from "query-string";
 import Swal from "sweetalert2";
 import base from "../api/airtable";
+import { getCookie } from "../api/cookie";
+import { LDAPApi } from "../api/auth";
 
 const ConfirmPasswordForm = () => {
-  const { users } = useContext(ApplicationContext);
-
   const args = qs.parse(window.location.search);
+  const actualID = args.user_reset;
+  const token = args.token;
   const [userInfo, setUserInfo] = useState({});
-  const handleCancel =()=>{
+  const handleCancel = () => {
     console.log(args);
   };
   const changePassword = () => {
-    const userRecord = users.filter(
-      (user) => user.user_name === args.username_rp
-    );
-    const actualID = userRecord[0].uid;
-
     const payload = { ...userInfo, id: actualID };
 
     if (payload.password !== payload.confirm_password) {
@@ -37,7 +32,7 @@ const ConfirmPasswordForm = () => {
     if (
       !payload.password ||
       !payload.confirm_password ||
-      !payload.user_name ||
+    
       !actualID
     ) {
       Swal.fire({
@@ -47,38 +42,43 @@ const ConfirmPasswordForm = () => {
       });
       return;
     }
-    
 
-    delete payload["username"]
-    delete payload["confirm_password"]
-    delete payload["id"]
+    if (getCookie("user_reset")===undefined || getCookie("user_reset")===null) {
+      Swal.fire({
+        title: "Error",
+        icon: "error",
+        text: "Link Expired or Invalid",
+      });
+    }
+    if (token !==getCookie("password_reset_token")) {
+      Swal.fire({
+        title: "Error",
+        icon: "error",
+        text: "Sorry, invalid token. Please request for a new link and ensure that you use the SAME device.",
+      });
+    }
 
-    base('Users').update([
-      {
-        "id": actualID,
-        "fields": payload
-      }
-      
-    ], function(err, records) {
-      if (err) {
+    let url ="/api/auth/reset-password"
+    let method = "GET"
+    let body ={"token":token,"password":payload.password,"user":actualID}
+    let params ={url,method,body}
+    LDAPApi(params).then(res=>{
+      console.log(res);
+      if (res.status === "error" || res.data.error) {
         Swal.fire({
-          title:`Error!:${err.error}`,
+          title: "Error",
+          html: res.statusText,
           icon: "error",
-          html:`${err.message}`,
-          confirmButtonText: "Okay",
-        })
+        });
         return;
       }
-      records.forEach(function(record) {
-        Swal.fire({
-          title:"Password Change Successful",
-          icon: "success",
-          html:`Password changed for record for ${userInfo.user_name}`,
-          confirmButtonText: "Okay",
-        })
-
+      Swal.fire({
+        title: "Success!",
+        html: `Updated password for ${actualID}  .${res.statusText}`,
+        icon: "success",
+        confirmButtonText: "Okay",
       });
-    });
+    })
   };
 
   return (
@@ -88,7 +88,6 @@ const ConfirmPasswordForm = () => {
           <div className="cds--col-lg-2 cds--col-md-2"></div>
           <div className="cds--col-lg-8">
             <Form>
-              
               <div className="cds--row">
                 <div className="cds--col-lg-16">
                   <TextInput
@@ -124,7 +123,13 @@ const ConfirmPasswordForm = () => {
               </div>
               <div className="cds--row">
                 <div className="cds--col-lg-16">
-                  <Button kind="secondary" className="block" onClick={()=>{handleCancel()}}>
+                  <Button
+                    kind="secondary"
+                    className="block"
+                    onClick={() => {
+                      handleCancel();
+                    }}
+                  >
                     Cancel
                   </Button>
                   <Button

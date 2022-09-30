@@ -42,7 +42,7 @@ const Groups = () => {
     let row = {
       id: group.uid,
       group_name: group.group_name,
-      created_by: group.created_by.name,
+      created_by: group.created_by.name || group.created_by,
       date_created: group.created_time,
       number_of_users: group.Users ? group.Users.split(", ").length : 0,
     };

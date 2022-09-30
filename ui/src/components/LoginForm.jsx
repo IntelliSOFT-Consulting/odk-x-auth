@@ -9,7 +9,7 @@ import Footer from "../pages/Footer";
 import base from "../api/airtable";
 import Swal from "sweetalert2";
 import { Link, Modal } from "@carbon/react";
-import ApplicationContext from "../ApplicationContext";
+
 import { useContext } from "react";
 
 const LoginForm = () => {
@@ -29,10 +29,42 @@ const LoginForm = () => {
         fetchNextPage();
       });
   }, []);
-  const login = () => {
-    const content = allRecords.map((row) => row._rawJson.fields);
-    console.log(content);
+  const validateCredentials = async (user, password) => {
+    const ldapSpecUser = `cn=${user},dc=example,dc=org`;
+    const data = { user: ldapSpecUser, password };
+    const url = "/api/auth/login";
 
+    const method = "POST";
+    const params = { method, data, url, apiHost };
+    //console.log("Params: " + JSON.stringify(params));
+    try {
+      let response = await fetch(String(`${apiHost}${params.url}`), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: params.method,
+        body: JSON.stringify(params.data),
+      });
+      let responseJSON = await response.json();
+      //console.log(responseJSON);
+      let res = {
+        status: "success",
+        statusText: response.statusText,
+        data: responseJSON,
+      };
+      return res;
+    } catch (error) {
+      //console.error(error);
+      let res = {
+        statusText: "LDAPAPIFetch: " + error,
+        status: "error",
+        error: error,
+      };
+      //console.error(error);
+      return res;
+    }
+  };
+  const login = () => {
     if (!loginInfo["username"] || !loginInfo["password"]) {
       Swal.fire({
         title: "Error!",
@@ -41,32 +73,27 @@ const LoginForm = () => {
         confirmButtonText: "Okay",
       });
     } else {
-      let match = content.filter(
-        (user) => user.user_name === loginInfo["username"]
-      );
-
-      if (!match[0]) {
-        Swal.fire({
-          title: "Error!",
-          text: `Sorry, user ${loginInfo["username"]} does not exist in our database`,
-          icon: "error",
-          confirmButtonText: "Okay",
-        });
-      } else {
-        console.log(match);
-        let record = match[0];
-        if (record["password"] !== loginInfo["password"]) {
-          Swal.fire({
-            title: "Error",
-            text: `Oops, you got the password wrong.`,
-            icon: "error",
-            confirmButtonText: "Okay",
-          });
-        } else {
-          setCookie("token", loginInfo["username"], 1);
-          navigate("/dashboard");
+      //console.log(loginInfo["username"], loginInfo["password"]);
+      validateCredentials(loginInfo["username"], loginInfo["password"]).then(
+        (res) => {
+          if (
+            res.status === "error" ||
+            res.data.token === undefined ||
+            res.data.token === null
+          ) {
+            Swal.fire({
+              title: "Error!",
+              text: res.statusText,
+              icon: "error",
+              confirmButtonText: "Okay",
+            });
+          } else {
+            setCookie("token", res.data.token, 1);
+            setCookie("username", loginInfo["username"], 1);
+            navigate("/dashboard");
+          }
         }
-      }
+      );
     }
   };
   const defaultModaloptions = () => {
@@ -100,7 +127,7 @@ const LoginForm = () => {
 
     const actualID = payload.id;
     delete payload["id"];
-    console.log("id:" + actualID + ", fields: " + JSON.stringify(payload));
+    //console.log("id:" + actualID + ", fields: " + JSON.stringify(payload));
 
     if (actualID === undefined || payload === {}) {
       Swal.fire({
@@ -178,15 +205,16 @@ const LoginForm = () => {
                 </Button>
               </div>
               <div>
+                &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
                 <Button kind="ghost"></Button>
-                <Button
-                  kind="ghost"
+                <Link 
+                             
                   onClick={() => {
-                    navigate("/reset-password")
+                    navigate("/reset-password");
                   }}
                 >
                   Forgot Password
-                </Button>
+                </Link>
               </div>
             </Form>
           </div>
@@ -224,7 +252,6 @@ const ChangePasswordModal = ({ options }) => {
 };
 
 const ChangePasswordForm = ({ setPasswordChangeInfo }) => {
-  const { users, groups } = useContext(ApplicationContext);
   const [passwordPayload, setPasswordPayLoad] = useState({});
   return (
     <>
@@ -240,7 +267,12 @@ const ChangePasswordForm = ({ setPasswordChangeInfo }) => {
               </div>
               <div className="cds--row">
                 <div className="cds--col-lg-16">
-                  <TextInput id="token" type="text" required placeholder="Input Token" />
+                  <TextInput
+                    id="token"
+                    type="text"
+                    required
+                    placeholder="Input Token"
+                  />
                   <br />
                 </div>
               </div>

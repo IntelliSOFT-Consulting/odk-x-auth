@@ -17,23 +17,29 @@ const getToken = (length, chars) => {
   return result;
 };
 const ResetPasswordForm = () => {
-  const { users } = useContext(ApplicationContext);
+  
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
 
   const sendLink = () => {
-    console.log("Starting operation...");
-    const userName = "salim7916";
+    if(!userInfo.email){
+      Swal.fire({
+        title:"Error",
+        text:"Oops, you did not enter your email",
+        icon:"error"
+      })
+      return;
+    }
+    const userName = "there";
     const token = getToken(
       32,
       "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     );
     setCookie("password_reset_token", token, 1);
-    setCookie("username_rp", token, 1);
-    //Get User details based on provided email.
 
-    const fullName = "Salim Mwaura Ruru";
-    const url = `${window.location.hostname}/confirm-password?username_rp=${userName}&password_reset_token=${token}`;
+    let user =502
+    const fullName = "Esteemed user";
+    const url =`${window.location.href.split(window.location.pathname)[0]}/confirm-password?password_reset_token=${token}&user_reset=${user}`;
     const emailBody = (
       <ResetPasswordEmailTemplate
         userName={userName}
@@ -43,11 +49,12 @@ const ResetPasswordForm = () => {
       />
     );
     Swal.fire({
-      title: "Password reset",
-      html: <Link href={url}>Password reset</Link>,
+      title: "Password reset link",
+      html:`${url}`,
       icon: "info",
     });
-    //Send the email here
+ 
+
   };
   return (
     <>
@@ -61,7 +68,7 @@ const ResetPasswordForm = () => {
                 <div className="cds--col-lg-16">
                   <TextInput
                     type="email"
-                    id="email_address"
+                    id="email"
                     placeholder="Enter the email linked to your account"
                     labelText="Email Address"
                     onChange={(e) => {

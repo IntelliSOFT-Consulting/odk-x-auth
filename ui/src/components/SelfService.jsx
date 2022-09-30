@@ -27,6 +27,7 @@ import SystemAlert from "./SystemAlert";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { eraseCookie } from "../api/cookie";
+import Login from "../pages/Login";
 
 const action = (someAction) => {
   switch (someAction) {
@@ -79,6 +80,8 @@ const SelfService = ({ children, pageHeading, customClassName }) => {
   const [path, setPath] = useState("/");
   const location = useLocation();
   console.log(location.pathname);
+
+  
 
   useEffect(() => {
     setPath(location.pathname);
