@@ -23,10 +23,10 @@ function App() {
         <Route path="/login" exact element={<Login />} />
         <Route path="/dashboard" element={<ApplicationProvider><Dashboard /></ApplicationProvider>} />
         <Route path="/users" exact element={<ApplicationProvider><Users /></ApplicationProvider>} />
-        <Route path="/new-user" exact element={<NewUser />} />
+        <Route path="/new-user" exact element={<ApplicationProvider><NewUser /></ApplicationProvider>} />
         <Route path="/groups" exact element={<ApplicationProvider><Groups /></ApplicationProvider>} />
         <Route path="/new-group" exact element={<NewGroup />} />
-        <Route path="/assign-user-to-group" exact element={<AssignUserToGroup />} />
+        <Route path="/assign-user-to-group" exact element={<ApplicationProvider><AssignUserToGroup /></ApplicationProvider>} />
         <Route path="/account-information" exact element={<ApplicationProvider><AccountInformation /></ApplicationProvider>} />
         <Route path="/reset-password" exact element={<ResetPassword />} />
         <Route path="/confirm-password" exact element={<ConfirmPassword />} />

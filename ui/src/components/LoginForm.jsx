@@ -8,7 +8,7 @@ import { apiHost } from "../api/auth";
 import Footer from "../pages/Footer";
 import base from "../api/airtable";
 import Swal from "sweetalert2";
-import { Modal } from "@carbon/react";
+import { Link, Modal } from "@carbon/react";
 
 import { useContext } from "react";
 
@@ -36,7 +36,7 @@ const LoginForm = () => {
 
     const method = "POST";
     const params = { method, data, url, apiHost };
-    console.log("Params: " + JSON.stringify(params));
+    //console.log("Params: " + JSON.stringify(params));
     try {
       let response = await fetch(String(`${apiHost}${params.url}`), {
         headers: {
@@ -46,7 +46,7 @@ const LoginForm = () => {
         body: JSON.stringify(params.data),
       });
       let responseJSON = await response.json();
-      console.log(responseJSON);
+      //console.log(responseJSON);
       let res = {
         status: "success",
         statusText: response.statusText,
@@ -54,13 +54,13 @@ const LoginForm = () => {
       };
       return res;
     } catch (error) {
-      console.error(error);
+      //console.error(error);
       let res = {
         statusText: "LDAPAPIFetch: " + error,
         status: "error",
         error: error,
       };
-      console.error(error);
+      //console.error(error);
       return res;
     }
   };
@@ -73,7 +73,7 @@ const LoginForm = () => {
         confirmButtonText: "Okay",
       });
     } else {
-      console.log(loginInfo["username"], loginInfo["password"]);
+      //console.log(loginInfo["username"], loginInfo["password"]);
       validateCredentials(loginInfo["username"], loginInfo["password"]).then(
         (res) => {
           if (
@@ -127,7 +127,7 @@ const LoginForm = () => {
 
     const actualID = payload.id;
     delete payload["id"];
-    console.log("id:" + actualID + ", fields: " + JSON.stringify(payload));
+    //console.log("id:" + actualID + ", fields: " + JSON.stringify(payload));
 
     if (actualID === undefined || payload === {}) {
       Swal.fire({
@@ -205,15 +205,16 @@ const LoginForm = () => {
                 </Button>
               </div>
               <div>
+                &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
                 <Button kind="ghost"></Button>
-                <Button
-                  kind="ghost"
+                <Link 
+                             
                   onClick={() => {
                     navigate("/reset-password");
                   }}
                 >
                   Forgot Password
-                </Button>
+                </Link>
               </div>
             </Form>
           </div>
