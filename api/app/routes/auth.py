@@ -11,7 +11,9 @@ def login():
         data = request.get_json()
         client = ldap_client(user=data['user'], password=data['password'])
         print(client)
-        return jsonify(status="success", token=generate_token(data['user'])), 200
+        if client:
+            return jsonify(status="success", token=generate_token(data['user'])), 200
+        return jsonify(error="Invalid username / password", status="error"), 401
     except Exception as e:
         return jsonify(error=str(e), status="error"), 401
 
