@@ -3,6 +3,8 @@ from ldap3 import Server, Connection, ALL, SUBTREE
 from app.config import BASE_GROUP_DN, BASE_USER_DN, LDAP_BASE, LDAP_DOMAIN
 from .auth import ldap_client
 from ldap3.core.exceptions import LDAPException, LDAPInvalidFilterError
+import sqlite3
+import json
 
 
 def search_ldap(entity="users", name=None, filter=None):
@@ -26,12 +28,16 @@ def search_ldap(entity="users", name=None, filter=None):
                 (
                     {
                         "dn": i["dn"],
-                        "attributes": dict(i["attributes"]),
+                        "uid":i["dn"],
+                        # "attributes": (dict(i["attributes"])),
                         "names": dict(i["attributes"])["cn"][0],
-                        "username": dict(i["attributes"])["cn"][1],
+                        "user_name": dict(i["attributes"])["cn"][1],
                         "email": dict(i["attributes"])["mail"][0],
-                        "surname": dict(i["attributes"])["sn"][0],
-                        "gidNumber":dict(i["attributes"])["gidNumber"][0] or None,
+                        "last_name": dict(i["attributes"])["sn"][0],
+                        "gidNumber":dict(i["attributes"])["gidNumber"] or None,
+                        "groupName": dict(i["attributes"])["gidNumber"] or None,
+                        "created_time": "2022-09-14T14:57:04.000Z",
+                        "created_by": "Admin"
                     }
                 )
                 for i in res[2]
@@ -45,6 +51,9 @@ def search_ldap(entity="users", name=None, filter=None):
                         "attributes": dict(i["attributes"]),
                         "name": dict(i["attributes"])["cn"][0],
                         "gidNumber": dict(i["attributes"])["gidNumber"],
+                        "group_id": dict(i["attributes"])["gidNumber"],
+                        "created_time": "2022-09-14T20:12:31.000Z",
+                        "created_by": "Admin"
                     }
                 )
                 for i in res[2]

@@ -37,7 +37,7 @@ const ResetPasswordForm = () => {
     );
     setCookie("password_reset_token", token, 1);
 
-    let user =502
+    let user =getCookie("username");
     const fullName = "Esteemed user";
     const url =`${window.location.href.split(window.location.pathname)[0]}/confirm-password?password_reset_token=${token}&user_reset=${user}`;
     const emailBody = (
