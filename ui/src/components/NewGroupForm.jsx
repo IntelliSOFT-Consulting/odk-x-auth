@@ -14,12 +14,13 @@ import Swal from "sweetalert2";
 
 import { useNavigate } from "react-router-dom";
 import { LDAPApi } from "../api/auth";
+import { getCookie } from "../api/cookie";
 
 const NewGroupForm = () => {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
 
-  const saveData = () => {
+  const saveData = async() => {
     console.log(userInfo);
     let requiredFields = ["group_name", "group_id"];
     let filledInFields = Object.keys(userInfo);
@@ -41,26 +42,57 @@ const NewGroupForm = () => {
       const params = { method, url };
       let gid = parseInt(userInfo.group_id);
       let group_name = userInfo.group_name;
-      let body = { gidNumber: gid, name: group_name };
+      let body = { "gidNumber": gid, "name": group_name };
       let payload = { ...params, url, body };
       console.log(payload);
-      LDAPApi(payload).then((res) => {
-        console.log(res);
-        if (res.status === "error" || res.data.error) {
-          Swal.fire({
-            title: "Error",
-            html: res.statusText,
-            icon: "error",
-          });
-          return;
-        }
+      ///
+
+      let data = await (
+        await fetch(url, {
+          method: method,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+          body: JSON.stringify(body),
+        })
+      ).json();
+
+      if (data.status === "error") {
+        Swal.fire({
+          title: "Error",
+          text: data.statusText || data.error,
+          icon: "error",
+        });
+        return;
+      } else {
         Swal.fire({
           title: "Success!",
-          html: `Created Group ${group_name} with ID:[ <b style="color:blue">${gid} </b>] .${res.statusText}`,
+          html: `Created Grouo ${userInfo.group_name}  with Group ID:[ <b style="color:blue">${userInfo.group_id} </b>] `,
           icon: "success",
           confirmButtonText: "Okay",
         });
-      });
+        navigate("/groups")
+      }
+
+      ///
+      // LDAPApi(payload).then((res) => {
+      //   console.log(res);
+      //   if (res.status === "error" || res.data.error) {
+      //     Swal.fire({
+      //       title: "Error",
+      //       html: res.statusText,
+      //       icon: "error",
+      //     });
+      //     return;
+      //   }
+      //   Swal.fire({
+      //     title: "Success!",
+      //     html: `Created Group ${group_name} with ID:[ <b style="color:blue">${gid} </b>] .${res.statusText}`,
+      //     icon: "success",
+      //     confirmButtonText: "Okay",
+      //   });
+      // });
     }
   };
 

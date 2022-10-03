@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import { useContext } from "react";
 import ApplicationContext from "../ApplicationContext";
 import { LDAPApi } from "../api/auth";
+import { getCookie } from "../api/cookie";
 
 
 const AssignUserToGroupForm = () => {
@@ -30,7 +31,7 @@ const AssignUserToGroupForm = () => {
   groups.forEach((groupObj)=>allGroups.push(groupObj.group_name))
   console.log("e===>"+JSON.stringify(users))
   
-  const adduserToGroup = () => {
+  const adduserToGroup = async() => {
     if (!userInfo.user_name || !userInfo.group_name) {
         Swal.fire({
           title: `Error!`,
@@ -55,24 +56,53 @@ const AssignUserToGroupForm = () => {
     let url ="/api/groups/"+gidNumber
     let body ={"user":userInfo.user_name}
     let method = "POST"
-    let params = {url,body,method}
-    LDAPApi(params).then(res=>{
-      console.log(res);
-      if (res.status === "error" || res.data.error) {
-        Swal.fire({
-          title: "Error",
-          html: res.statusText,
-          icon: "error",
-        });
-        return;
-      }
+   
+
+    let data = await (
+      await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify(body),
+      })
+    ).json();
+
+    if (data.status === "error") {
+      Swal.fire({
+        title: "Error",
+        text: data.statusText || data.error,
+        icon: "error",
+      });
+      return;
+    } else {
       Swal.fire({
         title: "Success!",
-        html: `Assigned User  ${userInfo.user_name} to GID:[ <b style="color:blue">${gidNumber} </b>] .${res.statusText}`,
+        html: `Assigned user ${userInfo.user_name}  to Group ID:[ <b style="color:blue">${gidNumber} </b>] `,
         icon: "success",
         confirmButtonText: "Okay",
       });
-    })
+      navigate("/groups")
+    }
+
+    // LDAPApi(params).then(res=>{
+    //   console.log(res);
+    //   if (res.status === "error" || res.data.error) {
+    //     Swal.fire({
+    //       title: "Error",
+    //       html: res.statusText,
+    //       icon: "error",
+    //     });
+    //     return;
+    //   }
+    //   Swal.fire({
+    //     title: "Success!",
+    //     html: `Assigned User  ${userInfo.user_name} to GID:[ <b style="color:blue">${gidNumber} </b>] .${res.statusText}`,
+    //     icon: "success",
+    //     confirmButtonText: "Okay",
+    //   });
+    // })
     
   }
   return (

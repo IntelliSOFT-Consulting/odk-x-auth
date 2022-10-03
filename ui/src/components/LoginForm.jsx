@@ -5,7 +5,6 @@ import { Form, TextInput, Button } from "carbon-components-react";
 
 import { setCookie } from "../api/cookie";
 import { apiHost } from "../api/auth";
-import Footer from "../pages/Footer";
 import base from "../api/airtable";
 import Swal from "sweetalert2";
 import { Link, Modal } from "@carbon/react";
