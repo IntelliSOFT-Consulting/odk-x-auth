@@ -45,12 +45,14 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
 
   const [groupEditInfo, setGroupEditInfo] = useState({});
   const [userEditInfo, setUserEditInfo] = useState({});
+  const { users, groups } =useContext(ApplicationContext);
   const dynamicForm =
     pageTitle === "Users" ? (
       <EditUserComponent
         title={pageTitle}
         data={contextData}
         setUserEditInfo={setUserEditInfo}
+        groupList={groups}
       />
     ) : (
       <EditGroupComponent
@@ -59,7 +61,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
         setGroupEditInfo={setGroupEditInfo}
       />
     );
-  const { users, groups } =useContext(ApplicationContext);
+  
   const defaultModaloptions = () => {
     const danger = false;
     const modalHeading = "Edit " + pageTitle;
@@ -83,7 +85,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
   let onRequestClose = () => {
     setIsOpen(false);
   };
-  let onRequestSubmit = () => {
+  let onRequestSubmit = async() => {
     setIsOpen(false);
     const payload =
       pageTitle === "Users" ? { ...userEditInfo } : { ...groupEditInfo };
@@ -109,32 +111,62 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
       body["name"] = payload.name
       body["gidNumber"] = payload.id
       url = "/api/groups/"+payload.id
+    }else{
+
     }
     // body = JSON.stringify(body)
     const params ={method, url, body}
     console.log(params)
-    LDAPApi(params).then(res=>{
-      console.log(res);
-        if (res.status === "error" || res.data.error) {
-          Swal.fire({
-            title: `Error!:${res.status}`,
-            icon: "error",
-            html: `${res.statusText}`,
-            confirmButtonText: "Okay",
-          });
 
-          return
-        }else{
-          Swal.fire({
-            title: "Records Updated",
-            icon: "success",
-            html: `Updated record for ${actualID}`,
-            confirmButtonText: "Okay",
-          });
+    let data = await (
+      await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify(body),
+      })
+    ).json();
+
+    if (data.status === "error") {
+      Swal.fire({
+        title: "Error",
+        text: data.statusText || data.error,
+        icon: "error",
+      });
+      return;
+    } else {
+      Swal.fire({
+        title: "Success!",
+        html: `Updated record for ${actualID}`,
+        icon: "success",
+        confirmButtonText: "Okay",
+      });
+      navigate("/groups")
+    }
+    // LDAPApi(params).then(res=>{
+    //   console.log(res);
+    //     if (res.status === "error" || res.data.error) {
+    //       Swal.fire({
+    //         title: `Error!:${res.status}`,
+    //         icon: "error",
+    //         html: `${res.statusText}`,
+    //         confirmButtonText: "Okay",
+    //       });
+
+    //       return
+    //     }else{
+    //       Swal.fire({
+    //         title: "Records Updated",
+    //         icon: "success",
+    //         html: `Updated record for ${actualID}`,
+    //         confirmButtonText: "Okay",
+    //       });
          
-          window.location.reload(false);
-        }
-    })
+    //       window.location.reload(false);
+    //     }
+    // })
    
   };
 
@@ -149,17 +181,37 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
       const url = pageTitle==="Users" ? "/api/users/"+actualID: "/api/groups/"+actualID
       let body = {gidNumber: actualID}
       let payload = {...params,url, body}
-      let res = await LDAPApi(payload);
 
-      if(res.status==="error"){
+      let data = await (
+        await fetch(url, {
+          method: method,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+          body: JSON.stringify(body),
+        })
+      ).json();
+  
+      if (data.status === "error") {
         Swal.fire({
           title: "Error",
+          text: data.statusText || data.error,
           icon: "error",
-          html: `${res.statusText}`,
-          confirmButtonText: "Okay",
         });
-        return
-      }
+        return;
+      } 
+      // let res = await LDAPApi(payload);
+
+      // if(res.status==="error"){
+      //   Swal.fire({
+      //     title: "Error",
+      //     icon: "error",
+      //     html: `${res.statusText}`,
+      //     confirmButtonText: "Okay",
+      //   });
+      //   return
+      // }
     })
     Swal.fire({
       title: "Records Deleted",
@@ -330,21 +382,21 @@ const deleteRows = (title, rows) => {
  
   
 };
-export default DynamicDataGrid;
 
-const EditUserComponent = ({ title, data, setUserEditInfo }) => {
+const EditUserComponent = ({ title, data, groupList, setUserEditInfo }) => {
   const { users } = useContext(ApplicationContext);
-  const cooKieUsers = JSON.stringify(users);
-  const cooKieGroups = getCookie("odk-groups");
+  console.log(`The users are ;${JSON.stringify(users)}`)
+  const cooKieUsers = users;
+  const cooKieGroups = groupList;
 
   const context = data[0].cells.filter(
     (row) => row.info.header === "user_name"
   );
-  const ultimateData = JSON.parse(cooKieUsers).filter(
+  const ultimateData = cooKieUsers.filter(
     (row) => row.user_name === context[0].value
   );
-  const groups = JSON.parse(cooKieGroups).map((row) => row.group_name);
-
+  let groupSelect = cooKieGroups.map((row) => row.group_name);
+  
   const [userPayload, setUserPayload] = useState({
     id: ultimateData[0].uid,
     first_name: ultimateData[0].first_name,
@@ -431,7 +483,7 @@ const EditUserComponent = ({ title, data, setUserEditInfo }) => {
                   <ComboBox
                     ariaLabel="ComboBox"
                     id="group_name"
-                    items={groups}
+                    items={groupSelect}
                     label="Groups"
                     labelText="User Group"
                     className="input-block"
@@ -463,12 +515,12 @@ const EditUserComponent = ({ title, data, setUserEditInfo }) => {
 const EditGroupComponent = ({ title, data, setGroupEditInfo }) => {
   const groupEditInfo = {};
   const {groups} = useContext(ApplicationContext);
-  const cooKieGroups = JSON.stringify(groups) //getCookie("odk-groups");
+  const cooKieGroups = groups //getCookie("odk-groups");
 
   const context = data[0].cells.filter(
     (row) => row.info.header === "group_name"
   );
-  const ultimateData = JSON.parse(cooKieGroups).filter(
+  const ultimateData = cooKieGroups.filter(
     (row) => row.group_name === context[0].value
   );
 
@@ -522,3 +574,6 @@ const EditGroupComponent = ({ title, data, setGroupEditInfo }) => {
     </>
   );
 };
+
+
+export default DynamicDataGrid;
