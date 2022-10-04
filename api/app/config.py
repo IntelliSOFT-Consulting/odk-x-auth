@@ -1,6 +1,9 @@
 import os
 
 
+
+ADMIN_UI_URL = "http://odkxauth.intellisoftkenya.com"
+
 SECRET_KEY = os.environ.get("SECRET_KEY") or "someSecret"
 
 # LDAP_HOST = "ipa.demo1.freeipa.org"
@@ -26,9 +29,10 @@ LDAP_ADMIN_PASSWORD = os.environ.get("LDAP_ADMIN_PASSWORD") or "admin"
 
 
 # email configuration
-SMTP_HOST = os.environ.get("SMTP_HOST")
+SMTP_HOST = os.environ.get("SMTP_HOST") 
 SMTP_SSL = False
-SMTP_PORT = 465
+SMTP_TLS = not (SMTP_SSL)
+SMTP_PORT = 587
 SMTP_SENDER = os.environ.get("SMTP_SENDER")
 SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
 

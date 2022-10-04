@@ -29,6 +29,16 @@ def generate_token(user):
     return str(token)
 
 
+def generate_reset_token(user):
+    payload = {"user": user, "type": "reset"}
+    token = jwt.encode(payload=payload, key=SECRET_KEY, algorithm="HS512")
+    return str(token)
+
+
+def reset_user_password(password):
+    pass
+
+
 def get_user_from_token(token):
     return jwt.decode(token, key=SECRET_KEY, algorithms=["HS512"])["user"]
 
@@ -97,13 +107,16 @@ def add_new_user(first_name, last_name, email, gidNumber):
                 "givenName": first_name,
                 "gidNumber": gidNumber,
                 "uid": email.lower(),
-                "uidNumber": int(sum([randint(11111111, 99999999), randint(111111, 999999)]) / 2),
+                "uidNumber": int(
+                    sum([randint(11111111, 99999999), randint(111111, 999999)]) / 2
+                ),
                 "homeDirectory": "/home/users/test",
                 "userPassword": str(uuid.uuid4()),
             },
         )
-        print(response[1])
-        print(response[3])
+        print(response[1]['result'])
+        if response[1]['result'] != 0:
+            return {"error": response[1]["description"], "status": "error"}
         ldap_conn.unbind()
         if response[0] == True:
             return {
@@ -121,10 +134,8 @@ def add_new_user(first_name, last_name, email, gidNumber):
         response = str(err)
         print(response)
     except LDAPException as e:
-        response = str(e)
+        response = str("LDAPException error")
         print(response)
     ldap_conn.unbind()
+
     return {"error": response, "status": "error"}
-
-
-
