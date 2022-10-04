@@ -57,7 +57,7 @@ const Groups = () => {
       description="This table contains a list of created Groups"
     />
   );
-  return <AppHeader children={groupComponent} pageHeading="Groups" />;
+  return <AppHeader children={groupComponent} pageHeading="Groups" breadCrumbPath="Groups / Groups"/>;
 };
 
 export default Groups;

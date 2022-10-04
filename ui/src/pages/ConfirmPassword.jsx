@@ -5,7 +5,7 @@ import SelfService from '../components/SelfService'
 
 const ConfirmPassword = () => {
   return (
-    <SelfService children={<ConfirmPasswordForm/>} pageHeading="Confirm Password" />
+    <SelfService children={<ConfirmPasswordForm/>} pageHeading="Confirm Password"  />
   )
 }
 
