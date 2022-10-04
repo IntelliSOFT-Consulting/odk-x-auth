@@ -29,11 +29,12 @@ LDAP_ADMIN_PASSWORD = os.environ.get("LDAP_ADMIN_PASSWORD") or "admin"
 
 
 # email configuration
-SMTP_HOST = os.environ.get("SMTP_HOST") or "smtp.freesmtpservers.com"
+SMTP_HOST = os.environ.get("SMTP_HOST") 
 SMTP_SSL = False
-SMTP_PORT = 25
-SMTP_SENDER = os.environ.get("SMTP_SENDER") or "test@odk-x.com"
-SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD") or "pass"
+SMTP_TLS = not (SMTP_SSL)
+SMTP_PORT = 587
+SMTP_SENDER = os.environ.get("SMTP_SENDER")
+SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
 
 
 # application configuration

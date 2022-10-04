@@ -35,6 +35,10 @@ def generate_reset_token(user):
     return str(token)
 
 
+def reset_user_password(password):
+    pass
+
+
 def get_user_from_token(token):
     return jwt.decode(token, key=SECRET_KEY, algorithms=["HS512"])["user"]
 
