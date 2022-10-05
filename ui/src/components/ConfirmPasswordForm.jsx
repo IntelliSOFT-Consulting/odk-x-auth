@@ -17,7 +17,7 @@ const ConfirmPasswordForm = () => {
   const handleCancel = () => {
     console.log(args);
   };
-  const changePassword = () => {
+  const changePassword = async() => {
     const payload = { ...userInfo, id: actualID };
 
     if (payload.password !== payload.confirm_password) {
@@ -43,42 +43,38 @@ const ConfirmPasswordForm = () => {
       return;
     }
 
-    if (getCookie("user_reset")===undefined || getCookie("user_reset")===null) {
-      Swal.fire({
-        title: "Error",
-        icon: "error",
-        text: "Link Expired or Invalid",
-      });
-    }
-    if (token !==getCookie("password_reset_token")) {
-      Swal.fire({
-        title: "Error",
-        icon: "error",
-        text: "Sorry, invalid token. Please request for a new link and ensure that you use the SAME device.",
-      });
-    }
+    
 
-    let url ="/api/auth/reset-password"
+    let url ="/api/auth/set-password"
     let method = "GET"
-    let body ={"token":token,"password":payload.password,"user":actualID}
-    let params ={url,method,body}
-    LDAPApi(params).then(res=>{
-      console.log(res);
-      if (res.status === "error" || res.data.error) {
-        Swal.fire({
-          title: "Error",
-          html: res.statusText,
-          icon: "error",
-        });
-        return;
-      }
+    let body ={"password":payload.password}
+    let data = await (
+      await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      })
+    ).json();
+
+    if (data.status === "error") {
+      Swal.fire({
+        title: "Error",
+        text: data.statusText || data.error,
+        icon: "error",
+      });
+      return;
+    } else {
       Swal.fire({
         title: "Success!",
-        html: `Updated password for ${actualID}  .${res.statusText}`,
+        html: `Updated password for ${actualID} `,
         icon: "success",
         confirmButtonText: "Okay",
       });
-    })
+      
+    }
   };
 
   return (

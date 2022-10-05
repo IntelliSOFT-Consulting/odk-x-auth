@@ -107,6 +107,7 @@ const NewGroupForm = () => {
                 <TextInput
                   id="group_id"
                   placeholder="Input Group ID"
+                  labelText = "Group ID"
                   onChange={(e) => {
                     setUserInfo({
                       ...userInfo,
@@ -122,6 +123,7 @@ const NewGroupForm = () => {
                 <TextInput
                   id="group_name"
                   placeholder="Input Group Name"
+                  labelText = "Group Name"
                   onChange={(e) => {
                     setUserInfo({
                       ...userInfo,

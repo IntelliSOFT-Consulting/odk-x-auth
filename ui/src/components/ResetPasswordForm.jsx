@@ -5,10 +5,8 @@ import { useContext } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCookie, setCookie } from "../api/cookie";
-import ApplicationContext from "../ApplicationContext";
 import ResetPasswordEmailTemplate from "./ResetPasswordEmailTemplate";
 import Swal from "sweetalert2";
-import { Link } from "@carbon/react";
 
 const getToken = (length, chars) => {
   var result = "";
@@ -17,59 +15,68 @@ const getToken = (length, chars) => {
   return result;
 };
 const ResetPasswordForm = () => {
-  
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({});
 
-  const sendLink = () => {
-    if(!userInfo.email){
+  const sendLink = async () => {
+    if (!userInfo.email) {
       Swal.fire({
-        title:"Error",
-        text:"Oops, you did not enter your email",
-        icon:"error"
-      })
+        title: "Error",
+        text: "Oops, you did not enter your email",
+        icon: "error",
+      });
       return;
     }
-    const userName = "there";
-    const token = getToken(
-      32,
-      "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    );
-    setCookie("password_reset_token", token, 1);
 
-    let user =getCookie("username");
-    const fullName = "Esteemed user";
-    const url =`${window.location.href.split(window.location.pathname)[0]}/confirm-password?password_reset_token=${token}&user_reset=${user}`;
-    const emailBody = (
-      <ResetPasswordEmailTemplate
-        userName={userName}
-        fullName={fullName}
-        subject="Password Reset"
-        confirmationUrl={url}
-      />
-    );
-    Swal.fire({
-      title: "Password reset link",
-      html:`${url}`,
-      icon: "info",
-    });
- 
+    let url = "/api/auth/reset-password";
+    let method = "POST";
+    let body = { "user": userInfo.email };
 
+    let data = await (
+      await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify(body),
+      })
+    ).json();
+
+    if (data.status === "error") {
+      Swal.fire({
+        title: "Error",
+        text: data.statusText || data.error,
+        icon: "error",
+      });
+      return;
+    } else {
+      Swal.fire({
+        title: "Success!",
+        html: `${data.message || data.status || data.statusText}`,
+        icon: "success",
+        confirmButtonText: "Okay",
+      });
+    }
+
+   
   };
   return (
     <>
       <div className="cds--grid">
         <div className="cds--row">
-          <div class="cds--col-lg-4 col--md-4 col--sm-0"></div>
+        
+        <div class="cds--col-lg-3 cds--col-md-3"></div>
 
-          <div className="cds--col-lg-8 col--md-8 col--sm-4">
+
+          <div className="cds--col-lg-8 col--md-8 col--sm-4" style={{"place-items":"left!important"}}>
             <Form>
               <div className="cds--row">
                 <div className="cds--col-lg-16">
                   <TextInput
                     type="email"
                     id="email"
-                    placeholder="Enter the email linked to your account"
+                    placeholder="Enter the email address linked to your account"
                     labelText="Email Address"
                     onChange={(e) => {
                       setUserInfo({
@@ -103,7 +110,8 @@ const ResetPasswordForm = () => {
               </div>
             </Form>
           </div>
-          <div class="cds--col-lg-4 col--sm-2"></div>
+          <div class="cds--col-lg-5"></div>
+
         </div>
       </div>
     </>
