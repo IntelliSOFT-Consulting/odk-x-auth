@@ -1,8 +1,9 @@
 import os
+import uuid
 
-ADMIN_UI_URL = "http://odkxauth.intellisoftkenya.com"
+ADMIN_UI_URL = os.environ.get("ADMIN_UI_URL") or "http://odkxauth.intellisoftkenya.com"
 
-SECRET_KEY = os.environ.get("SECRET_KEY") or "someSecret"
+SECRET_KEY = os.environ.get("SECRET_KEY") or "someSecret-{}".format(str(uuid.uuid4()))
 
 LDAP_HOST = os.environ.get("LDAP_HOST") or "localhost"
 LDAP_PORT = os.environ.get("LDAP_PORT") or int("389")
