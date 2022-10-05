@@ -112,7 +112,10 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
       body["gidNumber"] = payload.id
       url = "/api/groups/"+payload.id
     }else{
-
+      let g_name  = payload.group_name || ""
+      console.log("The Group Name ==="+g_name)
+      body ={"user":payload.id, "gidNumber":g_name}
+      url = "/api/groups/"+g_name
     }
     // body = JSON.stringify(body)
     const params ={method, url, body}
@@ -129,7 +132,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
       })
     ).json();
 
-    if (data.status === "error") {
+    if (data.status === "error" || data.error) {
       Swal.fire({
         title: "Error",
         text: data.statusText || data.error,

@@ -26,7 +26,7 @@ const AccountInformationForm = () => {
   const groupList = groups.map((row) => (
     <SelectItem value={row.group_name} text={row.group_name} />
   ));
-  const saveData =() =>{
+  const saveData =async() =>{
     console.log(JSON.stringify(userInfo))
     let groupContext = groups.filter(row => row.name===userInfo.group_name )
     let gid = groupContext !== undefined || groupContext!== null ? groupContext[0].uid : ""
@@ -44,23 +44,52 @@ const AccountInformationForm = () => {
 
     let params ={url,method,body}
 
-    LDAPApi(params).then(res=>{
-      console.log(res);
-      if (res.status === "error" || res.data.error) {
-        Swal.fire({
-          title: "Error",
-          html: res.statusText,
-          icon: "error",
-        });
-        return;
-      }
+
+    let data = await (
+      await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+        body: JSON.stringify(body),
+      })
+    ).json();
+
+    if (data.status === "error") {
+      Swal.fire({
+        title: "Error",
+        text: data.statusText || data.error,
+        icon: "error",
+      });
+      return;
+    } else {
       Swal.fire({
         title: "Success!",
-        html: `Updated User ${uid} with GID:[ <b style="color:blue">${gid} </b>] .${res.statusText}`,
+        html: `Updated User ${uid} with GID:[ <b style="color:blue">${gid} </b>] `,
         icon: "success",
         confirmButtonText: "Okay",
       });
-    })
+      navigate("/")
+    }
+
+    // LDAPApi(params).then(res=>{
+    //   console.log(res);
+    //   if (res.status === "error" || res.data.error) {
+    //     Swal.fire({
+    //       title: "Error",
+    //       html: res.statusText,
+    //       icon: "error",
+    //     });
+    //     return;
+    //   }
+    //   Swal.fire({
+    //     title: "Success!",
+    //     html: `Updated User ${uid} with GID:[ <b style="color:blue">${gid} </b>] .${res.statusText}`,
+    //     icon: "success",
+    //     confirmButtonText: "Okay",
+    //   });
+    // })
 
   }
   return (
