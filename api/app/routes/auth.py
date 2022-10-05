@@ -27,7 +27,7 @@ def login():
 
 
 @bp.route("/register", methods=["POST"])
-@admin_token_required
+# @admin_token_required
 def register():
     try:
         data = request.get_json()
@@ -47,9 +47,9 @@ def register():
 def initiate_password_reset():
     try:
         data = request.get_json()
-        email_response = send_email(data["user"], email_type="reset")
+        email_response = send_email(data["email"], email_type="reset")
         print("SMTP: ", email_response)
-        return jsonify(status="success", message="Password reset successfully")
+        return jsonify(status="success", message="Password reset instructions sent")
     except Exception as e:
         return jsonify(error=str(e), status="error"), 401
 
@@ -62,6 +62,6 @@ def set_password():
         token = (request.headers.get("Authorization")).split("Bearer ")[1]
         user = get_user_from_token(token)
         password = data["password"]
-        return jsonify(status="success", message="Password reset instructions sent")
+        return jsonify(status="success", message="Password reset successfully")
     except Exception as e:
         return jsonify(error=str(e), status="error"), 401

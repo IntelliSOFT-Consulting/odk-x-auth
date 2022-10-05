@@ -72,9 +72,9 @@ def access_token_required(f):
                 if token["type"] != "reset":
                     return jsonify(error="invalid access token", status="error"), 401
                 if token["exp"] <= int(datetime.now().timestamp()):
-                    return jsonify(error="invalid access token", status="error"), 401
+                    return jsonify(error="expired access token", status="error"), 401
             except Exception as e:
-                return jsonify(error="invalid access token", status="error"), 401
+                return jsonify(error=str(e), status="error"), 401
             return f(*args, **kwargs)
         else:
             error = "access token is required"
@@ -90,11 +90,13 @@ def admin_token_required(f):
             token = (request.headers.get("Authorization")).split("Bearer ")[1]
             try:
                 token = jwt.decode(token, SECRET_KEY, algorithms=["HS512"])
+                print(token)
                 if token["type"] != "ldap-admin":
                     return jsonify(error="invalid access token", status="error"), 401
                 if token["exp"] <= int(datetime.now().timestamp()):
                     return jsonify(error="invalid access token", status="error"), 401
             except Exception as e:
+                print(e)
                 return jsonify(error="invalid access token", status="error"), 401
             return f(*args, **kwargs)
         else:
