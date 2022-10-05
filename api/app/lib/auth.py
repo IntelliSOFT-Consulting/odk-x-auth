@@ -24,7 +24,7 @@ def ldap_client(user, password):
 
 
 def generate_token(user):
-    payload = {"user": user}
+    payload = {"user": user, "type":"ldap-admin"}
     token = jwt.encode(payload=payload, key=SECRET_KEY, algorithm="HS512")
     return str(token)
 
@@ -34,9 +34,6 @@ def generate_reset_token(user):
     token = jwt.encode(payload=payload, key=SECRET_KEY, algorithm="HS512")
     return str(token)
 
-
-def reset_user_password(password):
-    pass
 
 
 def get_user_from_token(token):
@@ -72,7 +69,7 @@ def access_token_required(f):
             token = (request.headers.get("Authorization")).split("Bearer ")[1]
             try:
                 token = jwt.decode(token, SECRET_KEY, algorithms=["HS512"])
-                if token["type"] != "client":
+                if token["type"] != "reset":
                     return jsonify(error="invalid access token", status="error"), 401
                 if token["exp"] <= int(datetime.now().timestamp()):
                     return jsonify(error="invalid access token", status="error"), 401
@@ -83,6 +80,26 @@ def access_token_required(f):
             error = "access token is required"
             return jsonify(error=error, status="error")
 
+    return decorated
+
+
+def admin_token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if request.headers.get("Authorization"):
+            token = (request.headers.get("Authorization")).split("Bearer ")[1]
+            try:
+                token = jwt.decode(token, SECRET_KEY, algorithms=["HS512"])
+                if token["type"] != "ldap-admin":
+                    return jsonify(error="invalid access token", status="error"), 401
+                if token["exp"] <= int(datetime.now().timestamp()):
+                    return jsonify(error="invalid access token", status="error"), 401
+            except Exception as e:
+                return jsonify(error="invalid access token", status="error"), 401
+            return f(*args, **kwargs)
+        else:
+            error = "access token is required"
+            return jsonify(error=error, status="error")
     return decorated
 
 
