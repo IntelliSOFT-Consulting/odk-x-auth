@@ -6,7 +6,7 @@ import ResetPasswordEmailTemplate from '../components/ResetPasswordEmailTemplate
 const ResetPassword = () => {
   
   return (
-    <SelfService children={<ResetPasswordForm />} pageTitle="Reset Password"/>
+    <SelfService children={<ResetPasswordForm />} pageTitle="Reset Password" />
   )
   //   <SelfService children={<ResetPasswordEmailTemplate
   //     userName=""

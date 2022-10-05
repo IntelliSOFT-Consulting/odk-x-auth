@@ -50,8 +50,8 @@ const { users } = useContext(ApplicationContext);
   })
   console.log(userList)
   
-  let userComponent = <DynamicDataGrid headers={headers} rows={userList} title="Users"  description="This table contains a list of created Users"/>;
-  return <AppHeader children={userComponent} pageHeading="Users" />;
+  let userComponent = <DynamicDataGrid headers={headers} rows={userList} title="Users"  description="This table contains a list of created Users" />;
+  return <AppHeader children={userComponent} pageHeading="Users" breadCrumbPath="Users / User List" />;
 };
 
 export default Users;

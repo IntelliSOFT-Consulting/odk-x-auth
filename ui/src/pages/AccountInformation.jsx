@@ -4,7 +4,7 @@ import AppHeader from '../components/AppHeader'
 
 const AccountInformation = () => {
   return (
-    <AppHeader children={<AccountInformationForm/>} pageHeading="Account Information"/>
+    <AppHeader children={<AccountInformationForm/>} pageHeading="Account Information" breadCrumbPath="Account Information / My Account"/>
   )
 }
 

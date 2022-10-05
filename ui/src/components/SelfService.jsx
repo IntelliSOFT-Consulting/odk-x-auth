@@ -107,7 +107,7 @@ const SelfService = ({ children, pageHeading, customClassName }) => {
           <Header aria-label="Carbon">
             <SkipToContent />
             
-            <HeaderName href="/" prefix="ODK-X Admin - Reset Password"></HeaderName>
+            <HeaderName href="/reset-password" prefix="ODK-X Admin - Reset Password"></HeaderName>
 
             <HeaderGlobalBar>
               

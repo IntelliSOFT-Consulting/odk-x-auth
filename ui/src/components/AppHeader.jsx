@@ -77,7 +77,7 @@ const signOutModalOptions = () => {
     someFun,
   };
 };
-const AppHeader = ({ children, pageHeading, customClassName }) => {
+const AppHeader = ({ children, pageHeading, breadCrumbPath }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [path, setPath] = useState("/");
   const location = useLocation();
@@ -252,6 +252,7 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
             content={children}
             pageHeading={pageHeading}
             path={path}
+            displayPath ={breadCrumbPath}
           />
           {isOpen === true && (
             <SystemAlert
@@ -268,7 +269,7 @@ const AppHeader = ({ children, pageHeading, customClassName }) => {
   );
 };
 
-const StoryContent = ({ content, pageHeading, path }) => {
+const StoryContent = ({ content, pageHeading, path, displayPath }) => {
   return (
     <>
       <style type="text/css">{contentStyles.cssText}</style>
@@ -278,7 +279,7 @@ const StoryContent = ({ content, pageHeading, path }) => {
             <div className="cds--col-lg-3 cds--col-md-3"></div>
             <div className="cds--col-lg-11">
               <Breadcrumb>
-                <BreadcrumbItem isCurrentPage href={path}>{`${path
+                <BreadcrumbItem isCurrentPage href={path}>{`${displayPath || path
                   .replace("/", "")
                   .toProperCase()}`}</BreadcrumbItem>
               </Breadcrumb>
