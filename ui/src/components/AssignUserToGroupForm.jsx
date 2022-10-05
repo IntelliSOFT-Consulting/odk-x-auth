@@ -53,11 +53,11 @@ const AssignUserToGroupForm = () => {
       });
       return
     }
-    let url ="/api/groups/"+gidNumber
+    let url ="/api/groups/"+gidNumber.uid
     let body ={"user":userInfo.user_name}
     let method = "POST"
    
-
+    console.log("Ze Gid"+JSON.stringify(gidNumber))
     let data = await (
       await fetch(url, {
         method: method,
@@ -79,7 +79,7 @@ const AssignUserToGroupForm = () => {
     } else {
       Swal.fire({
         title: "Success!",
-        html: `Assigned user ${userInfo.user_name}  to Group ID:[ <b style="color:blue">${gidNumber} </b>] `,
+        html: `Assigned user ${userInfo.user_name}  to Group ID:[ <b style="color:blue">${gidNumber.uid} </b>] `,
         icon: "success",
         confirmButtonText: "Okay",
       });
