@@ -14,7 +14,6 @@ bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
 
 @bp.route("/login", methods=["POST"])
-@admin_token_required
 def login():
     try:
         data = request.get_json()
