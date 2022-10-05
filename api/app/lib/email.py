@@ -1,6 +1,13 @@
 import smtplib
 import ssl
-from app.config import SMTP_HOST, SMTP_PASSWORD, SMTP_PORT, SMTP_SENDER, SMTP_SSL
+from app.config import (
+    ADMIN_UI_URL,
+    SMTP_HOST,
+    SMTP_PASSWORD,
+    SMTP_PORT,
+    SMTP_SENDER,
+    SMTP_SSL,
+)
 from .auth import generate_reset_token
 
 context = ssl.create_default_context()
@@ -47,7 +54,10 @@ def send_email(recepient, email_type="reset"):
         server.login(SMTP_SENDER, SMTP_PASSWORD)
         if email_type == "reset":
             email = reset_password_message.format(
-                SMTP_SENDER, recepient, recepient, generate_reset_token(recepient)
+                SMTP_SENDER,
+                recepient,
+                recepient,
+                (ADMIN_UI_URL + "/reset-password?token=" + generate_reset_token(recepient)),
             )
         elif email_type == "welcome":
             email = welcome_message.format(SMTP_SENDER, recepient, recepient, recepient)
