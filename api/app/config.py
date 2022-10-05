@@ -1,13 +1,10 @@
 import os
+import uuid
 
+ADMIN_UI_URL = os.environ.get("ADMIN_UI_URL") or "http://odkxauth.intellisoftkenya.com"
 
+SECRET_KEY = os.environ.get("SECRET_KEY") or "someSecret-{}".format(str(uuid.uuid4()))
 
-ADMIN_UI_URL = "http://odkxauth.intellisoftkenya.com"
-
-SECRET_KEY = os.environ.get("SECRET_KEY") or "someSecret"
-
-# LDAP_HOST = "ipa.demo1.freeipa.org"
-# LDAP_HOST = "ldap-service"
 LDAP_HOST = os.environ.get("LDAP_HOST") or "localhost"
 LDAP_PORT = os.environ.get("LDAP_PORT") or int("389")
 
@@ -29,13 +26,12 @@ LDAP_ADMIN_PASSWORD = os.environ.get("LDAP_ADMIN_PASSWORD") or "admin"
 
 
 # email configuration
-SMTP_HOST = os.environ.get("SMTP_HOST") 
+SMTP_HOST = os.environ.get("SMTP_HOST")
 SMTP_SSL = False
 SMTP_TLS = not (SMTP_SSL)
 SMTP_PORT = 587
 SMTP_SENDER = os.environ.get("SMTP_SENDER")
 SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
-
 
 # application configuration
 TOKEN_EXPIRY = 60 * 15  # Seconds
