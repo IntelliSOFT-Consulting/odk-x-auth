@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify
+from app.lib.auth import modify_user_group
 from app.lib.search import search_ldap
-from app.lib.groups import add_ldap_group, add_user_to_group, delete_ldap_group
+from app.lib.groups import add_ldap_group, delete_ldap_group
 
 
 bp = Blueprint("groups", __name__, url_prefix="/api/groups")
+
 
 @bp.route("/", methods=["POST"])
 def create_group():
@@ -24,7 +26,6 @@ def list_groups():
         return jsonify(error=str(e), status="error"), 400
 
 
-
 @bp.route("/<string:gidNumber>", methods=["GET"])
 def group_details(gidNumber):
     try:
@@ -38,7 +39,7 @@ def group_details(gidNumber):
 def edit_group(gidNumber):
     try:
         data = request.get_json()
-        client = modify_ldap_group(data["name"], data["gidNumber"])
+        client = modify_user_group(data["user"], gidNumber)
         print(client)
         return jsonify(status="success", gid=data["gid"]), 200
     except Exception as e:
@@ -49,7 +50,7 @@ def edit_group(gidNumber):
 def assign_group(gidNumber):
     try:
         data = request.get_json()
-        response = add_user_to_group(user=data["user"], gidNumber=gidNumber)
+        response = modify_user_group(data["user"], gidNumber)
         return jsonify(response), 200 if response["status"] == "success" else 400
     except Exception as e:
         return jsonify(error=str(e), status="error"), 400
