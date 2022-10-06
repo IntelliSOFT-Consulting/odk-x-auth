@@ -61,9 +61,6 @@ def modify_password(user, password):
     return response
 
 
-# modify_password("ivore_uyse", "amolo")
-
-
 def modify_user_group(user, gidNumber):
     try:
         ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
