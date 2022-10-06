@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from api.app.lib.auth import admin_token_required
+from app.lib.auth import admin_token_required
 from app.lib.groups import delete_ldap_user
 from app.lib.search import search_ldap
 
