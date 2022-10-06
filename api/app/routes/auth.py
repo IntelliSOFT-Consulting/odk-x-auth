@@ -3,13 +3,13 @@ from app.lib.search import find_user_by_email
 from app.lib.email import send_email
 
 from app.lib.auth import (
-    access_token_required,
     add_new_user,
     admin_token_required,
     generate_token,
     get_user_from_token,
     ldap_client,
     modify_password,
+    reset_token_required,
 )
 
 bp = Blueprint("auth", __name__, url_prefix="/api/auth")
@@ -29,7 +29,7 @@ def login():
 
 
 @bp.route("/register", methods=["POST"])
-# @admin_token_required
+@admin_token_required
 def register():
     try:
         data = request.get_json()
@@ -79,7 +79,7 @@ def initiate_password_reset():
 
 
 @bp.route("/set-password", methods=["POST"])
-@access_token_required
+@reset_token_required
 def set_password():
     try:
         data = request.get_json()

@@ -24,13 +24,29 @@ def ldap_client(user, password):
 
 
 def generate_token(user):
-    payload = {"user": user, "type": "ldap-admin"}
+    payload = {
+        "user": user,
+        "type": "ldap-admin",
+        "exp": int(
+            (datetime.datetime.now() + datetime.timedelta(minutes=5)).strftime(
+                "%Y%m%d%H%M%S"
+            )
+        ),
+    }
     token = jwt.encode(payload=payload, key=SECRET_KEY, algorithm="HS512")
     return str(token)
 
 
 def generate_reset_token(user):
-    payload = {"user": user, "type": "reset"}
+    payload = {
+        "user": user,
+        "type": "reset",
+        "exp": int(
+            (datetime.datetime.now() + datetime.timedelta(minutes=5)).strftime(
+                "%Y%m%d%H%M%S"
+            )
+        ),
+    }
     token = jwt.encode(payload=payload, key=SECRET_KEY, algorithm="HS512")
     return str(token)
 
@@ -87,16 +103,21 @@ def modify_user_group(user, gidNumber):
 # modify_user_group("ivore_uyse", 501)
 
 
-def access_token_required(f):
+def reset_token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         if request.headers.get("Authorization"):
             token = (request.headers.get("Authorization")).split("Bearer ")[1]
             try:
-                token = jwt.decode(token, SECRET_KEY, algorithms=["HS512"])
+                token = jwt.decode(
+                    token,
+                    SECRET_KEY,
+                    algorithms=["HS512"],
+                    options={"verify_signature": False},
+                )
                 if token["type"] != "reset":
                     return jsonify(error="invalid access token", status="error"), 401
-                if token["exp"] <= int(datetime.now().timestamp()):
+                if token["exp"] <= int(datetime.datetime.now().timestamp()):
                     return jsonify(error="expired access token", status="error"), 401
             except Exception as e:
                 return jsonify(error=str(e), status="error"), 401
@@ -114,11 +135,16 @@ def admin_token_required(f):
         if request.headers.get("Authorization"):
             token = (request.headers.get("Authorization")).split("Bearer ")[1]
             try:
-                token = jwt.decode(token, SECRET_KEY, algorithms=["HS512"])
+                token = jwt.decode(
+                    token,
+                    SECRET_KEY,
+                    algorithms=["HS512"],
+                    options={"verify_signature": False},
+                )
                 print(token)
                 if token["type"] != "ldap-admin":
                     return jsonify(error="invalid access token", status="error"), 401
-                if token["exp"] <= int(datetime.now().timestamp()):
+                if token["exp"] <= int(datetime.datetime.now().timestamp()):
                     return jsonify(error="invalid access token", status="error"), 401
             except Exception as e:
                 print(e)
@@ -184,3 +210,26 @@ def add_new_user(first_name, last_name, email, gidNumber):
     ldap_conn.unbind()
 
     return {"error": response, "status": "error"}
+
+
+# def modify_user_info(user, ):
+#     try:
+#         ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+#         user = "cn={},{}".format(user, BASE_USER_DN)
+#         response = ldap_conn.modify(
+#             user,
+#             changes={"gidNumber": [(MODIFY_REPLACE, [gidNumber])]},
+#         )
+#         print(response[0])
+#         if not response[0]:
+#             return {"error": response[1]["description"], "status": "error"}
+#         print(ldap_conn.result)
+#         return {
+#             "response": "User {} added to group {}".format(user, gidNumber),
+#             "status": "success",
+#         }
+#     except LDAPException as e:
+#         print(e)
+#         response = {"status": "error", "error": str(e)}
+#     ldap_conn.unbind()
+#     return response
