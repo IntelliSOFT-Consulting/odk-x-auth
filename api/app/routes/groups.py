@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.lib.auth import modify_user_group
+from app.lib.auth import admin_token_required, modify_user_group
 from app.lib.search import search_ldap
 from app.lib.groups import add_ldap_group, delete_ldap_group
 
@@ -8,6 +8,7 @@ bp = Blueprint("groups", __name__, url_prefix="/api/groups")
 
 
 @bp.route("/", methods=["POST"])
+@admin_token_required
 def create_group():
     try:
         data = request.get_json()
@@ -18,6 +19,7 @@ def create_group():
 
 
 @bp.route("/", methods=["GET"])
+@admin_token_required
 def list_groups():
     try:
         response = search_ldap(entity="groups")
@@ -27,6 +29,7 @@ def list_groups():
 
 
 @bp.route("/<string:gidNumber>", methods=["GET"])
+@admin_token_required
 def group_details(gidNumber):
     try:
         response = search_ldap(entity="groups", name=gidNumber)
@@ -36,6 +39,7 @@ def group_details(gidNumber):
 
 
 @bp.route("/<int:gidNumber>", methods=["PUT"])
+@admin_token_required
 def edit_group(gidNumber):
     try:
         data = request.get_json()
@@ -47,6 +51,7 @@ def edit_group(gidNumber):
 
 
 @bp.route("/<int:gidNumber>", methods=["POST"])
+@admin_token_required
 def assign_group(gidNumber):
     try:
         data = request.get_json()
@@ -57,6 +62,7 @@ def assign_group(gidNumber):
 
 
 @bp.route("/<int:gidNumber>", methods=["DELETE"])
+@admin_token_required
 def delete_group(gidNumber):
     try:
         response = delete_ldap_group(gidNumber)
