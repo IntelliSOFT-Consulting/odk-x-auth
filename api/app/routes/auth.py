@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from app.lib.search import find_user_by_email
 from app.lib.email import send_email
 
 from app.lib.auth import (
@@ -8,6 +9,7 @@ from app.lib.auth import (
     generate_token,
     get_user_from_token,
     ldap_client,
+    modify_password,
 )
 
 bp = Blueprint("auth", __name__, url_prefix="/api/auth")
@@ -31,13 +33,21 @@ def login():
 def register():
     try:
         data = request.get_json()
+        if find_user_by_email(data["email"]):
+            return (
+                jsonify(
+                    error="The provided email has already been registered",
+                    status="error",
+                ),
+                400,
+            )
         response = add_new_user(
             data["first_name"], data["last_name"], data["email"], data["gidNumber"]
         )
         print(response)
         if response["status"] == "success":
             email_response = send_email(data["email"], email_type="welcome")
-            print("SMTP: " ,email_response)
+            print("SMTP: ", email_response)
         return jsonify(response), 200 if response["status"] == "success" else 400
     except Exception as e:
         return jsonify(error=str(e), status="error"), 400
@@ -47,9 +57,23 @@ def register():
 def initiate_password_reset():
     try:
         data = request.get_json()
+        if not find_user_by_email(data["email"]):
+            return (
+                jsonify(
+                    status="success",
+                    message="Password reset instructions sent to the email provided",
+                ),
+                200,
+            )
         email_response = send_email(data["email"], email_type="reset")
         print("SMTP: ", email_response)
-        return jsonify(status="success", message="Password reset instructions sent")
+        return (
+            jsonify(
+                status="success",
+                message="Password reset instructions sent to the email provided",
+            ),
+            201,
+        )
     except Exception as e:
         return jsonify(error=str(e), status="error"), 401
 
@@ -62,6 +86,8 @@ def set_password():
         token = (request.headers.get("Authorization")).split("Bearer ")[1]
         user = get_user_from_token(token)
         password = data["password"]
+        response = modify_password(user, password)
+        print(response)
         return jsonify(status="success", message="Password reset successfully")
     except Exception as e:
         return jsonify(error=str(e), status="error"), 401

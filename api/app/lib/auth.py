@@ -24,7 +24,7 @@ def ldap_client(user, password):
 
 
 def generate_token(user):
-    payload = {"user": user, "type":"ldap-admin"}
+    payload = {"user": user, "type": "ldap-admin"}
     token = jwt.encode(payload=payload, key=SECRET_KEY, algorithm="HS512")
     return str(token)
 
@@ -33,7 +33,6 @@ def generate_reset_token(user):
     payload = {"user": user, "type": "reset"}
     token = jwt.encode(payload=payload, key=SECRET_KEY, algorithm="HS512")
     return str(token)
-
 
 
 def get_user_from_token(token):
@@ -60,6 +59,35 @@ def modify_password(user, password):
         response = {"status": "error", "error": str(e)}
     ldap_conn.unbind()
     return response
+
+
+# modify_password("ivore_uyse", "amolo")
+
+
+def modify_user_group(user, gidNumber):
+    try:
+        ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+        user = "cn={},{}".format(user, BASE_USER_DN)
+        response = ldap_conn.modify(
+            user,
+            changes={"gidNumber": [(MODIFY_REPLACE, [gidNumber])]},
+        )
+        print(response[0])
+        if not response[0]:
+            return {"error": response[1]["description"], "status": "error"}
+        print(ldap_conn.result)
+        return {
+            "response": "User {} added to group {}".format(user, gidNumber),
+            "status": "success",
+        }
+    except LDAPException as e:
+        print(e)
+        response = {"status": "error", "error": str(e)}
+    ldap_conn.unbind()
+    return response
+
+
+# modify_user_group("ivore_uyse", 501)
 
 
 def access_token_required(f):
@@ -102,6 +130,7 @@ def admin_token_required(f):
         else:
             error = "access token is required"
             return jsonify(error=error, status="error")
+
     return decorated
 
 
@@ -133,8 +162,8 @@ def add_new_user(first_name, last_name, email, gidNumber):
                 "userPassword": str(uuid.uuid4()),
             },
         )
-        print(response[1]['result'])
-        if response[1]['result'] != 0:
+        print(response[1]["result"])
+        if response[1]["result"] != 0:
             return {"error": response[1]["description"], "status": "error"}
         ldap_conn.unbind()
         if response[0] == True:

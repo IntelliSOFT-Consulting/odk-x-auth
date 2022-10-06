@@ -28,16 +28,16 @@ def search_ldap(entity="users", name=None, filter=None):
                 (
                     {
                         "dn": i["dn"],
-                        "uid":i["dn"],
+                        "uid": i["dn"],
                         # "attributes": (dict(i["attributes"])),
                         "names": dict(i["attributes"])["cn"][0],
                         "user_name": dict(i["attributes"])["cn"][1],
                         "email": dict(i["attributes"])["mail"][0],
                         "last_name": dict(i["attributes"])["sn"][0],
-                        "gidNumber":dict(i["attributes"])["gidNumber"] or None,
+                        "gidNumber": dict(i["attributes"])["gidNumber"] or None,
                         "groupName": dict(i["attributes"])["gidNumber"] or None,
                         "created_time": "2022-09-14T14:57:04.000Z",
-                        "created_by": "Admin"
+                        "created_by": "Admin",
                     }
                 )
                 for i in res[2]
@@ -53,7 +53,7 @@ def search_ldap(entity="users", name=None, filter=None):
                         "gidNumber": dict(i["attributes"])["gidNumber"],
                         "group_id": dict(i["attributes"])["gidNumber"],
                         "created_time": "2022-09-14T20:12:31.000Z",
-                        "created_by": "Admin"
+                        "created_by": "Admin",
                     }
                 )
                 for i in res[2]
@@ -67,3 +67,29 @@ def search_ldap(entity="users", name=None, filter=None):
         return {"error": "LDAPInvalidFilterError:{}".format(err), "status": "error"}
     except LDAPException as e:
         return {"error": e, "status": "error"}
+
+
+def find_user_by_email(email):
+    try:
+        users = search_ldap()
+        print(users["data"])
+        for user in users["data"]:
+            if email == user["email"]:
+                return user
+        return None
+    except LDAPException as e:
+        print(e)
+        return None
+
+
+def find_user_by_username(username):
+    try:
+        users = search_ldap()
+        print(users["data"])
+        for user in users["data"]:
+            if username == user["user_name"]:
+                return user
+        return None
+    except LDAPException as e:
+        print(e)
+        return None
