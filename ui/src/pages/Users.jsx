@@ -26,10 +26,10 @@ const headers = [
     key: "created_by",
     header: "Created By",
   },
-  {
-    key: "date_created",
-    header: "Date Created",
-  }
+  // {
+  //   key: "date_created",
+  //   header: "Date Created",
+  // }
 ];
 
 const Users = () => {
@@ -43,7 +43,7 @@ const { users } = useContext(ApplicationContext);
       user_name: user.user_name,
       group_name: user.group_name || "",
       created_by: "",
-      date_created: user.created_time,
+      // date_created: user.created_time,
      
     }
     userList.push(row)
