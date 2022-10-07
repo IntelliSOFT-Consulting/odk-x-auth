@@ -1,4 +1,4 @@
-import { Download, Edit, Save, TrashCan } from "@carbon/icons-react";
+import {  Edit,  TrashCan } from "@carbon/icons-react";
 import {
   Button,
   ComboBox,
@@ -17,9 +17,7 @@ import {
   TableSelectAll,
   TableSelectRow,
   TableToolbar,
-  TableToolbarAction,
   TableToolbarContent,
-  TableToolbarMenu,
   TableToolbarSearch,
   TextInput,
 } from "@carbon/react";
@@ -27,8 +25,6 @@ import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import base from "../api/airtable";
-import { LDAPApi } from "../api/auth";
 import { getCookie } from "../api/cookie";
 import ApplicationContext from "../ApplicationContext";
 import TransactionalModal from "./TransactionalModal";
@@ -180,6 +176,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
     console.log("To delete IDs "+ context+" from "+pageTitle)
     const method = "DELETE";
     const params = { method };
+    console.log(String(context))
     context.forEach(async(actualID)=>{
       const url = pageTitle==="Users" ? "/api/users/"+actualID: "/api/groups/"+actualID
       let body = {gidNumber: actualID}
@@ -222,7 +219,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
       html: `Deleted records [ ${context.join(",")}]`,
       confirmButtonText: "Okay",
     });
-    window.location.reload()
+    
   }
   return (
     <>
@@ -252,7 +249,8 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
             >
               <TableToolbar {...getToolbarProps()}>
                 <TableBatchActions {...batchActionProps}>
-                  <TableBatchAction
+
+                  {title==="Users" && <TableBatchAction
                     tabIndex={batchActionProps.shouldShowBatchActions ? 0 : -1}
                     renderIcon={TrashCan}
                     onClick={() => {
@@ -261,7 +259,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
                     }}
                   >
                     Delete
-                  </TableBatchAction>
+                  </TableBatchAction>}
                   <TableBatchAction
                     tabIndex={batchActionProps.shouldShowBatchActions ? 0 : -1}
                     renderIcon={Edit}
