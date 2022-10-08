@@ -170,7 +170,13 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
 
   const deleteSelectedRows = (pageTitle, action, selectedRows) => {
     console.error(selectedRows);
-    const context = selectedRows.map((row) => row.id);
+    const context = selectedRows.map((row) => {
+      if (pageTitle === "Users") {
+        return row.user_name;
+      } else {
+        return row.id;
+      }
+    });
 
     console.log("To delete IDs " + context + " from " + pageTitle);
     const method = "DELETE";
@@ -179,7 +185,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
     context.forEach(async (actualID) => {
       const url =
         pageTitle === "Users"
-          ? "/api/users/" + actualID.split(",")[0].split("=")[1]
+          ? "/api/users/" + actualID
           : "/api/groups/" + actualID;
       console.log(url);
       let body = { gidNumber: actualID };
