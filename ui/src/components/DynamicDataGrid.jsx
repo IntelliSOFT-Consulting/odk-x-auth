@@ -1,4 +1,4 @@
-import {  Edit,  TrashCan } from "@carbon/icons-react";
+import { Edit, TrashCan } from "@carbon/icons-react";
 import {
   Button,
   ComboBox,
@@ -41,7 +41,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
 
   const [groupEditInfo, setGroupEditInfo] = useState({});
   const [userEditInfo, setUserEditInfo] = useState({});
-  const { users, groups } =useContext(ApplicationContext);
+  const { users, groups } = useContext(ApplicationContext);
   const dynamicForm =
     pageTitle === "Users" ? (
       <EditUserComponent
@@ -57,7 +57,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
         setGroupEditInfo={setGroupEditInfo}
       />
     );
-  
+
   const defaultModaloptions = () => {
     const danger = false;
     const modalHeading = "Edit " + pageTitle;
@@ -81,13 +81,13 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
   let onRequestClose = () => {
     setIsOpen(false);
   };
-  let onRequestSubmit = async() => {
+  let onRequestSubmit = async () => {
     setIsOpen(false);
     const payload =
       pageTitle === "Users" ? { ...userEditInfo } : { ...groupEditInfo };
 
     const actualID = payload.id;
-    
+
     console.log("id:" + actualID + ", fields: " + JSON.stringify(payload));
 
     if (actualID === undefined || payload === {}) {
@@ -99,23 +99,23 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
 
       return;
     }
-    let url =""
-    const method = "PUT"
-    
-    let body ={}
-    if (pageTitle === "Groups"){
-      body["name"] = payload.name
-      body["gidNumber"] = payload.id
-      url = "/api/groups/"+payload.id
-    }else{
-      let g_name  = payload.group_name || ""
-      console.log("The Group Name ==="+g_name)
-      body ={"user":payload.id, "gidNumber":g_name}
-      url = "/api/groups/"+g_name
+    let url = "";
+    const method = "PUT";
+
+    let body = {};
+    if (pageTitle === "Groups") {
+      body["name"] = payload.name;
+      body["gidNumber"] = payload.id;
+      url = "/api/groups/" + payload.id;
+    } else {
+      let g_name = payload.group_name || "";
+      console.log("The Group Name ===" + g_name);
+      body = { user: payload.id, gidNumber: g_name };
+      url = "/api/groups/" + g_name;
     }
     // body = JSON.stringify(body)
-    const params ={method, url, body}
-    console.log(params)
+    const params = { method, url, body };
+    console.log(params);
 
     let data = await (
       await fetch(url, {
@@ -142,7 +142,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
         icon: "success",
         confirmButtonText: "Okay",
       });
-      navigate("/groups")
+      navigate("/groups");
     }
     // LDAPApi(params).then(res=>{
     //   console.log(res);
@@ -162,25 +162,28 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
     //         html: `Updated record for ${actualID}`,
     //         confirmButtonText: "Okay",
     //       });
-         
+
     //       window.location.reload(false);
     //     }
     // })
-   
   };
 
-  const deleteSelectedRows =(pageTitle,action, selectedRows)=>{
-    console.error(selectedRows)
-    const context =  selectedRows.map(row => row.id)
+  const deleteSelectedRows = (pageTitle, action, selectedRows) => {
+    console.error(selectedRows);
+    const context = selectedRows.map((row) => row.id);
 
-    console.log("To delete IDs "+ context+" from "+pageTitle)
+    console.log("To delete IDs " + context + " from " + pageTitle);
     const method = "DELETE";
     const params = { method };
-    console.log(String(context))
-    context.forEach(async(actualID)=>{
-      const url = pageTitle==="Users" ? "/api/users/"+actualID: "/api/groups/"+actualID
-      let body = {gidNumber: actualID}
-      let payload = {...params,url, body}
+    console.log(String(context));
+    context.forEach(async (actualID) => {
+      const url =
+        pageTitle === "Users"
+          ? "/api/users/" + actualID.split(",")[0].split("=")[1]
+          : "/api/groups/" + actualID;
+      console.log(url);
+      let body = { gidNumber: actualID };
+      let payload = { ...params, url, body };
 
       let data = await (
         await fetch(url, {
@@ -192,15 +195,15 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
           body: JSON.stringify(body),
         })
       ).json();
-  
-      if (data.status === "error") {
+
+      if (data.status === "error" || data.error) {
         Swal.fire({
           title: "Error",
           text: data.statusText || data.error,
           icon: "error",
         });
         return;
-      } 
+      }
       // let res = await LDAPApi(payload);
 
       // if(res.status==="error"){
@@ -212,20 +215,16 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
       //   });
       //   return
       // }
-    })
+    });
     Swal.fire({
       title: "Records Deleted",
       icon: "success",
       html: `Deleted records [ ${context.join(",")}]`,
       confirmButtonText: "Okay",
     });
-    
-  }
+  };
   return (
     <>
-
-    
-
       <DataTable rows={rows} headers={headers}>
         {({
           rows,
@@ -249,29 +248,31 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
             >
               <TableToolbar {...getToolbarProps()}>
                 <TableBatchActions {...batchActionProps}>
-
-                  {title==="Users" && <TableBatchAction
+                  <TableBatchAction
                     tabIndex={batchActionProps.shouldShowBatchActions ? 0 : -1}
                     renderIcon={TrashCan}
                     onClick={() => {
-                      
-                      deleteSelectedRows(title,'Delete', selectedRows);
+                      deleteSelectedRows(title, "Delete", selectedRows);
                     }}
                   >
                     Delete
-                  </TableBatchAction>}
-                  <TableBatchAction
-                    tabIndex={batchActionProps.shouldShowBatchActions ? 0 : -1}
-                    renderIcon={Edit}
-                    onClick={() => {
-                      setContextData(selectedRows);
-                      setPageTitle(title);
-                      batchActionClick(title, "Edit", selectedRows) &&
-                        setIsOpen(true);
-                    }}
-                  >
-                    Edit
                   </TableBatchAction>
+                  {title === "Users" && (
+                    <TableBatchAction
+                      tabIndex={
+                        batchActionProps.shouldShowBatchActions ? 0 : -1
+                      }
+                      renderIcon={Edit}
+                      onClick={() => {
+                        setContextData(selectedRows);
+                        setPageTitle(title);
+                        batchActionClick(title, "Edit", selectedRows) &&
+                          setIsOpen(true);
+                      }}
+                    >
+                      Edit
+                    </TableBatchAction>
+                  )}
                 </TableBatchActions>
                 <TableToolbarContent
                   aria-hidden={batchActionProps.shouldShowBatchActions}
@@ -357,7 +358,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
 
 const batchActionClick = (title, action, selectedRows) => {
   const formattedObj = JSON.stringify(selectedRows);
-  
+
   if (action === "Edit" && JSON.parse(formattedObj)[1]) {
     Swal.fire({
       title: "Error",
@@ -368,7 +369,7 @@ const batchActionClick = (title, action, selectedRows) => {
   }
   if (action === "Delete") {
     deleteRows(title, selectedRows);
-    console.error("Deleting "+title+" "+JSON.stringify(selectedRows))
+    console.error("Deleting " + title + " " + JSON.stringify(selectedRows));
     return;
   }
 
@@ -378,15 +379,11 @@ const routeMappings = {
   groups: "/new-group",
   users: "/new-user",
 };
-const deleteRows = (title, rows) => {
-
- 
-  
-};
+const deleteRows = (title, rows) => {};
 
 const EditUserComponent = ({ title, data, groupList, setUserEditInfo }) => {
   const { users } = useContext(ApplicationContext);
-  console.log(`The users are ;${JSON.stringify(users)}`)
+  console.log(`The users are ;${JSON.stringify(users)}`);
   const cooKieUsers = users;
   const cooKieGroups = groupList;
 
@@ -397,7 +394,7 @@ const EditUserComponent = ({ title, data, groupList, setUserEditInfo }) => {
     (row) => row.user_name === context[0].value
   );
   let groupSelect = cooKieGroups.map((row) => row.group_name);
-  
+
   const [userPayload, setUserPayload] = useState({
     id: ultimateData[0].uid,
     first_name: ultimateData[0].first_name,
@@ -515,8 +512,8 @@ const EditUserComponent = ({ title, data, groupList, setUserEditInfo }) => {
 };
 const EditGroupComponent = ({ title, data, setGroupEditInfo }) => {
   const groupEditInfo = {};
-  const {groups} = useContext(ApplicationContext);
-  const cooKieGroups = groups //getCookie("odk-groups");
+  const { groups } = useContext(ApplicationContext);
+  const cooKieGroups = groups; //getCookie("odk-groups");
 
   const context = data[0].cells.filter(
     (row) => row.info.header === "group_name"
@@ -575,6 +572,5 @@ const EditGroupComponent = ({ title, data, setGroupEditInfo }) => {
     </>
   );
 };
-
 
 export default DynamicDataGrid;
