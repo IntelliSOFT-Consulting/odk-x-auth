@@ -55,6 +55,12 @@ export function ApplicationProvider({ children }) {
     return;
   };
 
+  const onUserDelete =({id})=>{
+    setUsers(users.filter(row=>row.uid !== id))
+  }
+  const onGroupDelete =({id})=>{
+    setGroups(groups.filter(row=>row.uid !== id))
+  }
   useEffect(() => {
     fetchUsers();
     //groups
@@ -62,7 +68,7 @@ export function ApplicationProvider({ children }) {
     fetchGroups();
   }, []);
 
-  const changePassword = ({ uid, newpassword }) => {};
+  
   const updateGrid = ({ rowData, payload, pageTitle, actualID }) => {
     let newArray = rowData.map((element) =>
       element.id === actualID ? { ...element, ...payload } : element
@@ -72,7 +78,7 @@ export function ApplicationProvider({ children }) {
       : setGroups([...groups, ...newArray]);
   };
   return (
-    <ApplicationContext.Provider value={{ users, groups, updateGrid }}>
+    <ApplicationContext.Provider value={{ users, groups, updateGrid,onUserDelete,onGroupDelete }}>
       {children}
     </ApplicationContext.Provider>
   );

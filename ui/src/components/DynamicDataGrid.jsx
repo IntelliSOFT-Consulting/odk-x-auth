@@ -41,7 +41,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
 
   const [groupEditInfo, setGroupEditInfo] = useState({});
   const [userEditInfo, setUserEditInfo] = useState({});
-  const { users, groups } = useContext(ApplicationContext);
+  const { users, groups,onUserDelete,onGroupDelete } = useContext(ApplicationContext);
   const dynamicForm =
     pageTitle === "Users" ? (
       <EditUserComponent
@@ -172,16 +172,16 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
     console.error(selectedRows);
     const context = selectedRows.map((row) => {
       if (pageTitle === "Users") {
-        return row.user_name;
+        return row.id.split(",")[0].split("=")[1];
       } else {
         return row.id;
       }
     });
-
-    console.log("To delete IDs " + context + " from " + pageTitle);
+    console.log(context);
+    console.log("To delete IDs " + JSON.stringify(context) + " from " + pageTitle);
     const method = "DELETE";
     const params = { method };
-    console.log(String(context));
+    
     context.forEach(async (actualID) => {
       const url =
         pageTitle === "Users"
@@ -210,17 +210,8 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
         });
         return;
       }
-      // let res = await LDAPApi(payload);
+      pageTitle ==="Users"? onUserDelete(actualID) : onGroupDelete(actualID)
 
-      // if(res.status==="error"){
-      //   Swal.fire({
-      //     title: "Error",
-      //     icon: "error",
-      //     html: `${res.statusText}`,
-      //     confirmButtonText: "Okay",
-      //   });
-      //   return
-      // }
     });
     Swal.fire({
       title: "Records Deleted",
@@ -228,6 +219,8 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
       html: `Deleted records [ ${context.join(",")}]`,
       confirmButtonText: "Okay",
     });
+    window.location.reload();
+    
   };
   return (
     <>
