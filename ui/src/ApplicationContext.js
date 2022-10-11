@@ -47,6 +47,7 @@ export function ApplicationProvider({ children }) {
         Users: "",
         group_name: row["name"] ? row["name"].toUpperCase() : "-",
         uid: row["gidNumber"], //GID
+        users: row["users"] || 0,
         created_time: row["created_time"] || "-",
         created_by: row["created_by"] || "-",
       };

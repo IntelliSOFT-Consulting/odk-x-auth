@@ -28,7 +28,7 @@ const headers = [
   //   header: "Date Created",
   // },
   {
-    key: "number_of_users",
+    key: "users",
     header: "Number of Users",
   },
 ];
@@ -44,7 +44,7 @@ const Groups = () => {
       group_name: group.group_name,
       created_by: group.created_by.name || group.created_by,
       // date_created: group.created_time,
-      number_of_users: group.Users ? group.Users.split(", ").length : 0,
+      users: group.users || 0,
     };
     groupList.push(row);
   });
