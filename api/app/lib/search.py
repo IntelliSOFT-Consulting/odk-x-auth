@@ -1,10 +1,51 @@
 # For groups provide a groupid number instead of a uidNumber
+from unittest import result
 from ldap3 import Server, Connection, ALL, SUBTREE
 from app.config import BASE_GROUP_DN, BASE_USER_DN, LDAP_BASE, LDAP_DOMAIN
 from .auth import ldap_client
 from ldap3.core.exceptions import LDAPException, LDAPInvalidFilterError
 import sqlite3
 import json
+
+# def get/s 
+
+
+def get_users_in_group(gidNumber):
+    try:
+        ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+        # only the attributes specified will be returned
+        search_base = BASE_USER_DN
+        search_filter = "(gidNumber={})".format(gidNumber)
+        res = ldap_conn.search(search_base, search_filter, attributes=["*"])
+        # print(res)
+        if res[0] == True:
+            results = [
+                (
+                    {
+                        "dn": i["dn"],
+                        "uid": i["dn"],
+                        # "attributes": (dict(i["attributes"])),
+                        "names": dict(i["attributes"])["cn"][0],
+                        "user_name": dict(i["attributes"])["cn"][1],
+                        "email": dict(i["attributes"])["mail"][0],
+                        "last_name": dict(i["attributes"])["sn"][0],
+                        "gidNumber": dict(i["attributes"])["gidNumber"] or None,
+                        "groupName": dict(i["attributes"])["gidNumber"] or None,
+                        "created_by": "Admin",
+                    }
+                )
+                for i in res[2]
+            ]
+            # print(results)
+            return {"status": "success", "data": results, "count": len(results)}
+        if res[0] == False and res[1]["description"] == "success" and len(res[2]) == 0:
+            return {"status": "success", "data": [], "count":0}
+        else:
+            return {"status": "error", "error": res[1]["description"],  "count":0}
+    except LDAPInvalidFilterError as err:
+        return {"error": "LDAPInvalidFilterError:{}".format(err), "status": "error"}
+    except LDAPException as e:
+        return {"error": e, "status": "error",  "count":0}
 
 
 def search_ldap(entity="users", name=None, filter=None):
@@ -36,7 +77,6 @@ def search_ldap(entity="users", name=None, filter=None):
                         "last_name": dict(i["attributes"])["sn"][0],
                         "gidNumber": dict(i["attributes"])["gidNumber"] or None,
                         "groupName": dict(i["attributes"])["gidNumber"] or None,
-                        "created_time": "2022-09-14T14:57:04.000Z",
                         "created_by": "Admin",
                     }
                 )
@@ -52,8 +92,11 @@ def search_ldap(entity="users", name=None, filter=None):
                         "name": dict(i["attributes"])["cn"][0],
                         "gidNumber": dict(i["attributes"])["gidNumber"],
                         "group_id": dict(i["attributes"])["gidNumber"],
-                        "created_time": "2022-09-14T20:12:31.000Z",
                         "created_by": "Admin",
+                        "users": get_users_in_group(dict(i["attributes"])["gidNumber"])[
+                            "count"
+                        ]
+                        or 0,
                     }
                 )
                 for i in res[2]
@@ -93,3 +136,6 @@ def find_user_by_username(username):
     except LDAPException as e:
         print(e)
         return None
+
+
+# print(get_users_in_group("504")['count'])
