@@ -19,10 +19,10 @@ const headers = [
     header: "Group Name",
   },
 
-  {
-    key: "created_by",
-    header: "Created By",
-  },
+  // {
+  //   key: "created_by",
+  //   header: "Created By",
+  // },
   // {
   //   key: "date_created",
   //   header: "Date Created",
@@ -42,7 +42,7 @@ const Groups = () => {
     let row = {
       id: group.uid,
       group_name: group.group_name,
-      created_by: group.created_by.name || group.created_by,
+      // created_by: group.created_by.name || group.created_by,
       // date_created: group.created_time,
       users: group.users || 0,
     };

@@ -21,10 +21,10 @@ const headers = [
     key: "group_name",
     header: "Group Name",
   },
-  {
-    key: "created_by",
-    header: "Created By",
-  },
+  // {
+  //   key: "created_by",
+  //   header: "Created By",
+  // },
   // {
   //   key: "date_created",
   //   header: "Date Created",
@@ -44,7 +44,7 @@ const Users = () => {
       id: user.uid || "-",
       user_name: user.user_name,
       group_name: user.group_name || "",
-      created_by: "",
+      // created_by: "",
       // date_created: user.created_time,
     };
     userList.push(row);
