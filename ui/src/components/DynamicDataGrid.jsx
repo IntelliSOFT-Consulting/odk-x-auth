@@ -115,7 +115,8 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
       console.log(user,payload)
       let g_name = payload.group_name || "";
       console.log("The Group Name ===" + g_name);
-      body = { ...filtered };
+      let gid = groups.filter(row=>row.group_name.toUpperCase()===g_name.toUpperCase())
+      body = { ...filtered, gidNumber: gid[0].uid };
       url = "/api/users/" + user;
       method = "POST"
     }
