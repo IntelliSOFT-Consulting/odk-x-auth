@@ -21,6 +21,7 @@ import {
   TableToolbarSearch,
   TextInput,
 } from "@carbon/react";
+import { Select, SelectItem } from "carbon-components-react";
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -100,7 +101,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
       return;
     }
     let url = "";
-    const method = "PUT";
+    let method = "PUT";
 
     let body = {};
     if (pageTitle === "Groups") {
@@ -108,10 +109,15 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
       body["gidNumber"] = payload.id;
       url = "/api/groups/" + payload.id;
     } else {
+      // group, email, first_name, last_name
+      let filtered = Object.fromEntries(Object.entries(payload).filter(([_, v]) => v != null));
+      let user = payload.id.split(",")[0].split("=")[1];
+      console.log(user,payload)
       let g_name = payload.group_name || "";
       console.log("The Group Name ===" + g_name);
-      body = { user: payload.id, gidNumber: g_name };
-      url = "/api/groups/" + g_name;
+      body = { ...filtered };
+      url = "/api/users/" + user;
+      method = "POST"
     }
     // body = JSON.stringify(body)
     const params = { method, url, body };
@@ -144,28 +150,7 @@ const DynamicDataGrid = ({ headers, rows, title, description }) => {
       });
       navigate("/groups");
     }
-    // LDAPApi(params).then(res=>{
-    //   console.log(res);
-    //     if (res.status === "error" || res.data.error) {
-    //       Swal.fire({
-    //         title: `Error!:${res.status}`,
-    //         icon: "error",
-    //         html: `${res.statusText}`,
-    //         confirmButtonText: "Okay",
-    //       });
-
-    //       return
-    //     }else{
-    //       Swal.fire({
-    //         title: "Records Updated",
-    //         icon: "success",
-    //         html: `Updated record for ${actualID}`,
-    //         confirmButtonText: "Okay",
-    //       });
-
-    //       window.location.reload(false);
-    //     }
-    // })
+    
   };
 
   const deleteSelectedRows = (pageTitle, action, selectedRows) => {
@@ -394,6 +379,10 @@ const EditUserComponent = ({ title, data, groupList, setUserEditInfo }) => {
   );
   let groupSelect = cooKieGroups.map((row) => row.group_name);
 
+
+  const groupSelectComponents = groupSelect.map((row,key)=>(
+     <SelectItem key={key} value={row} text={row} />
+  ))
   const [userPayload, setUserPayload] = useState({
     id: ultimateData[0].uid,
     first_name: ultimateData[0].first_name,
@@ -477,29 +466,35 @@ const EditUserComponent = ({ title, data, groupList, setUserEditInfo }) => {
               </div>
               <div className="cds--row">
                 <div className="cds--col-lg-16">
-                  <ComboBox
-                    ariaLabel="ComboBox"
+                <Select
                     id="group_name"
-                    items={groupSelect}
-                    label="Groups"
-                    labelText="User Group"
-                    className="input-block"
-                    selectedItem={
+                    defaultValue={
                       !ultimateData[0].group_name
                         ? ""
                         : ultimateData[0].group_name
                     }
+                    labelText="Group Name"
                     onChange={(e) => {
+                      console.log(`I selected g ${e.target.value}`)
                       setUserPayload({
                         ...userPayload,
-                        group_name: e.selectedItem,
+                        group_name: e.target.value,
                       });
                       setUserEditInfo({
                         ...userPayload,
-                        group_name: e.selectedItem,
+                        group_name: e.target.value,
                       });
                     }}
-                  />
+                  >
+                    <SelectItem
+                      disabled
+                      hidden
+                      value="placeholder-item"
+                      text="Choose Group Name"
+                    />
+                    {groupSelectComponents}
+                  </Select>
+                  
                 </div>
               </div>
             </Form>

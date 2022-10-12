@@ -30,7 +30,7 @@ const ResetPasswordForm = () => {
 
     let url = "/api/auth/reset-password";
     let method = "POST";
-    let body = { "user": userInfo.email };
+    let body = { "email": userInfo.email };
 
     let data = await (
       await fetch(url, {

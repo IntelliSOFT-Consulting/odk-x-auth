@@ -9,7 +9,6 @@ import ApplicationContext from "../ApplicationContext";
 // let allUsers = await LDAPApi({ url: `/api/users`, method: 'GET' })
 
 const headers = [
-
   {
     key: "id",
     header: "UID",
@@ -33,25 +32,40 @@ const headers = [
 ];
 
 const Users = () => {
-const { users } = useContext(ApplicationContext);
- const storedUsers = users; //JSON.parse(getCookie("odk-users")) 
- console.log("The Cookie Users From Cookies: ",storedUsers)  
- const userList =[];
-  storedUsers.forEach(user =>{
-    let row =  {
+  
+  const { users, fetchUsers } = useContext(ApplicationContext);
+
+  // fetchUsers();
+  const storedUsers = users; //JSON.parse(getCookie("odk-users"))
+  console.log("The Cookie Users From Cookies: ", storedUsers);
+  const userList = [];
+  storedUsers.forEach((user) => {
+    let row = {
       id: user.uid || "-",
       user_name: user.user_name,
       group_name: user.group_name || "",
       created_by: "",
       // date_created: user.created_time,
-     
-    }
-    userList.push(row)
-  })
-  console.log(userList)
-  
-  let userComponent = <DynamicDataGrid headers={headers} rows={userList} title="Users"  description="This table contains a list of created Users" />;
-  return <AppHeader children={userComponent} pageHeading="Users" breadCrumbPath="Users / User List" />;
+    };
+    userList.push(row);
+  });
+  console.log(userList);
+
+  let userComponent = (
+    <DynamicDataGrid
+      headers={headers}
+      rows={userList}
+      title="Users"
+      description="This table contains a list of created Users"
+    />
+  );
+  return (
+    <AppHeader
+      children={userComponent}
+      pageHeading="Users"
+      breadCrumbPath="Users / User List"
+    />
+  );
 };
 
 export default Users;

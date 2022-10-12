@@ -97,24 +97,9 @@ const NewUserForm = () => {
         });
       }
 
-      //   LDAPApi(params).then((res) => {
-      //     console.log(res);
-      //     if (res.status === "error" || res.data.error) {
-      //       Swal.fire({
-      //         title: "Error",
-      //         html: res.statusText,
-      //         icon: "error",
-      //       });
-      //       return;
-      //     }
-      //     Swal.fire({
-      //       title: "Success!",
-      //       html: `Created User ${userInfo.last_name} ${userInfo.first_name} with Group ID:[ <b style="color:blue">${actualID} </b>] .${res.statusText}`,
-      //       icon: "success",
-      //       confirmButtonText: "Okay",
-      //     });
-      //   });
-      //   navigate("/users");
+      window.location.href ="/users"
+      // navigate("/users")
+
     }
   };
   return (

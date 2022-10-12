@@ -78,7 +78,7 @@ export function ApplicationProvider({ children }) {
       : setGroups([...groups, ...newArray]);
   };
   return (
-    <ApplicationContext.Provider value={{ users, groups, updateGrid,onUserDelete,onGroupDelete }}>
+    <ApplicationContext.Provider value={{ users, groups, updateGrid,onUserDelete,onGroupDelete,fetchUsers, fetchGroups}}>
       {children}
     </ApplicationContext.Provider>
   );
