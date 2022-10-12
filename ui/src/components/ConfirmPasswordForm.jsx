@@ -31,9 +31,8 @@ const ConfirmPasswordForm = () => {
 
     if (
       !payload.password ||
-      !payload.confirm_password ||
-    
-      !actualID
+      !payload.confirm_password 
+
     ) {
       Swal.fire({
         title: "Missing Information",
@@ -42,9 +41,6 @@ const ConfirmPasswordForm = () => {
       });
       return;
     }
-
-    
-
     let url ="/api/auth/set-password"
     let method = "GET"
     let body ={"password":payload.password}

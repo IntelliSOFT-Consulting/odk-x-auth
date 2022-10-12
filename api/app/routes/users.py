@@ -23,6 +23,15 @@ def get_user(name):
     except Exception as e:
         return jsonify(error=str(e), status="error"), 400
 
+@bp.route('/<string:name>', methods=['POST'])
+@admin_token_required
+def edit_user(name):
+    try:
+        response = delete_ldap_user(name)
+        return jsonify(response), 200 if response['status'] == "success" else 400
+    except Exception as e:
+        return jsonify(error=str(e), status="error"), 400
+
 @bp.route('/<string:name>', methods=['DELETE'])
 @admin_token_required
 def delete_user(name):

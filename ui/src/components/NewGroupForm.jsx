@@ -72,27 +72,11 @@ const NewGroupForm = () => {
           icon: "success",
           confirmButtonText: "Okay",
         });
-        navigate("/groups")
+        window.location.href ="/users"
+        // navigate("/groups")
       }
 
-      ///
-      // LDAPApi(payload).then((res) => {
-      //   console.log(res);
-      //   if (res.status === "error" || res.data.error) {
-      //     Swal.fire({
-      //       title: "Error",
-      //       html: res.statusText,
-      //       icon: "error",
-      //     });
-      //     return;
-      //   }
-      //   Swal.fire({
-      //     title: "Success!",
-      //     html: `Created Group ${group_name} with ID:[ <b style="color:blue">${gid} </b>] .${res.statusText}`,
-      //     icon: "success",
-      //     confirmButtonText: "Okay",
-      //   });
-      // });
+     
     }
   };
 
