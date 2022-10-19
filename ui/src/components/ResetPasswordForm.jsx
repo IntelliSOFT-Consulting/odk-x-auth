@@ -57,6 +57,8 @@ const ResetPasswordForm = () => {
         icon: "success",
         confirmButtonText: "Okay",
       });
+      navigate('/login');
+      return;
     }
 
    

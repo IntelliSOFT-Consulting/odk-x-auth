@@ -68,11 +68,11 @@ const NewGroupForm = () => {
       } else {
         Swal.fire({
           title: "Success!",
-          html: `Created Grouo ${userInfo.group_name}  with Group ID:[ <b style="color:blue">${userInfo.group_id} </b>] `,
+          html: `Created Group ${userInfo.group_name}  with Group ID:[ <b style="color:blue">${userInfo.group_id} </b>] `,
           icon: "success",
           confirmButtonText: "Okay",
         });
-        window.location.href ="/users"
+        window.location.href ="/groups"
         // navigate("/groups")
       }
 
