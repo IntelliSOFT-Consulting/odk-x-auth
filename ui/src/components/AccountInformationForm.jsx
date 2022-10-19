@@ -115,7 +115,7 @@ const AccountInformationForm = () => {
                 disabled
                 defaultValue={uid}
               />
-              <div className="inline-component">
+              {/* <div className="inline-component">
                 <p>Groups</p>
 
                 <Select
@@ -134,7 +134,7 @@ const AccountInformationForm = () => {
                   />
                   {groupList}
                 </Select>
-              </div>
+              </div> */}
 
               <div className="cds--row">
                 <Button
