@@ -25,7 +25,7 @@ export function ApplicationProvider({ children }) {
         user_name: row["user_name"] || "-",
         email: row["email"] || "-",
         group_name: row["group_name"] || row["gidNumber"] || "-",
-        first_name: row["first_name"] || "-",
+        first_name: row["names"] || "-",
         last_name: row["last_name"] || "-",
         created_time: row["created_time"] || "-",
         created_by: row["created_by"] || "-",
