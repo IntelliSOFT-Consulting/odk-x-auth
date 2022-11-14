@@ -75,7 +75,7 @@ def delete_ldap_user(user):
     ldap_conn.unbind()
     return response
 
-# def modify_ldap_group(gidNumber, data):
+# def modify_ldap_user(user, data):
 #     try:
 #         ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
 #         # this will add group1 to the base directory tree

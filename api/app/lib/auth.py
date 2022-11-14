@@ -3,6 +3,7 @@ import uuid
 import datetime
 from functools import wraps
 from flask import request, jsonify
+from api.app.lib.email import send_email
 from app.config import BASE_USER_DN, LDAP_DOMAIN, SECRET_KEY, LDAP_HOST, LDAP_PORT
 import jwt
 from ldap3 import Connection, SAFE_SYNC, HASHED_SALTED_SHA, MODIFY_REPLACE
@@ -99,6 +100,55 @@ def modify_user_group(user, gidNumber):
     ldap_conn.unbind()
     return response
 
+
+def modify_user_email(user, email):
+    try:
+        ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+        user = "cn={},{}".format(user, BASE_USER_DN)
+        response = ldap_conn.modify(
+            user,
+            changes={"mail": [(MODIFY_REPLACE, [email])]},
+        )
+        print(response[0])
+        if not response[0]:
+            return {"error": response[1]["description"], "status": "error"}
+        print(ldap_conn.result)
+        mail_response = send_email(email, email_type="reset")
+        return {
+            "response": "User email set to {} successfully".format(email),
+            "status": "success",
+        }
+    except LDAPException as e:
+        print(e)
+        response = {"status": "error", "error": str(e)}
+    ldap_conn.unbind()
+    return response
+
+
+def modify_user_names(user, first_name, last_name):
+    try:
+        ldap_conn = ldap_client("cn=admin,dc=example,dc=org", "admin")
+        user = "cn={},{}".format(user, BASE_USER_DN)
+        response = ldap_conn.modify(
+            user,
+            changes={"commonname": [(MODIFY_REPLACE, [first_name + " " + last_name])],
+            "givenName": [(MODIFY_REPLACE, [first_name])],
+            "sn": [(MODIFY_REPLACE, [last_name])],
+             },
+        )
+        print(response[0])
+        if not response[0]:
+            return {"error": response[1]["description"], "status": "error"}
+        print(ldap_conn.result)
+        return {
+            "response": "User names set to {} successfully".format(first_name + " " + last_name),
+            "status": "success",
+        }
+    except LDAPException as e:
+        print(e)
+        response = {"status": "error", "error": str(e)}
+    ldap_conn.unbind()
+    return response
 
 # modify_user_group("ivore_uyse", 501)
 

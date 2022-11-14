@@ -88,6 +88,6 @@ def set_password():
         password = data["password"]
         response = modify_password(user, password)
         print(response)
-        return jsonify(status="success", message="Password reset successfully")
+        return jsonify(status="success", message="Password reset successfully"), 200
     except Exception as e:
         return jsonify(error=str(e), status="error"), 401
