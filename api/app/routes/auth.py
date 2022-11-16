@@ -45,7 +45,7 @@ def register():
             data["first_name"], data["last_name"], data["email"], data["gidNumber"]
         )
         if data['password']:
-            print(modify_password(find_user_by_email(data["email"], data['password'])))
+            print(modify_password(find_user_by_email(data["email"]), data['password']))
         print(response)
         if response["status"] == "success":
             email_response = send_email(data["email"], email_type="welcome")
