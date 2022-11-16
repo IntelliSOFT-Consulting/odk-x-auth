@@ -42,7 +42,7 @@ const ConfirmPasswordForm = () => {
       return;
     }
     let url ="/api/auth/set-password"
-    let method = "GET"
+    let method = "POST"
     let body ={"password":payload.password}
     let data = await (
       await fetch(url, {
